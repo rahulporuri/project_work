@@ -1718,14 +1718,12 @@ In&nbsp;[2]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[3]:
+In&nbsp;[10]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
 <div class="highlight"><pre><span class="n">A</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="n">a0</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">N</span><span class="p">)</span><span class="o">.</span><span class="n">evalf</span><span class="p">()</span>
 <span class="n">an</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n</span> <span class="p">:</span> <span class="n">a0</span><span class="o">*</span><span class="p">((</span><span class="mi">1</span><span class="o">+</span><span class="p">(</span><span class="n">n</span><span class="o">/</span><span class="n">n0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="n">p</span><span class="p">)</span>
-<span class="n">nm</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="o">-</span><span class="n">n0</span><span class="o">*</span><span class="p">((</span><span class="n">A</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">/</span><span class="n">a0</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">p</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">n</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="n">nm</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
 <span class="n">aN</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="n">an</span><span class="p">(</span><span class="n">n</span><span class="p">(</span><span class="n">N</span><span class="p">))</span>
 <span class="n">h</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n</span> <span class="p">:</span> <span class="p">(</span><span class="n">sym</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">an</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">evalf</span><span class="p">())</span><span class="o">/</span><span class="p">(</span><span class="n">an</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">H</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="n">h</span><span class="p">(</span><span class="n">n</span><span class="p">(</span><span class="n">N</span><span class="p">))</span>
@@ -1742,42 +1740,7 @@ In&nbsp;[3]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[6]:
-</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class="highlight"><pre><span class="n">Nics</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">4</span><span class="p">])</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
-    <span class="n">Nics</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">newton_krylov</span><span class="p">(</span><span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">n0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mf">1e+04</span><span class="o">*</span><span class="n">fN</span><span class="p">(</span><span class="n">N</span><span class="p">),</span><span class="n">Nics</span><span class="p">)</span>
-
-<span class="k">print</span> <span class="n">Nics</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>
-[-4.45050279]
-
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">
-In&nbsp;[7]:
+In&nbsp;[11]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -1805,7 +1768,68 @@ In&nbsp;[7]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[8]:
+In&nbsp;[12]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">nm</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="o">-</span><span class="n">n0</span><span class="o">*</span><span class="p">((</span><span class="n">A</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">/</span><span class="n">a0</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">p</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="n">nm</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[4]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">Nics</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">4</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">Nics</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">newton_krylov</span><span class="p">(</span><span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">n0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mf">1e+04</span><span class="o">*</span><span class="n">fN</span><span class="p">(</span><span class="n">N</span><span class="p">),</span><span class="n">Nics</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="n">Nics</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+[-4.45050279]
+
+</pre>
+</div>
+</div>
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>
+/usr/local/lib/python2.7/dist-packages/scipy/optimize/nonlin.py:474: RuntimeWarning: invalid value encountered in double_scalars
+  and dx_norm/self.x_rtol &lt;= x_norm))
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[6]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -1827,7 +1851,7 @@ In&nbsp;[8]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[9]:
+In&nbsp;[7]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -1858,7 +1882,7 @@ In&nbsp;[9]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[10]:
+In&nbsp;[8]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -1883,7 +1907,7 @@ In&nbsp;[10]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[14]:
+In&nbsp;[9]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -1899,7 +1923,7 @@ In&nbsp;[14]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[15]:
+In&nbsp;[10]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -1934,7 +1958,7 @@ In&nbsp;[15]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[16]:
+In&nbsp;[11]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -1958,7 +1982,7 @@ In&nbsp;[16]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[17]:
+In&nbsp;[12]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -1973,7 +1997,7 @@ In&nbsp;[17]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[22]:
+In&nbsp;[13]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -1996,12 +2020,12 @@ In&nbsp;[22]:
 
 
 <div class="output_area"><div class="prompt output_prompt">
-    Out[22]:</div>
+    Out[13]:</div>
 
 
 <div class="output_text output_subarea output_pyout">
 <pre>
-[&lt;matplotlib.lines.Line2D at 0xae2a7aec&gt;]
+[&lt;matplotlib.lines.Line2D at 0xae6f4bec&gt;]
 </pre>
 </div>
 
@@ -2258,6 +2282,1002 @@ GxoSTnKAvQavZ6QfcyzqZL+zztc1K4TVhdqczxpwbV9cgnG+zJWo/QQwA+OjXppi9r4G4/a2Ufsa
 zNnbkbSvwfq9HRLxwGuo2Pz/YOxtD6iDDKMU/Q4gH3X75p1wowfhhrAGwkiUf3EjDX+HpkXs9OQS
 jItOGIa6tTUqJLA1zN7XYNzeNnJfg/F7O5L2NVi/twVBEARBEARBEARBEARBEARBEARBEARBEARB
 EARBEARBEARBEARBEMzl/wNMyHrg+MRgcQAAAABJRU5ErkJggg==
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre> 
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[24]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">A</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="n">a0</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">N</span><span class="p">)</span><span class="o">.</span><span class="n">evalf</span><span class="p">()</span>
+<span class="n">an</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n</span> <span class="p">:</span> <span class="n">a0</span><span class="o">*</span><span class="p">((</span><span class="mi">1</span><span class="o">+</span><span class="p">(</span><span class="n">n</span><span class="o">/</span><span class="n">n0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="n">p</span><span class="p">)</span>
+<span class="n">aN</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="n">an</span><span class="p">(</span><span class="n">n</span><span class="p">(</span><span class="n">N</span><span class="p">))</span>
+<span class="n">h</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n</span> <span class="p">:</span> <span class="p">(</span><span class="n">sym</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">an</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">evalf</span><span class="p">())</span><span class="o">/</span><span class="p">(</span><span class="n">an</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">H</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="n">h</span><span class="p">(</span><span class="n">n</span><span class="p">(</span><span class="n">N</span><span class="p">))</span>
+<span class="n">DH</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="n">sym</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">H</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">N</span><span class="p">)</span><span class="o">.</span><span class="n">evalf</span><span class="p">()</span>
+<span class="n">fn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n</span> <span class="p">:</span> <span class="n">sym</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">sym</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">an</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">x</span><span class="p">),</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">evalf</span><span class="p">()</span><span class="o">/</span><span class="n">an</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">fN</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="n">fn</span><span class="p">(</span><span class="n">n</span><span class="p">(</span><span class="n">N</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[25]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">k0</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">)</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">25</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[26]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">nm</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="o">-</span><span class="n">n0</span><span class="o">*</span><span class="p">((</span><span class="n">A</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">/</span><span class="n">a0</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">p</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="n">nm</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[27]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">Nics</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">8</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">Nics</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">newton_krylov</span><span class="p">(</span><span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="p">(</span><span class="n">k0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mf">1e+04</span><span class="o">*</span><span class="n">fN</span><span class="p">(</span><span class="n">N</span><span class="p">),</span><span class="n">Nics</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="n">Nics</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+[-8.11533591]
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[30]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">hk0</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+<span class="n">hk0</span><span class="o">.</span><span class="n">real</span> <span class="o">=</span> <span class="p">(((</span><span class="mf">2.</span><span class="o">*</span><span class="n">k0</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span><span class="o">*</span><span class="n">A</span><span class="p">(</span><span class="n">Nics</span><span class="p">))</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span>
+
+<span class="n">Dhk0</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+<span class="n">Dhk0</span><span class="o">.</span><span class="n">real</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">sym</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">A</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">Nics</span><span class="p">)</span><span class="o">.</span><span class="n">evalf</span><span class="p">()</span><span class="o">/</span><span class="p">(</span><span class="n">A</span><span class="p">(</span><span class="n">Nics</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">*</span><span class="p">((</span><span class="mf">2.</span><span class="o">*</span><span class="n">k0</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">Dhk0</span><span class="o">.</span><span class="n">imag</span> <span class="o">=</span> <span class="o">-</span><span class="n">Nics</span><span class="o">*</span><span class="p">((</span><span class="n">k0</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">A</span><span class="p">(</span><span class="n">Nics</span><span class="p">)</span><span class="o">*</span><span class="n">A</span><span class="p">(</span><span class="n">Nics</span><span class="p">)</span><span class="o">*</span><span class="n">H</span><span class="p">(</span><span class="n">Nics</span><span class="p">))</span>
+
+<span class="n">hkm</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">hk0</span><span class="p">,</span> <span class="n">dtype</span> <span class="o">=</span> <span class="nb">complex</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[31]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="k">print</span> <span class="n">Nics</span><span class="p">,</span> <span class="n">hk0</span><span class="p">,</span> <span class="n">Dhk0</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+[-8.11533591] [ 0.03000102+0.j] [ 0.24346836-17.21581287j]
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[32]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">npts</span> <span class="o">=</span> <span class="mi">2500</span>
+<span class="n">step</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="o">-</span><span class="n">Nics</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">npts</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">N</span> <span class="o">=</span> <span class="n">Nics</span>
+<span class="k">while</span> <span class="n">N</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">step</span><span class="p">:</span>
+    <span class="n">array</span> <span class="o">=</span> <span class="n">rk4_step</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">hk0</span><span class="p">,</span> <span class="n">Dhk0</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+    <span class="n">hk0</span> <span class="o">=</span> <span class="n">hk0</span> <span class="o">+</span> <span class="n">array</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">Dhk0</span> <span class="o">=</span> <span class="n">Dhk0</span> <span class="o">+</span> <span class="n">array</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">hkm</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hkm</span><span class="p">,</span><span class="n">hk0</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">+=</span> <span class="n">step</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[39]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">np</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="n">n0</span><span class="o">*</span><span class="p">((</span><span class="n">A</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">/</span><span class="n">a0</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">p</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="n">np</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[40]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">Nshss</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">8</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">Nshss</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">newton_krylov</span><span class="p">(</span><span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="p">(</span><span class="n">k0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mf">1e+06</span><span class="o">*</span><span class="n">fN</span><span class="p">(</span><span class="n">N</span><span class="p">),</span><span class="n">Nshss</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="n">Nshss</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+[ 8.66423784]
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[41]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">step</span> <span class="o">=</span> <span class="p">(</span><span class="n">Nshss</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">npts</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">hkp</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">hk0</span><span class="p">,</span> <span class="n">dtype</span> <span class="o">=</span> <span class="nb">complex</span><span class="p">)</span>
+
+<span class="n">N</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">step</span>
+<span class="k">while</span> <span class="n">N</span> <span class="o">&lt;</span> <span class="n">Nshss</span><span class="p">:</span>
+    <span class="n">array</span> <span class="o">=</span> <span class="n">rk4_step</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">hk0</span><span class="p">,</span> <span class="n">Dhk0</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+    <span class="n">hk0</span> <span class="o">=</span> <span class="n">hk0</span> <span class="o">+</span> <span class="n">array</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">Dhk0</span> <span class="o">=</span> <span class="n">Dhk0</span> <span class="o">+</span> <span class="n">array</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">hkp</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hkp</span><span class="p">,</span> <span class="n">hk0</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">+=</span> <span class="n">step</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[42]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">Nics</span> <span class="o">=</span> <span class="o">-</span><span class="mf">8.11533591</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[43]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hold</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">Nics</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">hkm</span><span class="p">)),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">hkm</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">Nshss</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">hkp</span><span class="p">[:</span><span class="mi">2200</span><span class="p">])),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">hkp</span><span class="p">[:</span><span class="mi">2200</span><span class="p">]))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hold</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">Nics</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">hkm</span><span class="p">)),</span> <span class="n">hkm</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">Nshss</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">hkp</span><span class="p">[:</span><span class="mi">2200</span><span class="p">])),</span> <span class="n">hkp</span><span class="o">.</span><span class="n">imag</span><span class="p">[:</span><span class="mi">2200</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">
+    Out[43]:</div>
+
+
+<div class="output_text output_subarea output_pyout">
+<pre>
+[&lt;matplotlib.lines.Line2D at 0xae45ab4c&gt;]
+</pre>
+</div>
+
+</div>
+
+<div class="output_area"><div class="prompt"></div>
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre> 
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[3]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">A</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="n">a0</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">N</span><span class="p">)</span><span class="o">.</span><span class="n">evalf</span><span class="p">()</span>
+<span class="n">an</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n</span> <span class="p">:</span> <span class="n">a0</span><span class="o">*</span><span class="p">((</span><span class="mi">1</span><span class="o">+</span><span class="p">(</span><span class="n">n</span><span class="o">/</span><span class="n">n0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="n">p</span><span class="p">)</span>
+<span class="n">aN</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="n">an</span><span class="p">(</span><span class="n">n</span><span class="p">(</span><span class="n">N</span><span class="p">))</span>
+<span class="n">h</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n</span> <span class="p">:</span> <span class="p">(</span><span class="n">sym</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">an</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">evalf</span><span class="p">())</span><span class="o">/</span><span class="p">(</span><span class="n">an</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">H</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="n">h</span><span class="p">(</span><span class="n">n</span><span class="p">(</span><span class="n">N</span><span class="p">))</span>
+<span class="n">DH</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="n">sym</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">H</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">N</span><span class="p">)</span><span class="o">.</span><span class="n">evalf</span><span class="p">()</span>
+<span class="n">fn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n</span> <span class="p">:</span> <span class="n">sym</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">sym</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">an</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">x</span><span class="p">),</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">evalf</span><span class="p">()</span><span class="o">/</span><span class="n">an</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">fN</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="n">fn</span><span class="p">(</span><span class="n">n</span><span class="p">(</span><span class="n">N</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[4]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">k0</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">)</span><span class="o">*</span><span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">25</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[5]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">nm</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="o">-</span><span class="n">n0</span><span class="o">*</span><span class="p">((</span><span class="n">A</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">/</span><span class="n">a0</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">p</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="n">nm</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[6]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">Nics</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">10</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">Nics</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">newton_krylov</span><span class="p">(</span><span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="p">(</span><span class="n">k0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mf">1e+04</span><span class="o">*</span><span class="n">fN</span><span class="p">(</span><span class="n">N</span><span class="p">),</span><span class="n">Nics</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="n">Nics</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+[-10.57877019]
+
+</pre>
+</div>
+</div>
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>
+/usr/local/lib/python2.7/dist-packages/scipy/optimize/nonlin.py:474: RuntimeWarning: invalid value encountered in double_scalars
+  and dx_norm/self.x_rtol &lt;= x_norm))
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[7]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">hk0</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+<span class="n">hk0</span><span class="o">.</span><span class="n">real</span> <span class="o">=</span> <span class="p">(((</span><span class="mf">2.</span><span class="o">*</span><span class="n">k0</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span><span class="o">*</span><span class="n">A</span><span class="p">(</span><span class="n">Nics</span><span class="p">))</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span>
+
+<span class="n">Dhk0</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+<span class="n">Dhk0</span><span class="o">.</span><span class="n">real</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">sym</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">A</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">Nics</span><span class="p">)</span><span class="o">.</span><span class="n">evalf</span><span class="p">()</span><span class="o">/</span><span class="p">(</span><span class="n">A</span><span class="p">(</span><span class="n">Nics</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">*</span><span class="p">((</span><span class="mf">2.</span><span class="o">*</span><span class="n">k0</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">Dhk0</span><span class="o">.</span><span class="n">imag</span> <span class="o">=</span> <span class="o">-</span><span class="n">Nics</span><span class="o">*</span><span class="p">((</span><span class="n">k0</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">A</span><span class="p">(</span><span class="n">Nics</span><span class="p">)</span><span class="o">*</span><span class="n">A</span><span class="p">(</span><span class="n">Nics</span><span class="p">)</span><span class="o">*</span><span class="n">H</span><span class="p">(</span><span class="n">Nics</span><span class="p">))</span>
+<span class="n">hkm</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">hk0</span><span class="p">,</span> <span class="n">dtype</span> <span class="o">=</span> <span class="nb">complex</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[8]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="k">print</span> <span class="n">Nics</span><span class="p">,</span> <span class="n">hk0</span><span class="p">,</span> <span class="n">Dhk0</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+[-10.57877019] [  9.48715575e-10+0.j] [  1.00362440e-08 -7.09669622e-07j]
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[13]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">npts</span> <span class="o">=</span> <span class="mi">5000</span>
+<span class="n">step</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="o">-</span><span class="n">Nics</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">npts</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">N</span> <span class="o">=</span> <span class="n">Nics</span>
+<span class="k">while</span> <span class="n">N</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">step</span><span class="p">:</span>
+    <span class="n">array</span> <span class="o">=</span> <span class="n">rk4_step</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">hk0</span><span class="p">,</span> <span class="n">Dhk0</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+    <span class="n">hk0</span> <span class="o">=</span> <span class="n">hk0</span> <span class="o">+</span> <span class="n">array</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">Dhk0</span> <span class="o">=</span> <span class="n">Dhk0</span> <span class="o">+</span> <span class="n">array</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">hkm</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hkm</span><span class="p">,</span><span class="n">hk0</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">+=</span> <span class="n">step</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[14]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">np</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="n">n0</span><span class="o">*</span><span class="p">((</span><span class="n">A</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">/</span><span class="n">a0</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">p</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="n">np</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[15]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">Nshss</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">8</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">Nshss</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">newton_krylov</span><span class="p">(</span><span class="k">lambda</span> <span class="n">N</span> <span class="p">:</span> <span class="p">(</span><span class="n">k0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mf">1e+06</span><span class="o">*</span><span class="n">fN</span><span class="p">(</span><span class="n">N</span><span class="p">),</span><span class="n">Nshss</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="n">Nshss</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+[ 11.00548587]
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[16]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">step</span> <span class="o">=</span> <span class="p">(</span><span class="n">Nshss</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">npts</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">hkp</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">hk0</span><span class="p">,</span> <span class="n">dtype</span> <span class="o">=</span> <span class="nb">complex</span><span class="p">)</span>
+
+<span class="n">N</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">step</span>
+<span class="k">while</span> <span class="n">N</span> <span class="o">&lt;</span> <span class="n">Nshss</span><span class="p">:</span>
+    <span class="n">array</span> <span class="o">=</span> <span class="n">rk4_step</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">hk0</span><span class="p">,</span> <span class="n">Dhk0</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+    <span class="n">hk0</span> <span class="o">=</span> <span class="n">hk0</span> <span class="o">+</span> <span class="n">array</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">Dhk0</span> <span class="o">=</span> <span class="n">Dhk0</span> <span class="o">+</span> <span class="n">array</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">hkp</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hkp</span><span class="p">,</span> <span class="n">hk0</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">+=</span> <span class="n">step</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[17]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">Nics</span> <span class="o">=</span> <span class="o">-</span><span class="mf">10.57877019</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[24]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hold</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">Nics</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">hkm</span><span class="p">)),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">hkm</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">Nshss</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">hkp</span><span class="p">[:</span><span class="mi">4850</span><span class="p">])),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">hkp</span><span class="p">[:</span><span class="mi">4850</span><span class="p">]))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hold</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">Nics</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">hkm</span><span class="p">)),</span> <span class="n">hkm</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">Nshss</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">hkp</span><span class="p">[:</span><span class="mi">4850</span><span class="p">])),</span> <span class="n">hkp</span><span class="o">.</span><span class="n">imag</span><span class="p">[:</span><span class="mi">4850</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">
+    Out[24]:</div>
+
+
+<div class="output_text output_subarea output_pyout">
+<pre>
+[&lt;matplotlib.lines.Line2D at 0xade7f7ec&gt;]
+</pre>
+</div>
+
+</div>
+
+<div class="output_area"><div class="prompt"></div>
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+AAAASUVORK5CYII=
 "
 >
 </div>
