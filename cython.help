@@ -1,0 +1,9 @@
+cython basics - http://docs.cython.org/src/reference/language_basics.html
+cython with numpy - http://cython.readthedocs.org/en/latest/src/tutorial/numpy.html
+typecasting example - http://docs.cython.org/src/quickstart/cythonize.html
+building cython code // using it in ipython notebooks - http://docs.cython.org/src/quickstart/build.html#using-the-ipython-notebook
+cython for numpy users, with examples - http://docs.cython.org/src/userguide/numpy_tutorial.html
+interfacing with C - https://scipy-lectures.github.io/advanced/interfacing_with_c/interfacing_with_c.html#id12
+
+symengine, basically c(++) sympy - https://github.com/sympy/symengine
+maybe i should try write the same code in c++ and see how much faster it is :d
