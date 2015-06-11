@@ -90,12 +90,18 @@ f.close()
 
 Nics = -8.11533591
 
+plt.subplot(121)
+
 plt.cla()
 plt.hold(True)
 plt.semilogy(numpy.linspace(Nics,Nshss,len(hk_array[:4700])), numpy.absolute(hk_array[:4700]))
-plt.savefig('abs_hk_vs_N_k2.png')
+#plt.savefig('abs_hk_vs_N_k2.png')
+
+plt.subplot(122)
 
 plt.cla()
 plt.hold(True)
 plt.plot(numpy.linspace(Nics,Nshss,len(hk_array[:4700])), hk_array.imag[:4700])
-plt.savefig('imag_hk_vs_N_k2.png')
+#plt.savefig('imag_hk_vs_N_k2.png')
+
+plt.savefig('k2.png')
