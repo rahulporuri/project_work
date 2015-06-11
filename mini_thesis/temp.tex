@@ -1,0 +1,299 @@
+\documentclass[12pt, a4paper]{report}
+\usepackage{fullpage}
+
+\begin{document}
+
+{\noindent \Large{Introduction}}
+
+The big bang theory, proposed in the 1930s, hailed for it's solution to the problem of the expansion of the universe and for the existence of nearly isotropic thermal Cosmic Microwave Background radiation, CMB for short, has drawbacks of it's own, of which the horizon problem and the flatness problems are the most notable. The theory of inflation, first proposed by Alan Guth in the 1980s solved the horizon and the flatness problems by assuming that the universe went through an accelerated phase of expansion during the radiation dominated epoch. Several models of inflation, in fact over 50, have been proposed since, each of which assumes a different scalar field driving the inflationary paradigm.
+
+The perturbations in the metric can be classified as scalar, vector and tensor perturbations, which can be represented as
+
+$$ds^2 = dt^2 - a^2(t)d\bar{x}^2$$
+
+$$ds^2 = dt^2 - a^2(t)d\bar{x}^2$$
+
+$$ds^2 = dt^2 - a^2(t)d\bar{x}^2$$
+
+For the scope of  this discussion, we restrict ourselves to tensor perturbations of the metric, also referred to as gravitational waves, characterized by transverse, traceless matrix $h_{ij}$. the perturbed einstein equation can be derived to be
+
+\ldots
+
+Assuming that a scalar field $\phi$ and a corresponding potential $V(\phi)$ govern the inflationary paradigm, we can write the corresponding action and the stress-energy tensor.
+
+\ldots
+
+We can also derive the equations of motion of the field from the action to be
+
+$$\ddot{\phi} + 3H\dot{\phi} + V_{\phi} = 0$$
+
+where $V_{phi} = \frac{dV}{d\phi}$
+
+Note that $\dot{}$ denotes differentiation with respect to coordinate time and $'$ denotes differentiation with respect to conformal time. We can define a new parameter
+
+$$N = ln(\frac{a(t)}{a_i})$$
+
+where $N$ is referred to as e-fold time.
+
+We can now convert the equation of motion of the field to a differential equation in $N$, as follows
+
+\ldots
+
+which can be numerically solved.
+
+After which we can define
+
+$$H = \phi V(\phi)$$
+
+and we can convert the tensor perturbations in fourier space
+
+$$\ddot{h_k} + 3H\dot{h_k} + \frac{k^2}{a^2}h_k = 0$$
+
+into an equation in $N$ as follows 
+
+...
+
+which can also be numerically solved. We can assume the Bunch-Davies initial condition to set $h_k^0$ and $\frac{dh_k}{dN}^0$
+
+Finally, we can evaluate the power spectrum of tensor perturbations over the k range ... 
+
+
+{\noindent \Large{Numerical Results}}
+
+\paragraph{} In this section, I describe the procedure adopted to numerically evaluate the tensor power spectrum of gravitational waves in a power-law inflationary scenario. Recall that conventionally, e-fold $N$ is defined as $N = log(a/a_0)$. Also, note that an overdot represents differentiation with respect to coordinate time $t$ and that an overprime represents differentiation with respect to conformal time $\eta$.
+
+\paragraph{} Assuming an inflationary potential $V(\phi)$ of the form
+
+$$V(\phi) = V_0 exp(-(\frac{2}{q})^{1/2}(\phi - \phi_0))$$
+
+\noindent where $\phi$ represents the scalar field driving inflation and $q$ is the power-law index.
+
+\paragraph*{} Recall that the equation describing the evolution of the scalar field $\phi$ is
+
+$$\ddot{\phi} + 3H\dot{\phi} + V_{\phi} = 0$$
+
+\noindent which can then be written in terms of e-fold time $N$ as
+
+$$\frac{d^2\phi}{dN^2} + (3 - \frac{1}{2}(\frac{d\phi}{dN})^2)\frac{d\phi}{dN} + (6 - (\frac{d\phi}{dN})^2)\frac{1}{2V(\phi)}\frac{dV(\phi)}{dN} = 0$$
+
+\noindent Note that I've made used of the following definition for H to arrive at the above expression
+
+$$H^2 = \frac{2V(\phi)}{3-(\frac{d\phi}{dN})^2}$$
+
+\paragraph*{} I numerically integrated the above second order differential equation from e-fold time $N = 0$ to $N = 70$ while assuming that $\phi_0 = 1$ and $\frac{d\phi}{dN}_0 = \frac{\sqrt{2q}}{t_0}\frac{1}{H_0}$ using a fourth-order Runge-Kutta method, implemented in Python.
+
+\paragraph*{} [ add figure here - $\phi(N)$ vs $N$]
+
+\paragraph*{} Recall that the equation governing the tensor modes is
+
+$$\ddot{h} + 3H\dot{h} - \frac{1}{a^2}\nabla ^2h = 0$$
+
+\noindent which, in fourier space, becomes
+
+$$\ddot{h_k} + 3H\dot{h_k} + \frac{k^2}{a^2}h_k = 0$$
+
+\paragraph*{} Rewriting the above equation in terms of e-fold time, we arrive at
+
+$$\frac{d^2h_k}{dN^2} + (3+\frac{1}{H}\frac{dH}{dN})\frac{dh_k}{dN} + \frac{k^2}{a^2H^2}h_k = 0$$
+
+\paragraph*{} The above equation was numerically integrated using a fourth order Runge-Kutta method, implemented in Python. It is to be noted that $h_k$ was evolved for various values of k, ranging from $10^{-6}$ to $10^{0}$. Corresponding initial and final limits on e-fold time N were placed by estimating the time when the modes are well inside the Hubble scale i.e $k/aH =  100$ and when the modes are well outside the Hubble scale i.e $k/aH =  10^{-5}$. The initial values for $h_k$ and $\frac{dh_k}{dN}$ were set to be
+
+$$h_k  = \frac{1}{\sqrt{2k_0}a(N)}$$
+
+$$\frac{dh_k}{dN} = -\frac{1}{\sqrt{2k_0}a(N)} - \frac{i\sqrt{(k0/2)}}{a^2(N)H(N)}$$
+
+\paragraph*{} Having successfully obtained a numerical solution of $h_k$, we can evaluate the tensor power spectrum by using the formula
+
+$$P_T(k) = 2 (\frac{k^3}{2\pi^2}) |h_k|^2$$
+
+\paragraph*{} [Add figure here - tensor power spectrum]
+
+\newpage
+
+The big bang theory, proposed in \ldots, hailed for it's solution to the problem of the expansion of the universe and for the existence of nearly isotropic thermal cmb radiation, has drawbacks of it's own, of which the horizon problem and the flatness problems are the most notable. The theory of inflation, first proposed by Alan Guth in the year \ldots solved the horizon and the flatness problems by assuming that the universe went through an accelerated phase of expansion during the radiation dominated epoch. Several models of inflation, in fact over \ldots, have been proposed since.
+
+The perturbations in the metric can be classified as scalar, vector and tensor perturbations, which can be represented as
+
+$$ds^2 = dt^2 - a^2(t)d\bar{x}^2$$
+
+$$ds^2 = dt^2 - a^2(t)d\bar{x}^2$$
+
+$$ds^2 = dt^2 - a^2(t)d\bar{x}^2$$
+
+For the scope of  this discussion, we restrict ourselves to tensor perturbations of the metric, also referred to as gravitational waves, characterized by transverse, traceless matrix $h_{ij}$. the perturbed einstein equation can be derived to be
+
+\ldots
+
+Assuming that a scalar field $\phi$ and a corresponding potential $V(\phi)$ govern the inflationary paradigm, we can write the corresponding action and the stress-energy tensor.
+
+\ldots
+
+We can also derive the equations of motion of the field from the action to be
+
+$$\ddot{\phi} + 3H\dot{\phi} + V_{\phi} = 0$$
+
+where $V_{phi} = \frac{dV}{d\phi}$
+
+Note that $\dot{}$ denotes differentiation with respect to coordinate time and $'$ denotes differentiation with respect to conformal time. We can define a new parameter
+
+$$N = ln(\frac{a(t)}{a_i})$$
+
+where $N$ is referred to as e-fold time.
+
+We can now convert the equation of motion of the field to a differential equation in $N$, as follows
+
+\ldots
+
+which can be numerically solved.
+
+After which we can define
+
+$$H = \phi V(\phi)$$
+
+and we can convert the tensor perturbations in fourier space
+
+$$\ddot{h_k} + 3H\dot{h_k} + \frac{k^2}{a^2}h_k = 0$$
+
+into an equation in $N$ as follows 
+
+...
+
+which can also be numerically solved. We can assume the Bunch-Davies initial condition to set $h_k^0$ and $\frac{dh_k}{dN}^0$
+
+Finally, we can evaluate the power spectrum of tensor perturbations over the k range ... 
+
+\newpage
+
+Inflation is popularly defined as a period of rapid expansion after the big bang, needed to solve the horizon problem and bring the modes inside the hubble radius. Ho long inflation needs to take place can be determined by looking at the ratio of the forward and backward light cones at the epoch of decoupling.
+
+the horizon is defined as
+$$h(t) = a(t)\int\frac{dt}{a(t)}$$
+
+one of the friedmann equations is
+$$(\frac{\dot{a}}{a})^2 = \frac{8\pi G}{3}\rho$$
+
+during the radiation dominated epoch, we know that
+$$\rho = \rho_c\Omega_R^0(\frac{a_0}{a})^4$$
+
+therefore
+
+$$(\frac{\dot{a}}{a})^2 = \frac{8\pi G}{3}\rho_c\Omega_R^0(\frac{a_0}{a})^4$$
+
+$$\dot{a}{a} = a_0^2\sqrt{\frac{\rho_c\Omega_R^0}{3M_p^2}}$$
+
+where we used the fact that $\frac{1}{M_p} = \sqrt{8\pi G}$ and therefore,
+
+$$a = a_0 \sqrt{2C}t^{1/2}$$
+
+further, from ?
+
+$$h(t) = a(t)\int\frac{d\tilde{t}}{a(\tilde{t})}$$
+
+$$h(t) = a(t_{dec})\int^{t_{dec}}_0\frac{d\tilde{t}}{a(\tilde{t})}$$
+
+$$h(t) = a_0 \sqrt{2C}{t_{dec}}^{1/2}\int^{t_{dec}}_0\frac{d\tilde{t}}{a_0 \sqrt{2C}{\tilde{t}}^{1/2}}$$
+
+$$h(t) = {t_{dec}}^{1/2}[{2{\tilde{t}}^{1/2}}]^{t_{dec}}_0$$
+
+$$h(t) = {2t_{dec}}$$
+
+similarly, during the matter dominated epoch, 
+
+we know that
+$$\rho = \rho_c\Omega_{NR}^0(\frac{a_0}{a})^3$$
+
+therefore
+
+$$(\frac{\dot{a}}{a})^2 = \frac{8\pi G}{3}\rho_c\Omega_{NR}^0(\frac{a_0}{a})^3$$
+
+$$\dot{a}{a^{1/2}} = a_0^{3/2}\sqrt{\frac{\rho_c\Omega_R^0}{3M_p^2}}$$
+
+where we used the fact that $\frac{1}{M_p} = \sqrt{8\pi G}$ and therefore,
+
+$$a = a_0 (3C/2)^{2/3}t^{2/3}$$
+
+further, from ?
+
+$$h(t) = a(t)\int\frac{d\tilde{t}}{a(\tilde{t})}$$
+
+$$h(t) = a(t_{dec})\int^{t_0}_{t_{dec}}\frac{d\tilde{t}}{a(\tilde{t})}$$
+
+$$h(t) = a_0 (3C/2)^{2/3}{t_{dec}}^{2/3}\int^{t_0}_{t_{dec}}\frac{d\tilde{t}}{a_0 (3C/2)^{2/3}{\tilde{t}}^{2/3}}$$
+
+$$h(t) = {t_{dec}}^{2/3}[{3{\tilde{t}}^{1/3}}]^{t_0}_{t_{dec}}$$
+
+$$h(t) = {3(t_{dec}^2t_0)^{1/3}}$$
+
+assuming that $t_0 >> t_{dec}$
+
+comparing the size of the horizon, we can see that the horizon has grown 70 fold! Therefore, we can say that 70 e-folds of inflation are required where
+
+$$N = ln(\frac{a(t_i)}{a_0})$$
+
+one of the most common models of inflation is the power law inflation where
+
+$$a(t) \propto t^q$$
+
+we know that the physical wavelength $\lambda_p$ grows as the scale factor, a(t), $\lambda_p \propto a(t)$
+
+$$ds^2 = dt^2 - a(t)^2 d\bar{x}^2$$
+
+$$ds^2 = dt^2 - dl^2$$
+
+$$dl^2 = a(t)^2d\bar{x}^2$$
+
+we also know that the size of the horizon is proportional to the hubble radius H.
+
+During inflation, as we've mentioned earlier, we want the physical wavelength to be inside the horizon ie
+
+$$-\frac{d}{dt}\frac{\lambda_p}{H} < 0$$
+
+$$\ddot{a} > 0$$
+
+and in the case of a power-law inflation, this leads to
+
+$$q(q-1) > 0$$
+
+As we can see, neither matter, q = $2/3$, nor radiation, q = $1/2$ satisfy this criterion.
+
+Say, a scalar field $\phi$ drives the inflation, the corresponding potential of which is $V(\phi)$. We know that the action for such a field is 
+
+$$S(\phi) = \int d^4x[\frac{1}{2}d^{\lambda}\phi d_{\lambda}\phi - V(\phi)]$$
+
+and that the stress energy tensor can be written as 
+
+$$T^{\mu}_{\nu} = d^{\mu}\phi d_{\nu}\phi -\delta^{\mu}_{\nu}[\frac{1}{2}d^{\lambda}\phi d_{\lambda}\phi - V(\phi)]$$
+
+$$\ddot{\phi} + 3H\dot{\phi}+V_{\phi} = 0$$
+
+$$a(N) = a_0exp(N)$$
+
+$$\frac{dN}{dt} = H$$
+
+$$\frac{\phi(t)}{\sqrt{2}M_p} = \int dt \sqrt{-\dot{H}}$$
+
+$$V(t) = (3H^2 + \dot{H})M_p^2$$
+
+$$H\frac{dH}{dN} = -[\frac{1}{\sqrt{2}M_p}H\frac{d\phi}{dN}]^2$$
+
+$$H^2 = \frac{V(\phi)}{M_p}\frac{1}{3-\frac{1}{2M_p^2}(\frac{d\phi}{dN})^2}$$
+
+$$\frac{d^2\phi}{dN^2} + (3-\frac{1}{2M_p^2}(\frac{d\phi}{dN})^2)\frac{d\phi}{dN} + \frac{1}{2V(\phi)}\frac{dV}{d\phi}(6-\frac{1}{M_p^2}(\frac{d\phi}{dN})^2) = 0$$
+
+$$\ddot{h_k} + 3H\dot{h_k} +\frac{k^2}{a^2}h_k = 0$$
+
+$$\frac{d^2h_k}{dN^2} + (3+\frac{1}{H}\frac{dH}{dN})\frac{dh_k}{dN} + \frac{k^2}{a^2H^2}h_k = 0$$
+
+$$R_k^{''} + 2\frac{z^{'}}{z}R_k^{'} + k^2 R_k = 0$$
+
+$$ \eta = \int \frac{dt}{a(t)}$$
+
+$$\frac{d^2R_k}{dN^2} + (1 + \frac{1}{H}\frac{dH}{dN} + \frac{2}{z}\frac{dz}{dN})\frac{dR_k}{N} +\frac{k^2}{a^2H^2}R_k = 0$$
+
+\newpage
+
+Inflation was proposed in the year \ldots by Alan Guth as a possible solution to the horizon and the flatness problems, which demands the presence of an accelerated phase of expansion during the early stages of the radiation dominated universe. It also provides a sound explanation for the presence of inhomogeneities in the CMB, inhomogeneities which acted as the seeds for large scale structure formation in the matter dominated universe.
+
+A scalar field causing inflation is referred to as an inflation and as we've seen earlier, we know that the scalar field needs to have $q \geq 1$, which is neither satisfied by matter no be energy. Assuming a scalar field $\phi$ drives inflation, of the potential $V(\phi)$
+
+\end{document}

@@ -1,0 +1,332 @@
+\documentclass[12pt,a4paper,oneside]{book} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{ifthen}
+\usepackage{graphicx}
+\usepackage[dvips]{epsfig}
+\usepackage{enumerate}
+\usepackage{calc}
+\usepackage{multicol} 
+\usepackage{titlesec}
+%\usepackage{showkeys}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{a4}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{epsfig}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{t1enc,times}
+\usepackage{latexsym,amssymb}
+\usepackage{amsmath}
+\usepackage{amstext}
+%\usepackage[T1]{fontenc}
+%\usepackage{cmbright}
+\usepackage{pifont}
+\usepackage{marvosym}
+%\usepackage{pslatex}
+%\usepackage{stmaryrd}
+%\usepackage{txfonts}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{fancybox} 
+\usepackage{fancyhdr}
+\usepackage{fullpage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\usepackage{url}    
+%\ExecuteOptions{dvips}
+%\usepackage[pdftex,colorlinks=true]{hyperref}
+%\hypersetup{backref,pdfpagemode=UseThumbs,pdfstartview=Fit,
+%pdfpagelayout=SinglePage,pdfstartpage=1,colorlinks=true,menucolor=msc,
+%anchorcolor=msc,pagecolor=msc,urlcolor=rfr,breaklinks=true,hyperfootnotes=true}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagestyle{fancy}
+\fancyhf{} 
+%\renewcommand{\headrulewidth}{1pt}
+%\renewcommand{\footrulewidth}{1pt}
+\renewcommand{\headwidth}{\textwidth}
+\fancyhead[LE]{\leftmark}
+\fancyhead[RO]{\small \rightmark}
+\fancyfoot[C]{\thepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\tolerance 4000
+\textwidth 17.00cm
+\topmargin -0.30cm
+\oddsidemargin -0.25cm
+\evensidemargin -0.25cm
+\textheight 23.00cm
+%\headsep 12pt
+\headheight 15pt
+\footskip 60pt
+%\parindent 12pt
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewcommand{\rmdefault}{ptm}  % times
+\renewcommand{\rmdefault}{phv}  % helvetica
+\renewcommand{\rmdefault}{pbk}  % bookman
+\renewcommand{\rmdefault}{ppl}  % palatino
+\renewcommand{\sfdefault}{phv}  % helvetica as sans serif
+\renewcommand{\ttdefault}{pcr}  % courier as fixed width
+\renewcommand{\tabcolsep}{8pt}
+\renewcommand{\arraystretch}{1.25}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\nn{\nonumber}
+\def\f{{\frac}}
+\def\pa{{\partial}}
+\def\d{{\rm d}}
+\def\l{\left}
+\def\r{\right}
+\def\Mpl{M_{_{\rm Pl}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\done{\marginpar {\scriptsize DONE}}
+\def\check{\marginpar {\scriptsize CHECK}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\baselineskip 20pt
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagenumbering{roman}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\thispagestyle{empty}
+\topskip 15pt
+\hrule\hrule\hrule\hrule\hrule
+\vskip 20pt
+\centerline{\Huge \bf Accelerating universe and} 
+\vskip 15pt
+\centerline{\Huge \bf the nature of dark energy} 
+\vskip 20pt
+\hrule\hrule\hrule\hrule\hrule
+\vskip 30pt
+\centerline{\Large A project report}
+\vskip 8pt
+\centerline{\Large submitted in partial fulfillment 
+for the award of the degree of}
+\vskip 8pt
+\centerline{\Large Master of Science}
+\vskip 8pt
+\centerline{\Large in}
+\vskip 8pt 
+\centerline{\Large Physics}
+\vskip 8pt
+\centerline{\Large by}
+\vskip 8pt
+\centerline{\Large \bf Tirthankar Banerjee}
+\vskip 8pt
+\centerline{\Large under the guidance of}
+\vskip 8pt
+\centerline{\Large  Dr.~L.~Sriramkumar}
+\vskip 30pt 
+\begin{center}
+\epsfig{file=iitm.ps, width=3.0cm, height=3.0cm}
+\end{center}
+\vskip 8pt 
+\centerline{\Large \bf Department of Physics}
+\vskip 8pt 
+\centerline{\Large \bf Indian Institute of Technology Madras}
+\vskip 8pt 
+\centerline{\Large \bf Chennai~600036, India}
+\vskip 8pt
+\centerline{\Large \bf April~2012}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage\topskip 40pt
+\centerline{\Large CERTIFICATE}
+\thispagestyle{empty}
+\vskip 20pt\noindent 
+This is to certify that the project titled {\bf On the generation of
+gravitational waves during inflation} is a bona fide record of work done by 
+{\bf Poruri Sai Rahul} towards the partial fulfillment of the 
+requirements of the Master of Science degree ($?$) in Physics at the Indian 
+Institute of Technology, Madras, Chennai 600036, India.
+\vskip 120pt
+\hspace{240pt}(L.~Sriramkumar, Project supervisor)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage\topskip 40pt
+\thispagestyle{empty}
+\centerline{\Large ACKNOWLEDGEMENTS}
+\vskip 20pt\noindent 
+add stuff here
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage\topskip 40pt
+\thispagestyle{empty}
+\centerline{\Large ABSTRACT}
+\vskip 20pt\noindent 
+add stuff here
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+\thispagestyle{empty}
+\tableofcontents
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagenumbering{arabic}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Introduction}
+
+stuff~\cite{cite}.
+
+\par 
+
+more stuff
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Standard candles, and the role of supernovae}
+
+Consider a source which emits light of a given wavelength, say, $\lambda_{\rm
+e}$.
+By the time the light reaches us, the universe would have expanded.
+As we shall illustrate, a consequence of the expansion is the fact that the
+wavelengths of light from other galaxies are stretched, and what we actually 
+observe is light of a different wavelength, $\lambda_{\rm o}$. 
+This phenomenon is known as redshift, which is characterized by the redshift 
+parameter, $z= (\lambda_{\rm o}-\lambda_{\rm e})/\lambda_{\rm e}$. 
+It so happens that the measurement of the brightness of far away galaxies as 
+a function of the redshift proves to be as a very effective tool in
+understanding 
+the composition and, hence, the dynamics of the universe.
+
+\par
+
+One should appreciate the fact the redshift is an easily measurable quantity.
+While the redshift associated with a single spectra line will, evidently, be 
+impossible to determine, the presence of a wide variety of elements (and at
+different levels of ionization) results in a pattern of a large number of 
+lines in the spectra of galaxies. It is the complete pattern that facilities 
+the determination of the redshift of galaxies.
+
+\par
+
+In contrast, the distance to an astronomical object is tricky to arrive at.
+While methods such as trigonometric parallax are sturdy and straightforward,
+their utility turns out to be limited when the distances involved are rather 
+great and, hence, the angles involved very small.  
+It is in this context that the concept of a standard candle comes in useful
+(for an extended discussion on this topic, see, for instance,
+Ref.~\cite{webb-1999}).
+By a standard candle one refers to an astronomical object with a known
+intrinsic 
+luminosity or brightness.
+Given the intrinsic luminosity, the observed brightness then allows us to 
+estimate the distance to the object.
+A simple example can illustrate the point.
+If one is informed that a light bulb emits $100\; {\rm W}$ of energy, then
+measuring the flux at our location allows us to arrive at the distance to 
+the bulb from us.
+Supernovae are exploding stars, which turn extraordinarily bright at their
+peak intensity that they often outshine their host galaxy.
+Certain types of supernovae---known as type Ia---exhibit such strong universal 
+characteristics (which is related to the way they were formed) that their 
+intrinsic, maximum brightness is very closely related to the pattern of the 
+rise and fall of their intensities with time. 
+The universal characteristic of these type Ia supernovae allow them to be used
+as standard candles.
+Moreover, their high peak brightness admit us to utilize them to determine
+distances over cosmological scales.
+Various observational missions such as the Supernova Cosmology 
+Project (SCP)~\cite{scp} and the Super Nova Legacy Survey (SNLS)~\cite{snls} 
+have assembled an impressive amount of data, which have led to interesting 
+implications for our understanding of the universe.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Notations and conventions}
+
+
+We shall set $\hbar=c=1$, but shall display $G$ explicitly, and define 
+the Planck mass to be $\Mpl=\left(8\, \pi\, G\right)^{-1/2}$.
+
+We shall work in $(3 + 1)$-spacetime dimensions, and adopt the metric 
+signature of~$(+,-,-,-)$.
+The Greek and Latin indices shall denote the spacetime and the spatial 
+coordinates, respectively, 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{The Friedmann universe}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{}
+
+\section{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Distant supernovae and the accelerating universe}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Summary}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{99}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibitem{2df}
+See, {\tt http://magnum.anu.edu.au/~TDFgg/}.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibitem{sdss}
+See, {\tt http://www.sdss.org/}.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibitem{webb-1999}
+S.~Webb, {\sl Measuring the Universe}\/ (Springer, Berlin, 1999).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibitem{scp}
+See, {\tt http://supernova.lbl.gov/}.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibitem{snls}
+See, {\tt http://snls.in2p3.fr/}.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibitem{durrer-2008}
+R.~Durrer, {\sl The Cosmic Microwave Background}\/ (Cambridge University Press, 
+Cambridge, England, 2008).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibitem{padmanabhan-1999}
+T.~Padmanabhan, {\sl Theoretical Astrophysics, Volume III:~Galaxies and 
+Cosmology},\/ (Cambridge University Press, Cambridge, England, 1999).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{thebibliography}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
