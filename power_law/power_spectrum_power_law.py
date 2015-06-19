@@ -1,11 +1,14 @@
 import numpy
 import matplotlib.pyplot as plt
 
-f = open('power_spectrum_power_law.dat','w')
+tps_file = open('power_spectrum_power_law.dat','w')
+phi_file = open('phi_vs_N_power_law.dat','w')
+h_file = open('H_vs_N_power_law.dat','w')
+eps_file = open('eps1_vs_N_power_law.dat','w')
 
 q = 51.
 V0 = (204./100.)*1e-08
-t0 = (q*(3*q -1)/V0)**(1./2)
+t0 = (q*(3.*q -1.)/V0)**(1./2)
 
 phi0 = 1.
 dphi0 = (2.*q)**(1./2)/t0
@@ -14,8 +17,8 @@ Ni = 0.
 Nf = 70. 
 
 kp = 5.*1e-02
-beta = -((2*q -1)/(q -1))
-eps1a = ((beta +2)/(beta +1))
+beta = -((2.*q -1.)/(q -1.))
+eps1a = ((beta +2.)/(beta +1.))
 
 #V = lambda phi : V0*numpy.exp(-(2*q)**(1./2.)*(phi-phi_i))
 V = lambda phi : V0*numpy.exp(-(2./q)**(1./2)*(phi -phi0))
@@ -37,40 +40,84 @@ def rk4_step(N, phi0, Dphi0, step):
     F4 = Dphi0 +f3*step
     f4 = DDphi(N +step, phi0 +F3*step, Dphi0 +f3*step)  
 
-    return numpy.array([(f1 +2*f2 +2*f3 +f4)*step/6.]), numpy.array([(F1 +2*F2 +2*F3 +F4)*step/6.]) # [Dhk, hk] update
+    return [(f1 +2*f2 +2*f3 +f4)*step/6., (F1 +2*F2 +2*F3 +F4)*step/6.] # [Dhk, hk] update
 
-npts = 20000
+npts = 100000
 step = (Nf-Ni)/(npts)
 
-phi_array = numpy.array([phi0])
-Dphi_array = numpy.array([Dphi0])
+phi_ = phi0
+Dphi_ = Dphi0
+
+phi_array = numpy.array([phi_])
+Dphi_array = numpy.array([Dphi_])
 N_array = numpy.array([Ni]) 
 
+phi_theory = lambda N : (2./q)**(1./2)*N + phi0
+
 N = Ni
+phi_file.write(str(N)+"\t"+str(phi_)+"\t"+str(Dphi_)+"\t"+str(phi_theory(N))+"\n")
 while N < Nf:
-    array = rk4_step(N, phi0, Dphi0, step)
-    phi0 = phi0 + array[1]
-    Dphi0 = Dphi0 + array[0]
-    phi_array = numpy.append(phi_array,phi0)
-    Dphi_array = numpy.append(Dphi_array,Dphi0)
+    array = rk4_step(N, phi_, Dphi_, step)
+    phi_ = phi_ + array[1]
+    Dphi_ = Dphi_ + array[0]
+    phi_array = numpy.append(phi_array,phi_)
+    Dphi_array = numpy.append(Dphi_array,Dphi_)
     N += step
     N_array = numpy.append(N_array,N)
+    phi_file.write(str(N)+"\t"+str(phi_)+"\t"+str(Dphi_)+"\t"+str(phi_theory(N))+"\n")
 
+phi_file.close()
 #plt.plot(numpy.linspace(0,70,npts+1), phi_array)
-#plt.plot(N_array, phi_array)
+
+phi = lambda N : phi_array[int((N-Ni)/step)]
+Dphi = lambda N : Dphi_array[int((N-Ni)/step)]
+
+plt.cla()
+plt.hold()
+#plt.plot(N_array, [phi(N) for N in N_array],'*')
+plt.xlim([Ni,Nf])
+numerical, = plt.plot(N_array, phi_array, label = 'numerical results')
+theory, = plt.plot(N_array, [phi_theory(N) for N in N_array],'*', label = 'theory results')
+plt.legend([numerical, theory], ['numerical results', 'theoretical results'])
+plt.savefig('phi_vs_N_power_law.png')
+#plt.show()
 
 eps0 = (3./2)*((dphi0**2)/(dphi0**2/2. + V(phi0)))
 eps = 1./q 
 
 #H = [((V(phi_array[i]))/(3 -Dphi_array[i]**2/2))**(1./2) for i in range(len(phi_array))]
 
-phi = lambda N : phi_array[int((N-Ni)/step)]
-Dphi = lambda N : Dphi_array[int((N-Ni)/step)]
-
-H = lambda N : ((V(phi(N))/(3 -Dphi(N))**2/2))**(1./2)
+H = lambda N : (V(phi(N))/(3 -Dphi(N)**2/2))**(1./2)
 DH = lambda N : H(N)*Dphi(N)
 
+H_theory = lambda N : H0*numpy.exp(-N/q)
+
+for N in N_array:
+	h_file.write(str(N)+"\t"+str(H(N)/H0)+"\t"+str(H_theory(N)/H0)+"\n")
+
+plt.cla()
+plt.hold()
+plt.xlim([Ni,Nf])
+numerical, = plt.plot(N_array, numpy.asarray([H(i) for i in N_array], dtype= numpy.float64)/H0, '*', label = 'numerical results')
+theory, = plt.plot(N_array, [H_theory(N)/H0 for N in N_array], label = 'theory')
+plt.legend([numerical, theory], ['numerical results', 'theoretical results'])
+plt.savefig('H_vs_N_power_law.png')
+
 ai = 1e-05
+
+eps1 = lambda N : Dphi_array[int((N-Ni)/step)]**2/2.
+eps1_theory = eps0
+
+for N in N_array:
+	eps_file.write(str(N)+"\t"+str(eps1(N))+"\t"+str(eps1_theory)+"\n")
+
+plt.cla()
+plt.xlim([Ni,Nf])
+numerical, = plt.plot(N_array, [str(eps1(i)).strip('[]') for i in N_array], '*', label = 'numerical results')
+#theory, = plt.axhline(y=eps0, label = 'theory')
+plt.axhline(y=eps0)
+plt.legend([numerical], ['numerical results'])
+plt.savefig('eps1_vs_N_power_law.png')
 
 #z = [ai*numpy.exp(N_array[i])*Dphi_array[i] for i in range(len(N_array))]
 z = lambda N: ai*numpy.exp(N)*Dphi(N)
@@ -92,15 +139,28 @@ def rk4_step(k0, N, hk0, Dhk0, step):
     return numpy.array([(f1 +2*f2 +2*f3 +f4)*step/6.], dtype=complex), numpy.array([(F1 +2*F2 +2*F3 +F4)*step/6.], dtype=complex) # [Dhk, hk] update
 
 
-Nics_array = numpy.array([2.54198038578949765072641948787, 3.71629878321646094957559512976, 4.89061718064342424842477077165, 6.06493557807038754727394641354, 7.23925397549735084612312205543, 8.41357237292431414497229769732, 9.58789077035127744382147333808, 10.7622091677782407426704414080, 11.9365275652052040415198238617, 13.1108459626321673403690002649, 14.2851643600591306392181759068, 15.4594827574860939380673515487, 16.6338011549130572369165271905, 17.8081195523400205357657028324])
+k_list = numpy.array([10**((-12 + i)/2.) for i in range(13)])
+Nics_array = []
+Nshs_array = []
 
-Nshs_array = numpy.array([18.9824379497669838346148777580, 20.1567563471939471334640541162, 21.3310747446209104323132297581, 22.5053931420478737311624054000, 23.6797115394748370300115810419, 24.8540299369018003288607566837, 26.0283483343287636277099323256, 27.2026667317557269265591079675, 28.3769851291826902254082834314, 29.5513035266096535242574592513, 30.7256219240366168231066348932, 31.8999403214635801219558105351, 33.0742587188905434208049861770, 34.2485771163175067196541618192])
+for k in k_list:
+    #temp = numpy.asarray([k/(A(N)*H(N)) for N in N_array])
+    Nics_temp = numpy.asarray([k - 1e+02*A(N)*H(N) for N in N_array])
+    Nshss_temp = numpy.asarray([k - 1e-05*A(N)*H(N) for N in N_array])
+    nics_test = numpy.where(Nics_temp > 0)
+    nshss_test = numpy.where(Nshss_temp > 0)
+    Nics_array.append(Ni + nics_test[0][-1]*step)
+    Nshss_array.append(Ni + nshss_test[0][-1]*step)
 
-Nics_arr = Ni + numpy.array((Nics_array-Ni)/step,dtype=int)*step
-Nshss_arr = Ni + numpy.array((Nshs_array-Ni)/step,dtype=int)*step
+Nics_array = numpy.asarray(Nics_array)
+Nshs_array = numpy.asarray(Nshss_array)
+
+#Nics_array = numpy.array([2.54198038578949765072641948787, 3.71629878321646094957559512976, 4.89061718064342424842477077165, 6.06493557807038754727394641354, 7.23925397549735084612312205543, 8.41357237292431414497229769732, 9.58789077035127744382147333808, 10.7622091677782407426704414080, 11.9365275652052040415198238617, 13.1108459626321673403690002649, 14.2851643600591306392181759068, 15.4594827574860939380673515487, 16.6338011549130572369165271905, 17.8081195523400205357657028324])
+
+#Nshs_array = numpy.array([18.9824379497669838346148777580, 20.1567563471939471334640541162, 21.3310747446209104323132297581, 22.5053931420478737311624054000, 23.6797115394748370300115810419, 24.8540299369018003288607566837, 26.0283483343287636277099323256, 27.2026667317557269265591079675, 28.3769851291826902254082834314, 29.5513035266096535242574592513, 30.7256219240366168231066348932, 31.8999403214635801219558105351, 33.0742587188905434208049861770, 34.2485771163175067196541618192])
 
 k_min = 1e-6
-k_max = 10
+k_max = 10**(1./2)
 
 print 'lift off!'
 
@@ -113,7 +173,7 @@ while k0 < k_max:
     print 'k0 = ', k0
 
     Nics = Nics_arr[i]
-    Nshss = Nshss_arr[i]
+    Nshss = Nshs_arr[i]
 
     hk0 = numpy.zeros(1,dtype=complex)
     hk0.real = (((2.*k0)**(1./2))*A(Nics))**(-1.)
@@ -138,8 +198,8 @@ while k0 < k_max:
     print '\n'
     
     temp = 8*(k0)**3/(2*numpy.pi**2)*(numpy.absolute(hk0))**2
-    f.write(str(k0)+"\t"+str(hk0.real)+"\t"+str(hk0.imag)+"\t"+str(temp)+"\n")
-    
+    tps_file.write(str(k0)+"\t"+str(temp).strip('[]')+"\n")
+#    tps_file.write(str(k0)+"\t"+str(hk0.real)+"\t"+str(hk0.imag)+"\t"+str(temp).strip('[]')+"\n")
     k0 = 10**(1./2)*k0
     i += 1
 
@@ -148,7 +208,8 @@ k_list = numpy.array([10**((-12 + i)/2.) for i in range(13)])
 TPS = [8*(k_list[i])**3/(2*numpy.pi**2)*(numpy.absolute(k_vs_hk[i+1]))**2 for i in range(len(k_list))]
 print k_list, TPS
 
-f.close()
+tps_file.close()
 
+plt.cla()
 plt.loglog(k_list, TPS)
 plt.savefig('power_spectrum_power_law.png')

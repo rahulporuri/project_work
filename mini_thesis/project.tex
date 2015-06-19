@@ -29,9 +29,11 @@
 \usepackage{pifont}
 \usepackage{marvosym}
 %\usepackage{pslatex}
-%\usepackage{stmaryrd}
-%\usepackage{txfonts}
+% \usepackage{stmaryrd} %=== > dont have it installed on system, doesnt look like it's a compulsory package anyway
+%\usepackage{txfonts}  
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[titletoc]{appendix}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \usepackage{fancybox} 
@@ -115,33 +117,33 @@
 \topskip 15pt
 \hrule\hrule\hrule\hrule\hrule
 \vskip 20pt
-\centerline{\Huge \bf Accelerating universe and} 
+\centerline{\Huge \bf Generation of Gravitational waves} 
 \vskip 15pt
-\centerline{\Huge \bf the nature of dark energy} 
+\centerline{\Huge \bf during Inflation.} 
 \vskip 20pt
 \hrule\hrule\hrule\hrule\hrule
 \vskip 30pt
-\centerline{\Large A project report}
+\centerline{\Large A mini-project report}
 \vskip 8pt
-\centerline{\Large submitted in partial fulfillment 
+\centerline{\Large submitted in partial fulfilment 
 for the award of the degree of}
 \vskip 8pt
-\centerline{\Large Master of Science}
-\vskip 8pt
-\centerline{\Large in}
-\vskip 8pt 
-\centerline{\Large Physics}
+\centerline{\Large B.S \& M.S in Physics}
+%\vskip 8pt
+%\centerline{\Large in}
+%\vskip 8pt 
+%\centerline{\Large Physics}
 \vskip 8pt
 \centerline{\Large by}
 \vskip 8pt
-\centerline{\Large \bf Tirthankar Banerjee}
+\centerline{\Large \bf Poruri Sai Rahul}
 \vskip 8pt
 \centerline{\Large under the guidance of}
 \vskip 8pt
 \centerline{\Large  Dr.~L.~Sriramkumar}
 \vskip 30pt 
 \begin{center}
-\epsfig{file=iitm.ps, width=3.0cm, height=3.0cm}
+\epsfig{file=iitm.eps, width=3.0cm, height=3.0cm} % needed to convert .ps ext to .eps ext.
 \end{center}
 \vskip 8pt 
 \centerline{\Large \bf Department of Physics}
@@ -150,17 +152,17 @@ for the award of the degree of}
 \vskip 8pt 
 \centerline{\Large \bf Chennai~600036, India}
 \vskip 8pt
-\centerline{\Large \bf April~2012}
+\centerline{\Large \bf June~2015}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newpage\topskip 40pt
 \centerline{\Large CERTIFICATE}
 \thispagestyle{empty}
 \vskip 20pt\noindent 
-This is to certify that the project titled {\bf On the generation of
-gravitational waves during inflation} is a bona fide record of work done by 
-{\bf Poruri Sai Rahul} towards the partial fulfillment of the 
-requirements of the Master of Science degree ($?$) in Physics at the Indian 
+This is to certify that the project titled {\bf Generation of Gravitational
+waves during Inflation} is a bona fide record of work done by 
+{\bf Poruri Sai Rahul} towards the partial fulfilment of the 
+requirements of the B.S \& M.S degree in Physics at the Indian 
 Institute of Technology, Madras, Chennai 600036, India.
 \vskip 120pt
 \hspace{240pt}(L.~Sriramkumar, Project supervisor)
@@ -171,21 +173,40 @@ Institute of Technology, Madras, Chennai 600036, India.
 \thispagestyle{empty}
 \centerline{\Large ACKNOWLEDGEMENTS}
 \vskip 20pt\noindent 
-add stuff here
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+I cannot express in words my gratitude to {\bf Dr. L.~Sriramkumar} 
+for guiding me, regarding my work and my personal life. I would also
+like to thank V.~Sreenath and Debika Choudhury for helping me 
+with my project and for clarifying my doubts.
+
+A big shout out to my family and my friends, especially Shashi Kunwar
+and Preeti Saryan, who have kept me on my toes over the last few years.
+ 
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newpage\topskip 40pt
 \thispagestyle{empty}
 \centerline{\Large ABSTRACT}
 \vskip 20pt\noindent 
-add stuff here
 
+The precision with which inhomogeneities in the Cosmic Microwave Background, CMB for short, are being measured
+has increased tremendously over the years, thanks to the efforts of the people behind the Planck and the WMAP 
+missions. We are currently in an era of precision cosmology. The theory of inflation predicts the presence of such 
+inhomogeneities. In this work, I studied the theory behind the generation and evolution of tensor perturbations, 
+otherwise referred to as primordial gravitational waves. I also numerically estimate the power spectrum of such 
+perturbations for two different models of inflation.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newpage
 \thispagestyle{empty}
 \tableofcontents
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+\thispagestyle{empty}
+\listoffigures
 \newpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -196,105 +217,309 @@ add stuff here
 
 \chapter{Introduction}
 
-stuff~\cite{cite}.
+\paragraph*{} The big bang theory, proposed in the 1930s, solved the biggest problems at the time i.e the expansion of the universe and 
+the presence of a homogeneous thermal CMB radiation. Over time, it was discovered to have some serious drawbacks, the most notable 
+of which are the horizon problem and the flatness problem. Introduced in the 1960s, the theory of inflation was successful in solving 
+these puzzles and also provided a sound causal mechanism for the generation of inhomogeneities in the CMB, which acted as the seeds 
+for large scale structure formation in the universe. For an in-depth discussion of the horizon problem, refer to ~\cite{Sriramkumar L - 2009}.
+Inflation commonly refers to a period of rapid expansion of the universe during early stages of the radiation dominated epoch.
 
-\par 
+\section{Inflaton}
 
-more stuff
+\paragraph*{} A necessary condition for inflation to occur is
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{equation}
+\ddot{a} > 0
+\end{equation}
 
-\section{Standard candles, and the role of supernovae}
+\noindent and it is straight forward to check that neither matter, for which $a(t) \propto t^{2/3}$, nor radiation, for which , for which $a(t) \propto t^{1/2}$, 
+satisfies this condition. We can therefore assume that a generic scalar field $\phi$ and a corresponding potential $V(\phi)$ govern the inflationary 
+paradigm. A scalar field that drives inflation is also referred to as an Inflaton.
 
-Consider a source which emits light of a given wavelength, say, $\lambda_{\rm
-e}$.
-By the time the light reaches us, the universe would have expanded.
-As we shall illustrate, a consequence of the expansion is the fact that the
-wavelengths of light from other galaxies are stretched, and what we actually 
-observe is light of a different wavelength, $\lambda_{\rm o}$. 
-This phenomenon is known as redshift, which is characterized by the redshift 
-parameter, $z= (\lambda_{\rm o}-\lambda_{\rm e})/\lambda_{\rm e}$. 
-It so happens that the measurement of the brightness of far away galaxies as 
-a function of the redshift proves to be as a very effective tool in
-understanding 
-the composition and, hence, the dynamics of the universe.
+\paragraph*{} Assuming that a scalar field $\phi$ and a corresponding potential $V(\phi)$ govern the inflationary paradigm, we can write the corresponding action and the stress-energy tensor for the scalar field as
 
-\par
+\begin{equation}
+S(\phi) = \int d^4x[\frac{1}{2}\partial^{\lambda}\phi \partial_{\lambda}\phi - V(\phi)]
+\end{equation}
 
-One should appreciate the fact the redshift is an easily measurable quantity.
-While the redshift associated with a single spectra line will, evidently, be 
-impossible to determine, the presence of a wide variety of elements (and at
-different levels of ionization) results in a pattern of a large number of 
-lines in the spectra of galaxies. It is the complete pattern that facilities 
-the determination of the redshift of galaxies.
+\begin{equation}
+T^{\mu}_{\nu} = \partial^{\mu}\phi \partial_{\nu}\phi -\delta^{\mu}_{\nu}[\frac{1}{2}\partial^{\lambda}\phi \partial_{\lambda}\phi - V(\phi)]
+\end{equation}
 
-\par
+\noindent We can also derive the equations of motion for the scalar field from the action to be
 
-In contrast, the distance to an astronomical object is tricky to arrive at.
-While methods such as trigonometric parallax are sturdy and straightforward,
-their utility turns out to be limited when the distances involved are rather 
-great and, hence, the angles involved very small.  
-It is in this context that the concept of a standard candle comes in useful
-(for an extended discussion on this topic, see, for instance,
-Ref.~\cite{webb-1999}).
-By a standard candle one refers to an astronomical object with a known
-intrinsic 
-luminosity or brightness.
-Given the intrinsic luminosity, the observed brightness then allows us to 
-estimate the distance to the object.
-A simple example can illustrate the point.
-If one is informed that a light bulb emits $100\; {\rm W}$ of energy, then
-measuring the flux at our location allows us to arrive at the distance to 
-the bulb from us.
-Supernovae are exploding stars, which turn extraordinarily bright at their
-peak intensity that they often outshine their host galaxy.
-Certain types of supernovae---known as type Ia---exhibit such strong universal 
-characteristics (which is related to the way they were formed) that their 
-intrinsic, maximum brightness is very closely related to the pattern of the 
-rise and fall of their intensities with time. 
-The universal characteristic of these type Ia supernovae allow them to be used
-as standard candles.
-Moreover, their high peak brightness admit us to utilize them to determine
-distances over cosmological scales.
-Various observational missions such as the Supernova Cosmology 
-Project (SCP)~\cite{scp} and the Super Nova Legacy Survey (SNLS)~\cite{snls} 
-have assembled an impressive amount of data, which have led to interesting 
-implications for our understanding of the universe.
+\begin{equation}
+\ddot{\phi} + 3H\dot{\phi} + V_{\phi} = 0
+\end{equation}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent where $V_{\phi} = \frac{dV}{d\phi}$
 
-\section{}
+\section{Metric Perturbations}
 
+\paragraph*{} Inhomogeneities in the CMB are one part in $10^5$ and it can be inferred that they should be much smaller at earlier epochs given the expanding nature of our universe. We can therefore study the generation and evolution of such perturbations using linear perturbation theory. While higher-order perturbations have been discovered in recent CMB observations, they are beyond the scope of this work. The linear perturbations in Friedmann-Robertson-Lemaitre-Walker metric, FRLW for short, can be classified as scalar, vector and tensor perturbations, represented as
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{equation}
+ds^2 = (1+2\Phi)dt^2 - a^2(t)(1-2\Psi)d\bar{x}^2
+\end{equation}
 
-\section{Notations and conventions}
+\begin{equation}
+ds^2 = dt^2 - a^2(t)[\delta_{ij} + (\nabla_iF_j +\nabla_jF_i)]dx^idx^j
+\end{equation}
 
+\begin{equation}
+ds^2 = dt^2 - a^2(t)(\delta_{ij} + h_{ij})dx^idx^j
+\end{equation}
 
-We shall set $\hbar=c=1$, but shall display $G$ explicitly, and define 
-the Planck mass to be $\Mpl=\left(8\, \pi\, G\right)^{-1/2}$.
+For the scope of this work, I restrict myself to tensor perturbations of the metric, also referred to as gravitational waves, characterized by transverse, traceless matrix $h_{ij}$. The perturbed Einstein equations corresponding to the above metric with tensor perturbations are
 
-We shall work in $(3 + 1)$-spacetime dimensions, and adopt the metric 
-signature of~$(+,-,-,-)$.
-The Greek and Latin indices shall denote the spacetime and the spatial 
-coordinates, respectively, 
+\begin{equation}
+\delta G^0_0 = \delta G^0_i = 0
+\end{equation}
 
+\begin{equation}
+\delta G^i_j = -\frac{1}{2}(\ddot{h_{ij}} + 3H\dot{h_{ij}} - \frac{1}{a^2}\nabla ^2h_{ij})
+\end{equation}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent In the absence of anisotropic stresses i.e if $\delta T^i_j = 0$, we get that
 
-\chapter{The Friedmann universe}
+\begin{equation}
+\ddot{h} + 3H\dot{h} - \frac{1}{a^2}\nabla ^2h = 0
+\end{equation}
 
+\paragraph*{} Upon quantization, we can write the tensor perturbations $h$ in terms of it's fourier modes $h_k$ as
 
+\begin{equation}
+\hat{h}(\eta, \bar{x}) = \int \frac{d^3\bf{k}}{(2\pi)^{3/2}} [\hat{a_k}h_k(\eta)e^{i\bf{k\cdot x}}+ \hat{a_k}^{\dagger}h_k^{*}(\eta)e^{-i\bf{k\cdot x}}] 
+\end{equation}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent where the creation and annihilation operators, $\hat{a_k}$ and $a\hat{a_k}^{\dagger}$, follow the standard commutation relations. At the linear order in perturbations that we are working in the power spectrum of the tensor perturbations can be characterized by the two point function of the quantum field $\hat{h}$. The power spectrum of the tensor perturbations $P_T(k)$ and the two point function are related by
 
-\section{}
+\begin{equation}
+\int^{\infty}_0 P_T(k) = \int d^3{\bf{k}}\int\frac{d^3(\bf{x}-\bf{x'})}{(2\pi)^3}\langle 0|P(\eta,{\bf{x}})P(\eta, {\bf{x'}})|\rangle \times e^{-i{\bf{k \cdot (x-x')}}}
+\end{equation}
 
-\section{}
+\noindent where $|0\rangle$ is the vaccum state defined as $\hat{a_k}|0\rangle = 0 \forall {\bf{k}}$. Using the earlier relation, one can obtain the power spectrum as
+
+\begin{equation}
+P_T(k) = 2 (\frac{k^3}{2\pi^2}) |h_k|^2
+\end{equation}
+
+\noindent where the factor of 2 is needed to take into account the two states of polarization, $+$ and $\times$, of the gravitational waves.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{Distant supernovae and the accelerating universe}
+\chapter{Inflationary models}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{} Recall that the stress-energy tensor for a scalar field $\phi$ and potential $V(\phi)$ is of the form
+
+\begin{equation}
+T^{\mu}_{\nu} = \partial^{\mu}\phi \partial_{\nu}\phi -\delta^{\mu}_{\nu}[\frac{1}{2}\partial^{\lambda}\phi \partial_{\lambda}\phi - V(\phi)]
+\end{equation}
+
+\noindent and the individual components can be written as
+
+\begin{equation}
+T^{0}_{0} = \partial^{0}\phi \partial_{0}\phi -\delta^{0}_{0}[\frac{1}{2}\partial^{\lambda}\phi \partial_{\lambda}\phi - V(\phi)] = \dot{\phi}^2 -\delta^{0}_{0}[\frac{1}{2}\dot{\phi}^2 - V(\phi)]
+ = [\frac{1}{2}\dot{\phi}^2 +V(\phi)] = \rho 
+\end{equation}
+
+\begin{equation}
+T^{i}_{j} = \partial^{i}\phi \partial_{j}\phi -\delta^{i}_{j}[\frac{1}{2}\partial^{\lambda}\phi \partial_{\lambda}\phi - V(\phi)]
+ = -\delta^{i}_{j}[\frac{1}{2}\dot{\phi}^2 - V(\phi)] = -p\delta^i_j
+\end{equation}
+
+\paragraph*{} Recall that the einstein's equations corresponding to a smooth FLRW universe result in the following two relations for the scale factor $a(t)$
+
+\begin{equation}
+(\frac{\dot{a}}{a})^2 = H^2 = (\frac{8\pi G}{3})\rho
+\end{equation}
+
+\begin{equation}
+\frac{\ddot{a}}{a} = \dot{H} + H^2= -\frac{4\pi G}{3}(\rho + 3p)
+\end{equation}
+
+\noindent where $\rho$ and $p$ correspond to the energy density and pressure of the scalar field driving the inflation.
+
+\paragraph*{} The above equations can be rewritten as
+
+\begin{equation}
+ \dot{H} = -H^2 -\frac{4\pi G}{3}(\rho + 3p) = -\frac{4\pi G}{3}3(\rho + p)
+= \frac{-1}{2M_P^2}\dot{\phi}^2
+\end{equation}
+
+\noindent where I've used the fact that $\frac{1}{M_P^2} = 8\pi G$
+
+\begin{equation}
+H^2 = (\frac{1}{3M_P^2})[\frac{\dot{\phi}^2}{2} + V_{\phi}]
+\end{equation}
+
+\paragraph*{} By substituting the expressions for $\rho$ and $p$, one can arrive at the following expressions for $\phi(t)$ and $V(t)$.
+
+\begin{equation}
+\phi(t)= \sqrt{2}M_P \int dt \sqrt{-\dot{H}}
+\end{equation}
+
+\begin{equation}
+V(t) = M_P^2(3H^2 + \dot{H})
+\end{equation}
+
+\section{Power law inflation}
+
+\paragraph*{} Assuming a power-law form of the scale factor during inflation, of the form
+
+\begin{equation}
+a(t) = a_0t^q
+\end{equation}
+
+\noindent We can see that the scalar field that drives the inflation has to the of the form
+
+\begin{equation}
+\frac{\phi(t)}{M_P} =\sqrt{2q}ln[\sqrt{\frac{V_0}{(3q-1)q}}(\frac{t}{M_P})]
+\end{equation}
+
+\begin{equation}
+V(\phi) = V_0exp(-\sqrt{\frac{2}{q}}(\frac{\phi}{M_P}))
+\end{equation}
+
+%\section{Slow-roll inflation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Numerical results}
+
+\paragraph{} In this section, I describe the procedure adopted to numerically evaluate the tensor power spectrum of gravitational waves in a power-law inflationary scenario. Recall that conventionally, e-fold $N$ is defined as $N = log(a/a_0)$, where $N$ gives an estimate of the amount of inflation needed to solve the horizon problem. Also, note that an overdot represents differentiation with respect to coordinate time $t$ and that an overprime represents differentiation with respect to conformal time $\eta$.
+
+\section{Power-law inflation}
+
+\paragraph{} Assuming an inflationary potential $V(\phi)$ of the form
+
+\begin{equation}
+V(\phi) = V_0 exp(-(\frac{2}{q})^{1/2}(\phi - \phi_0))
+\end{equation}
+
+\noindent where $\phi$ represents the scalar field driving inflation and $q$ is the power-law index.
+
+\paragraph*{} Recall that the equation describing the evolution of the scalar field $\phi$ is
+
+\begin{equation}
+\ddot{\phi} + 3H\dot{\phi} + V_{\phi} = 0
+\end{equation}
+
+\noindent which can then be written in terms of e-fold time $N$ as
+
+\begin{equation}
+\frac{d^2\phi}{dN^2} + (3 - \frac{1}{2}(\frac{d\phi}{dN})^2)\frac{d\phi}{dN} + (6 - (\frac{d\phi}{dN})^2)\frac{1}{2V(\phi)}\frac{dV(\phi)}{dN} = 0
+\end{equation}
+
+\noindent Note that I've made used of the following definition for H to arrive at the above expression
+
+\begin{equation}
+H^2 = \frac{2V(\phi)}{3-(\frac{d\phi}{dN})^2}
+\end{equation}
+
+\paragraph*{} I numerically integrated the above second order differential equation from e-fold time $N = 0$ to $N = 70$ while assuming that $\phi_0 = 1$ and $\frac{d\phi}{dN}_0 = \frac{\sqrt{2q}}{t_0}\frac{1}{H_0}$ using a fourth-order Runge-Kutta method, implemented in Python.
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{phi_vs_N.png}
+\caption[Plot of $\phi(N)$ vs $N$ during power law inflation]{Plot of $\phi(N)$ vs $N$ during power law inflation}
+\label{blah}
+\end{center}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{H_vs_N.png}
+\caption[Plot of $H(N)$ vs $N$ during power law inflation]{Plot of $H(N)$ vs $N$ during power law inflation}
+\label{blah}
+\end{center}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{eps1_vs_N.png}
+\caption[Plot of $\epsilon 1(N)$ vs $N$ during power law inflation]{Plot of $\epsilon 1(N)$ vs $N$ during power law inflation}
+\label{blah}
+\end{center}
+\end{figure}
+
+\paragraph*{} Recall that the equation governing the tensor perturbations in the metric is
+
+\begin{equation}
+\ddot{h} + 3H\dot{h} - \frac{1}{a^2}\nabla ^2h = 0
+\end{equation}
+
+\noindent which, in fourier space, becomes
+
+\begin{equation}
+\ddot{h_k} + 3H\dot{h_k} + \frac{k^2}{a^2}h_k = 0
+\end{equation}
+
+\paragraph*{} Rewriting the above equation in terms of e-fold time, we arrive at
+
+\begin{equation}
+\frac{d^2h_k}{dN^2} + (3+\frac{1}{H}\frac{dH}{dN})\frac{dh_k}{dN} + \frac{k^2}{a^2H^2}h_k = 0
+\end{equation}
+
+\paragraph*{} The above equation was numerically integrated using a fourth order Runge-Kutta method, implemented in Python. It is to be noted that $h_k$ was evolved for various values of k, ranging from $10^{-6}$ to $10^{0}$. Corresponding initial and final limits on e-fold time N were placed by estimating the time when the modes are well inside the Hubble scale i.e $k/aH =  100$ and when the modes are well outside the Hubble scale i.e $k/aH =  10^{-5}$. The initial values for $h_k$ and $\frac{dh_k}{dN}$ were set to be
+
+\begin{equation}
+h_k  = \frac{1}{\sqrt{2k_0}a(N)}
+\end{equation}
+
+\begin{equation}
+\frac{dh_k}{dN} = -\frac{1}{\sqrt{2k_0}a(N)} - \frac{i\sqrt{(k0/2)}}{a^2(N)H(N)}
+\end{equation}
+
+\paragraph*{} Having successfully obtained a numerical solution of $h_k$, we can evaluate the tensor power spectrum by using the formula
+
+\begin{equation}
+P_T(k) = 2 (\frac{k^3}{2\pi^2}) |h_k|^2
+\end{equation}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{power_spectrum_power_law.png}
+\caption[Tensor power spectrum during power law inflation]{Tensor power spectrum during power law inflation}
+\label{blah}
+\end{center}
+\end{figure}
+
+\section{Small field inflation}
+
+\paragraph*{} Similarly, if one considers the potential function that drives inflation to be of the form
+
+\begin{equation}
+V(\phi) = V_0(1-(\phi/\mu)^p)
+\end{equation}
+
+\noindent commonly referred to as small field inflation, the scalar field, the Hubble parameter and $\epsilon$ can all be numerically estimated to be
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{phi_vs_N_small_field.png}
+\caption[Plot of $\phi(N)$ vs $N$ during small field inflation]{Plot of $\phi(N)$ vs $N$ during small field inflation}
+\label{blah}
+\end{center}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{H_vs_N_small_field.png}
+\caption[Plot of $H(N)$ vs $N$ during small field inflation]{Plot of $H(N)$ vs $N$ during small field inflation}
+\label{blah}
+\end{center}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.5]{eps1_vs_N_small_field.png}
+\caption[Plot of $\epsilon 1(N)$ vs $N$ during small field inflation]{Plot of $\epsilon 1(N)$ vs $N$ during small field inflation}
+\label{blah}
+\end{center}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -304,29 +529,16 @@ coordinates, respectively,
 
 \begin{thebibliography}{99}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\bibitem{2df}
-See, {\tt http://magnum.anu.edu.au/~TDFgg/}.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\bibitem{sdss}
-See, {\tt http://www.sdss.org/}.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\bibitem{webb-1999}
-S.~Webb, {\sl Measuring the Universe}\/ (Springer, Berlin, 1999).
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\bibitem{scp}
-See, {\tt http://supernova.lbl.gov/}.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\bibitem{snls}
-See, {\tt http://snls.in2p3.fr/}.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\bibitem{durrer-2008}
-R.~Durrer, {\sl The Cosmic Microwave Background}\/ (Cambridge University Press, 
-Cambridge, England, 2008).
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\bibitem{padmanabhan-1999}
-T.~Padmanabhan, {\sl Theoretical Astrophysics, Volume III:~Galaxies and 
-Cosmology},\/ (Cambridge University Press, Cambridge, England, 1999).
+\bibitem{Sriramkumar L - 2009}
+L.~Sriramkumar, {\sl An introduction to inflation and cosmological perturbation theory}\/ (Current Science, 2009).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{thebibliography}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\begin{appendices}
+%\chapter{Python Code}
+%\begin{verbatim}
+%\end{verbatim}
+%\end{appendices}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
