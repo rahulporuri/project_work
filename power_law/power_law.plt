@@ -24,5 +24,7 @@ set output 'tps_power_law.eps'
 
 set xlabel 'k'
 set ylabel "P(k)"
-set title "plot of tensor power spectrum P(k) vs N"
-plot 'power_spectrum_power_law.dat' u (log($1)):(log($4)) w lp t 'numerical results'
+set title "plot of tensor power spectrum P(k) vs k"
+set logscale x
+set logscale y
+plot 'power_spectrum_power_law.dat' u 1:2 w lp t 'numerical results'

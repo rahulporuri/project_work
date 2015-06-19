@@ -18,4 +18,13 @@ set output 'eps1_vs_N_small_field.eps'
 set xlabel 'e-fold N'
 set ylabel "{/Symbol E}_1(N)"
 set title "plot of {/Symbol E}_1(N) vs N"
-plot 'eps1_vs_N_small_field.dat' u 1:2 w lp t 'numerical results', 'eps1_vs_N_power_law.dat' u 1:3 w l t 'theoretical results'
+plot 'eps1_vs_N_small_field.dat' u 1:2 w lp t 'numerical results'
+
+set output 'tps_small_field.eps'
+
+set xlabel 'k'
+set ylabel "P(k)"
+set title "plot of tensor power spectrum P(k) vs k"
+set logscale x
+set logscale y
+plot 'power_spectrum_small_field.dat' u 1:2 w lp t 'numerical results'

@@ -140,15 +140,11 @@ for k in k_list:
     Nics_array.append(Ni + nics_test[0][-1]*step)
     Nshs_array.append(Ni + nshss_test[0][-1]*step)
 
-Nics_array = numpy.asarray(Nics_array)
-Nshs_array = numpy.asarray(Nshs_array)
-
-#Nics_array = numpy.array([2.54198038578949765072641948787, 3.71629878321646094957559512976, 4.89061718064342424842477077165, 6.06493557807038754727394641354, 7.23925397549735084612312205543, 8.41357237292431414497229769732, 9.58789077035127744382147333808, 10.7622091677782407426704414080, 11.9365275652052040415198238617, 13.1108459626321673403690002649, 14.2851643600591306392181759068, 15.4594827574860939380673515487, 16.6338011549130572369165271905, 17.8081195523400205357657028324])
-
-#Nshs_array = numpy.array([18.9824379497669838346148777580, 20.1567563471939471334640541162, 21.3310747446209104323132297581, 22.5053931420478737311624054000, 23.6797115394748370300115810419, 24.8540299369018003288607566837, 26.0283483343287636277099323256, 27.2026667317557269265591079675, 28.3769851291826902254082834314, 29.5513035266096535242574592513, 30.7256219240366168231066348932, 31.8999403214635801219558105351, 33.0742587188905434208049861770, 34.2485771163175067196541618192])
+Nics_arr = numpy.asarray(Nics_array)
+Nshs_arr = numpy.asarray(Nshs_array)
 
 k_min = 1e-6
-k_max = 10
+k_max = 10**(1./2)
 
 print 'lift off!'
 
@@ -186,7 +182,8 @@ while k0 < k_max:
     print '\n'
     
     temp = 8*(k0)**3/(2*numpy.pi**2)*(numpy.absolute(hk0))**2
-    tps_file.write(str(k0)+"\t"+str(hk0.real)+"\t"+str(hk0.imag)+"\t"+str(temp)+"\n")
+    tps_file.write(str(k0)+"\t"+str(temp).strip('[]')+"\n")    
+#    tps_file.write(str(k0)+"\t"+str(hk0.real)+"\t"+str(hk0.imag)+"\t"+str(temp)+"\n")
     
     k0 = 10**(1./2)*k0
     i += 1
@@ -196,7 +193,12 @@ k_list = numpy.array([10**((-12 + i)/2.) for i in range(13)])
 TPS = [8*(k_list[i])**3/(2*numpy.pi**2)*(numpy.absolute(k_vs_hk[i+1]))**2 for i in range(len(k_list))]
 print k_list, TPS
 
-f.close()
+tps_file.close()
 
-plt.loglog(k_list, TPS)
+plt.cla()
+plt.xlabel('k')
+plt.ylabel('P(k)')
+plt.title('P(k) vs k')
+numerics, = plt.loglog(k_list, TPS)
+plt.legend([numerics],['numerical results'])
 plt.savefig('power_spectrum_small_field.png')
