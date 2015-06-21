@@ -42,7 +42,7 @@ def rk4_step(N, phi0, Dphi0, step):
 
     return [(f1 +2*f2 +2*f3 +f4)*step/6., (F1 +2*F2 +2*F3 +F4)*step/6.] # [Dhk, hk] update
 
-npts = 100000
+npts = 100
 step = (Nf-Ni)/(npts)
 
 phi_ = phi0
@@ -73,9 +73,11 @@ phi = lambda N : phi_array[int((N-Ni)/step)]
 Dphi = lambda N : Dphi_array[int((N-Ni)/step)]
 
 plt.cla()
-plt.hold()
-#plt.plot(N_array, [phi(N) for N in N_array],'*')
+plt.hold(True)
 plt.xlim([Ni,Nf])
+plt.xlabel('e-fold N')
+plt.ylabel('phi(N)')
+plt.title('plot of phi(N) vs e-fold N')
 numerical, = plt.plot(N_array, phi_array, label = 'numerical results')
 theory, = plt.plot(N_array, [phi_theory(N) for N in N_array],'*', label = 'theory results')
 plt.legend([numerical, theory], ['numerical results', 'theoretical results'])
@@ -96,8 +98,11 @@ for N in N_array:
 	h_file.write(str(N)+"\t"+str(H(N)/H0)+"\t"+str(H_theory(N)/H0)+"\n")
 
 plt.cla()
-plt.hold()
+plt.hold(True)
 plt.xlim([Ni,Nf])
+plt.xlabel('e-fold N')
+plt.ylabel('H(N)')
+plt.title('plot of Hubble parameter H(N) vs e-fold N')
 numerical, = plt.plot(N_array, numpy.asarray([H(i) for i in N_array], dtype= numpy.float64)/H0, '*', label = 'numerical results')
 theory, = plt.plot(N_array, [H_theory(N)/H0 for N in N_array], label = 'theory')
 plt.legend([numerical, theory], ['numerical results', 'theoretical results'])
@@ -113,8 +118,10 @@ for N in N_array:
 
 plt.cla()
 plt.xlim([Ni,Nf])
+plt.xlabel('e-fold N')
+plt.ylabel('eps(N)')
+plt.title('eps(N) vs e-fold N')
 numerical, = plt.plot(N_array, [str(eps1(i)).strip('[]') for i in N_array], '*', label = 'numerical results')
-#theory, = plt.axhline(y=eps0, label = 'theory')
 plt.axhline(y=eps0)
 plt.legend([numerical], ['numerical results'])
 plt.savefig('eps1_vs_N_power_law.png')
@@ -137,7 +144,7 @@ def rk4_step(k0, N, hk0, Dhk0, step):
     f4 = DDhk(k0, N +step, hk0 +F3*step, Dhk0 +f3*step)   
 
     return numpy.array([(f1 +2*f2 +2*f3 +f4)*step/6.], dtype=complex), numpy.array([(F1 +2*F2 +2*F3 +F4)*step/6.], dtype=complex) # [Dhk, hk] update
-
+'''
 
 k_list = numpy.array([10**((-12 + i)/2.) for i in range(13)])
 Nics_array = []
@@ -213,3 +220,4 @@ plt.title('P(k) vs k')
 numerics, = plt.loglog(k_list, TPS)
 plt.legend([numerics],['numerical results'])
 plt.savefig('power_spectrum_power_law.png')
+'''

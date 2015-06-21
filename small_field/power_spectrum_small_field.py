@@ -37,7 +37,7 @@ def rk4_step(N, phi0, Dphi0, step):
 
     return [(f1 +2*f2 +2*f3 +f4)*step/6., (F1 +2*F2 +2*F3 +F4)*step/6.] # [Dhk, hk] update
 
-npts = 100000
+npts = 100
 step = (Nf-Ni)/(npts)
 
 phi_ = phi0
@@ -63,6 +63,7 @@ phi_file.close()
 
 #plt.plot(numpy.linspace(0,70,npts+1), phi_array)
 plt.cla()
+plt.xlim([Ni,Nf])
 plt.xlabel('e-fold N')
 plt.ylabel('phi(N)')
 plt.title('plot of phi(N) vs e-fold N')
@@ -85,6 +86,7 @@ for N in N_array:
 	h_file.write(str(N)+"\t"+str(H(N)/H0)+"\t"+"\n")
 
 plt.cla()
+plt.xlim([Ni,Nf])
 plt.xlabel('e-fold N')
 plt.ylabel('H(N)')
 plt.title('plot of Hubble parameter H(N) vs e-fold N')
@@ -100,6 +102,7 @@ for N in N_array:
 	eps_file.write(str(N)+"\t"+str(eps1(N))+"\t"+str(eps0)+"\n")
 
 plt.cla()
+plt.xlim([Ni,Nf])
 plt.xlabel('e-fold N')
 plt.ylabel('eps(N)')
 plt.title('eps(N) vs e-fold N')
@@ -126,6 +129,7 @@ def rk4_step(k0, N, hk0, Dhk0, step):
 
     return numpy.array([(f1 +2*f2 +2*f3 +f4)*step/6.], dtype=complex), numpy.array([(F1 +2*F2 +2*F3 +F4)*step/6.], dtype=complex) # [Dhk, hk] update
 
+'''
 
 k_list = numpy.array([10**((-12 + i)/2.) for i in range(13)])
 Nics_array = []
@@ -202,3 +206,4 @@ plt.title('P(k) vs k')
 numerics, = plt.loglog(k_list, TPS)
 plt.legend([numerics],['numerical results'])
 plt.savefig('power_spectrum_small_field.png')
+'''
