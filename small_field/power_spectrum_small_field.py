@@ -1,6 +1,9 @@
 import numpy
 import matplotlib.pyplot as plt
 
+plt.rc('text', usetex=True)
+plt.rc('font', family='serif')
+
 tps_file = open('power_spectrum_small_field.dat','w')
 phi_file = open('phi_vs_N_small_field.dat','w')
 h_file = open('H_vs_N_small_field.dat','w')
@@ -37,7 +40,7 @@ def rk4_step(N, phi0, Dphi0, step):
 
     return [(f1 +2*f2 +2*f3 +f4)*step/6., (F1 +2*F2 +2*F3 +F4)*step/6.] # [Dhk, hk] update
 
-npts = 100
+npts = 100000
 step = (Nf-Ni)/(npts)
 
 phi_ = phi0
@@ -62,15 +65,18 @@ while N < Nf:
 phi_file.close()
 
 #plt.plot(numpy.linspace(0,70,npts+1), phi_array)
+
+'''
 plt.cla()
+plt.hold(True)
 plt.xlim([Ni,Nf])
-plt.xlabel('e-fold N')
-plt.ylabel('phi(N)')
-plt.title('plot of phi(N) vs e-fold N')
-numerics, = plt.plot(N_array, phi_array, '*', label = 'numerical results')
+plt.xlabel(r'e-fold ${\rm N}$')
+plt.ylabel(r'$\phi({\rm N})$')
+plt.title(r'$\phi({\rm N})$ as a function of e-fold ${\rm N}$')
+numerics, = plt.plot(N_array, phi_array, '--', label = 'numerical results')
 plt.legend([numerics],['numerical results'])
 plt.savefig('phi_vs_N_small_field.png')
-
+'''
 eps0 = (3./2)*((dphi0**2)/(dphi0**2/2. + V(phi0)))
 #eps = 1./q 
 
@@ -81,35 +87,36 @@ Dphi = lambda N : Dphi_array[int((N-Ni)/step)]
 
 H = lambda N : (V(phi(N))/(3 -Dphi(N)**2/2))**(1./2)
 DH = lambda N : H(N)*Dphi(N)
-
+'''
 for N in N_array:
 	h_file.write(str(N)+"\t"+str(H(N)/H0)+"\t"+"\n")
 
 plt.cla()
+plt.hold(True)
 plt.xlim([Ni,Nf])
-plt.xlabel('e-fold N')
-plt.ylabel('H(N)')
-plt.title('plot of Hubble parameter H(N) vs e-fold N')
-numerics, = plt.plot(N_array, numpy.asarray([str(H(i)).strip('[]') for i in N_array], dtype= numpy.float64)/H0, '*', label = 'numerical results')
+plt.xlabel(r'e-fold ${\rm N}$')
+plt.ylabel(r'${\rm H}({\rm N})$')
+plt.title(r'${\rm H}({\rm N})$ as a function of e-fold ${\rm N}$')
+numerics, = plt.plot(N_array, numpy.asarray([H(i) for i in N_array], dtype= numpy.float64)/H0, '--', label = 'numerical results')
 plt.legend([numerics],['numerical results'])
 plt.savefig('H_vs_N_small_field.png')
-
+'''
 ai = 1e-05
 
 eps1 = lambda N : Dphi_array[int((N-Ni)/step)]**2/2.
-
+'''
 for N in N_array:
 	eps_file.write(str(N)+"\t"+str(eps1(N))+"\t"+str(eps0)+"\n")
 
 plt.cla()
 plt.xlim([Ni,Nf])
-plt.xlabel('e-fold N')
-plt.ylabel('eps(N)')
-plt.title('eps(N) vs e-fold N')
-numerics, = plt.plot(N_array, [str(eps1(i)).strip('[]') for i in N_array], '*', label = 'numerical results')
+plt.xlabel(r'e-fold ${\rm N}$')
+plt.ylabel(r'$\epsilon_1({\rm N})$')
+plt.title(r'$\epsilon_1({\rm N})$ as a function of e-fold ${\rm N}$')
+numerics, = plt.plot(N_array, [str(eps1(i)).strip('[]') for i in N_array], '--', label = 'numerical results')
 plt.legend([numerics],['numerical results'])
 plt.savefig('eps1_vs_N_small_field.png')
-
+'''
 #z = [ai*numpy.exp(N_array[i])*Dphi_array[i] for i in range(len(N_array))]
 z = lambda N: ai*numpy.exp(N)*Dphi(N)
 A = lambda N : ai*numpy.exp(N)
@@ -128,8 +135,6 @@ def rk4_step(k0, N, hk0, Dhk0, step):
     f4 = DDhk(k0, N +step, hk0 +F3*step, Dhk0 +f3*step)   
 
     return numpy.array([(f1 +2*f2 +2*f3 +f4)*step/6.], dtype=complex), numpy.array([(F1 +2*F2 +2*F3 +F4)*step/6.], dtype=complex) # [Dhk, hk] update
-
-'''
 
 k_list = numpy.array([10**((-12 + i)/2.) for i in range(13)])
 Nics_array = []
@@ -200,10 +205,9 @@ print k_list, TPS
 tps_file.close()
 
 plt.cla()
-plt.xlabel('k')
-plt.ylabel('P(k)')
-plt.title('P(k) vs k')
+plt.xlabel(r'$k$')
+plt.ylabel(r'${\mathcal{P}}_{\rm T}(k)$')
+plt.title(r'${\mathcal{P}}_{\rm T}(k)$ as a function of $k$')
 numerics, = plt.loglog(k_list, TPS)
 plt.legend([numerics],['numerical results'])
 plt.savefig('power_spectrum_small_field.png')
-'''
