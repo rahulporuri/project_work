@@ -1,6 +1,5 @@
 import numpy as numpy
 import matplotlib.pyplot as plt
-
 import scipy.optimize as opt
 
 def DDhk(k0, N, hk0, Dhk0):
@@ -39,14 +38,14 @@ DHp = lambda N : +1.3887943864964e-16*N*(1.0*numpy.exp(N**2/2)**1.0 - 1.0)**(-0.
 n = lambda N : Heavi(N)*np(N) + Heavi(-N)*nm(N)
 DH = lambda N : Heavi(N)*DHp(N) + Heavi(-N)*DHm(N)
 
-f = open('power_spectrum_bouncing_model_test.dat','w')
+tps_file = open('power_spectrum_bouncing_model.dat','w')
 
 a0 = 1e-05
 n0 = numpy.exp(25)
 p = 1
 
-k_min = 1e-25
-k_max = 1e-8
+k_min = 1e-30
+k_max = 1e-4
 
 Nshss = 3.02287778 
 
@@ -75,7 +74,7 @@ while k0 < k_max:
 
     print 'got Nics, hk0 and Dhk0'
 
-    npts = 20000
+    npts = 10000
     step = (Nshss-Nics)/(npts)
     print 'starting from Nics'
 
@@ -87,20 +86,25 @@ while k0 < k_max:
         N += step
 
     k_vs_hk = numpy.append(k_vs_hk, hk0)
-    print N-step, Nshss, hk0, Dhk0, Nics
-    print '\n'
     
     temp = 8*(k0)**3/(2*numpy.pi**2)*(numpy.absolute(hk0))**2
-    f.write(str(k0)+"\t"+str(hk0)+"\t"+str(temp)+"\n")  
+    tps_file.write(str(k0)+"\t"+str(temp).strip('[]')+"\n")  
+
+    print N, temp
+    print '\n'
     
     k0 = 10*k0
 
-k_list = numpy.array([10**(-25 + i) for i in range(17)])
+k_list = numpy.array([10**(-30 + i) for i in range(27)])
 TPS = [8*(k_list[i])**3/(2*numpy.pi**2)*(numpy.absolute(k_vs_hk[i+1]))**2 for i in range(len(k_list))]
 print k_list, TPS
 
-f.close()
+tps_file.close()
 
-plt.loglog(k_list, TPS)
-#plt.show()
-plt.savefig('power_spectrum_bouncing_model_test.png')
+plt.cla()
+plt.xlabel(r'$k$')
+plt.ylabel(r'${\mathcal{P}}_{\rm T}(k)$')
+plt.title(r'${\mathcal{P}}_{\rm T}(k)$ as a function of $k$')
+numerics, = plt.loglog(k_list, TPS)
+plt.legend([numerics],['numerical results'])
+plt.savefig('power_spectrum_bouncing_model.png')
