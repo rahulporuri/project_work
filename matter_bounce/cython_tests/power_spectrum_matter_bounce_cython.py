@@ -3,27 +3,27 @@ import matplotlib.pyplot as plt
 import scipy.optimize as opt
 
 #cimport routines
-#from routines import *
+from routines import *
 #from routines cimport rk4_step
 #from routines cimport DDhk
 
-
 tps_file = open('power_spectrum_bouncing_model.dat','w')
 
-k_min = 1e-30
 k_max = 1e-4
 
-Nshss = 3.02287778 
+Nshss = numpy.array([7])
+for i in range(200):
+    Nshss = opt.newton_krylov(lambda N : (k_max)**2 - 1e+04*fN(N),Nshss)
 
+print 'Nshss =', Nshss
 print 'lift off!' 
 
-k_vs_hk = numpy.zeros(1,dtype=complex)
-
-k0 = k_min
-while k0 < k_max:
+k_vs_hk = numpy.empty(0,dtype=complex)
+k_list = numpy.array([10**(-30 + i) for i in range(27)])
+for k0 in k_list:
     print 'k0 = ', k0
 
-    Nics = numpy.array([-1])
+    Nics = numpy.array([-5])
     for i in range(200):
         Nics = opt.newton_krylov(lambda N : (k0)**2 - 1e+04*fN(N),Nics)
 
@@ -40,15 +40,17 @@ while k0 < k_max:
 
     print 'got Nics, hk0 and Dhk0'
 
-    npts = 10000
+    npts = 30000
     step = (Nshss-Nics)/(npts)
     print 'starting from Nics'
 
     N = Nics
     while N < Nshss:
-        array = rk4_step(k0, N, hk0, Dhk0, step)
-        hk0 = hk0 + array[1]
-        Dhk0 = Dhk0 + array[0]
+        array = rk4_step(k0, N, hk0.real, hk0.imag, Dhk0.real, Dhk0.imag, step)
+        hk0.real = hk0.real + array[2]
+        hk0.imag = hk0.imag + array[3]
+        Dhk0.real = Dhk0.real + array[0]
+        Dhk0.imag = Dhk0.imag + array[1]
         N += step
 
     k_vs_hk = numpy.append(k_vs_hk, hk0)
@@ -61,8 +63,8 @@ while k0 < k_max:
     
     k0 = 10*k0
 
-k_list = numpy.array([10**(-30 + i) for i in range(27)])
-TPS = [8*(k_list[i])**3/(2*numpy.pi**2)*(numpy.absolute(k_vs_hk[i+1]))**2 for i in range(len(k_list))]
+
+TPS = [8*(k_list[i])**3/(2*numpy.pi**2)*(numpy.absolute(k_vs_hk[i]))**2 for i in range(len(k_list))]
 print k_list, TPS
 
 tps_file.close()
