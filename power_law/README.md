@@ -1,22 +1,25 @@
-This dir contains the code and results pertaining to the 
-evolution of tensor perturbations during power law inflation.
+For power law inflation, the potential driving the inflation is 
+of the form
 
-We assume that a potential of the form
+$$ V(\phi) = V_0exp\left[-\sqrt{\frac{2}{q}}(\phi - \phi_0)\right]$$
 
-V = *V_0* exp(phi/*phi_0*)
+we solve the equations governing the evolution of the scalar field 
+driving inflation. Using these solutions, we solve the evolution of 
+tensor perturbations.
 
-drives inflation. We numerically solve the equation governing 
-the evolution of the scalar field. Runge-Kutta 4 is used to solve the 
-second order ODE. Using the solution for the scalar field, we 
-numerically solve the equation governing the evolution of 
-tensor perturbations. Again, we used RK4 to solve this second order 
-ODE. Using this solution, we arrive at the 
-tensor power spectrum in the super-Hubble limit.
+The equations governing the evolution of the scalar field and the 
+tensor perturbations are
 
-Note that solving the aforementioned ODE, which is written in 
-conformal time *eta* is numerically not plausible. We therefore 
-rewrite the ODE in terms of e-fold N where
+$$\ddot{\phi} + 3H\dot{\phi} + \frac{{\rm d}V}{{\rm d}\phi} = 0$$
 
-N = ln(a(t)/*a_0*)
+$$h_{\bf k}'' +\frac{2a'}{a}h_{\bf k}' +k^2h_{\bf k} = 0$$_
 
-where a(t) is the scale factor of the universe.
+where the overprime refers to differentiation with respect to conformal time $\eta$.
+For a more detailed understanding of the theory behind our work, refer to the 
+.ipynb file.
+
+Running the .py file generates data files containing the numerical 
+solutions to the scalar field \phi, the Hubble parameter H, the parameter 
+\eps_1 and the tensor power spectrum in the super-Hubble limit.
+Running the python script file plot.py or the gnuplot script file 
+small_field.plt will generate the relevant plots as .png or .eps files.
