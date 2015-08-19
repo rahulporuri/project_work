@@ -1,5 +1,7 @@
 import numpy
 import matplotlib.pyplot as plt
+import scipy.optimize as opt
+from scipy.integrate import romb, simps
 
 import time
 import multiprocessing as mp
@@ -11,10 +13,12 @@ parallel_output = mp.Queue()
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
 
+
 tps_file = open('power_spectrum_power_law_func.dat','w')
 phi_file = open('phi_vs_N_power_law_func.dat','w')
 h_file = open('H_vs_N_power_law_func.dat','w')
 eps_file = open('eps1_vs_N_power_law_func.dat','w')
+
 
 q = 51.
 V0 = (204./100.)*1e-08
@@ -52,7 +56,7 @@ def rk4_step(N, phi0, Dphi0, step):
 
     return [(f1 +2*f2 +2*f3 +f4)*step/6., (F1 +2*F2 +2*F3 +F4)*step/6.] # [Dhk, hk] update
 
-npts = 100000
+npts = 250000
 step = (Nf-Ni)/(npts)
 
 phi_ = phi0
@@ -189,32 +193,61 @@ def initialize_Dhk(k0, Nics):
 
 
 def evolve_hk(k0, hk0, Dhk0, Nics, Nshss, step):
+    hk_array = numpy.empty(0, dtype=complex)
     N = Nics
     while N < Nshss:
-        #array = euler_step()                   print 'lift off!'
+        hk_array = numpy.append(hk_array, hk0)
         array = rk4_step(k0, N, hk0, Dhk0, step)
         hk0 = hk0 + array[1]
         Dhk0 = Dhk0 + array[0]
         N += step
 
-    return hk0
+    return hk_array
+
+
+def calG(hk_array, k0, N_Array):
+    N_range = numpy.linspace(N_Array[0], N_Array[-1], len(hk_array))
+    func_int = (A(N_range)/numpy.asarray([H(N) for N in N_range]))*numpy.conj(hk_array)**3
+    #result = romb(func_int, N_Array[1]-N_Array[0])
+    result = simps(func_int, N_range)
+    return (-3.*k0**2/4.)*result*numpy.array([0.+1.j], dtype=complex)
+
+
+def calG_cc(hk_array, k0, N_Array):
+    N_range = numpy.linspace(N_Array[0], N_Array[-1], len(hk_array))
+    func_int = (A(N_range)/numpy.asarray([H(N) for N in N_range]))*(hk_array)**3
+    #result = romb(func_int, N_Array[1]-N_Array[0])
+    result = simps(func_int, N_range)
+    return (+3.*k0**2/4.)*result*numpy.array([0.+1.j], dtype=complex)
+
 
 def main(k0, N_array):
     Nics = solve_Nics(k0, N_array)
     Nshss = solve_Nshss(k0, N_array)
     step = N_array[1] -N_array[0]
 
-    hk0 = numpy.zeros(1,dtype=complex)             
-    Dhk0 = numpy.zeros(1,dtype=complex)
+    hk0 = numpy.empty(0,dtype=complex)             
+    Dhk0 = numpy.empty(0,dtype=complex)
 
     hk0 = initialize_hk(k0, Nics)
     Dhk0 = initialize_Dhk(k0, Nics)
- 
-    hk0 = evolve_hk(k0, hk0, Dhk0, Nics, Nshss, step)
-    tps= 8*(k0)**3/(2*numpy.pi**2)*(numpy.absolute(hk0))**2
-    print k0, N-step, Nics, Nshss, str(hk0).strip('[]'), str(Dhk0).strip('[]'), str(tps).strip('[]')
 
-    return str(tps).strip('[]')
+    hk_array = numpy.empty(0, dtype=complex)
+    hk_array = evolve_hk(k0, hk0, Dhk0, Nics, Nshss, step)
+    tps= 8*(k0)**3/(2*numpy.pi**2)*(numpy.absolute(hk_array[-1]))**2
+
+    CalG = calG(hk_array, k0, N_array)
+    CalG_cc = calG_cc(hk_array, k0, N_array)
+
+    G = (hk_array[-1]**3)*CalG + (numpy.conj(hk_array[-1])**3)*CalG_cc
+    h_NL = (-1./6)*((4./(2.*numpy.pi**2))**2)*(k0**6)*G/(tps**2)
+
+    print k0, N-step, Nics, Nshss, str(hk0).strip('[]'), str(Dhk0).strip('[]'), str(tps).strip('[]')
+    print CalG, (k0**(3./2))*numpy.absolute(CalG), numpy.absolute(G), (k0**6)*numpy.absolute(G), numpy.absolute(h_NL)
+    print '\n'
+
+#    return str(tps).strip('[]')
+    return None
 
 k_list = numpy.array([10**((-12 + i)/2.) for i in range(13)])
 
@@ -226,17 +259,17 @@ for i in range(len(k_list)):
     results.append(temp_results[i].get())
 #    k_vs_hk[i] = temp_results[i].get()
 
-results = numpy.asarray(results, dtype=numpy.float)
-print k_list, results
+#results = numpy.asarray(results, dtype=numpy.float)
+#print k_list, results
 #print k_vs_hk
-print '\n'
+#print '\n'
 
 '''
 for k0 in k_list:
     hk0 = numpy.zeros(1,dtype=complex)
     hk0 = main(k0, N_array)
     k_vs_hk = numpy.append(k_vs_hk, hk0) 
-    temp = 8*(k0)**3/(2*numpy.pi**2)*(numpy.absolute(hk0))**2
+	temp = 8*(k0)**3/(2*numpy.pi**2)*(numpy.absolute(hk0))**2
     print str(temp).strip('[]')
     print '\n'
     tps_file.write(str(k0)+"\t"+str(temp).strip('[]')+"\n")
