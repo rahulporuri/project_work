@@ -16,9 +16,6 @@ import string
 
 # In[2]:
 
-get_ipython().magic(u'matplotlib inline')
-parallel_output = mp.Queue()
-
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
 
@@ -62,7 +59,7 @@ def rk4_step(_N, _phi, _Dphi, _step):
 
 # In[5]:
 
-npts = 250000
+npts = 25000
 step = (Nf-Ni)/(npts)
 
 phi_ = phi0
@@ -73,6 +70,8 @@ Dphi_array = numpy.empty(0)
 N_array = numpy.empty(0)
 
 N = Ni
+
+print N, phi_, Dphi_, dphi0, H0
 while N < Nf:
     N_array = numpy.append(N_array, N)
     phi_array = numpy.append(phi_array, phi_)
@@ -85,6 +84,9 @@ while N < Nf:
     N += step
 
 
+print N, phi_, Dphi_
+
+'''
 # In[6]:
 
 phi = lambda _N : phi_array[int((_N-Ni)/step)]
@@ -285,3 +287,4 @@ while k0 < 1e-01:
 
 
 
+'''
