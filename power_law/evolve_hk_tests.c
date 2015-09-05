@@ -115,36 +115,44 @@ main(void)
 	Nics = find_Nics(k, N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step);
 	Nshss = find_Nshss(k, N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step);
 
-	initialize_hk(k, Nics, ai, hk);
-	initialize_Dhk(k, Nics, ai, Dhk, Nics, V0, q, phi0, phi_array, Dphi_array, Ni, step);
-
-	printf("%lf, %lf \n", hk[0], hk[1]);
-	printf("%lf, %lf \n", Dhk[0], Dhk[1]);
-
-	printf("%lf \n", Nics);
-	printf("%lf \n", Nshss);
-/*	printf("%lf \n", find_Nics(pow(10,-5), N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step));
-	printf("%lf \n", find_Nshss(pow(10,-5), N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step));
-	printf("%lf \n", find_Nics(pow(10,-4), N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step));
-	printf("%lf \n", find_Nshss(pow(10,-4), N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step)); */
-
-	N = Nics;
-	while (N < Nshss +step)
+	while (k < pow(10,0))
 	{
-		rk4_stepper_hk(k, N, hk, Dhk, V0, q, phi0, phi_array, Dphi_array, Ni, step, increment_hk, increment_Dhk, ai);
-		hk[0] += increment_hk[0];
-		hk[1] += increment_hk[1];
-		Dhk[0] += increment_Dhk[0];
-		Dhk[1] += increment_Dhk[1];
+		printf("===================================");
+		printf("%le \n", k);
 
-		N += step;
+		initialize_hk(k, Nics, ai, hk);
+		initialize_Dhk(k, Nics, ai, Dhk, Nics, V0, q, phi0, phi_array, Dphi_array, Ni, step);
+
+		printf("%lf, %lf \n", hk[0], hk[1]);
+		printf("%lf, %lf \n", Dhk[0], Dhk[1]);
+
+		printf("%lf \n", Nics);
+		printf("%lf \n", Nshss);
+/*		printf("%lf \n", find_Nics(pow(10,-5), N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step));
+		printf("%lf \n", find_Nshss(pow(10,-5), N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step));
+		printf("%lf \n", find_Nics(pow(10,-4), N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step));
+		printf("%lf \n", find_Nshss(pow(10,-4), N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step)); */
+
+		N = Nics;
+		while (N < Nshss +step)
+		{
+			rk4_stepper_hk(k, N, hk, Dhk, V0, q, phi0, phi_array, Dphi_array, Ni, step, increment_hk, increment_Dhk, ai);
+			hk[0] += increment_hk[0];
+			hk[1] += increment_hk[1];
+			Dhk[0] += increment_Dhk[0];
+			Dhk[1] += increment_Dhk[1];
+
+			N += step;
+		}
+
+		printf("%lf, %lf, %le, %le \n", hk[0], hk[1], Dhk[0], Dhk[1]);
+
+		tps = 8*pow(k,3)/(2*pow(M_PI,2))*(hk[0]*hk[0] +hk[1]*hk[1]);
+		printf("%le \n", tps);
+
+		k = pow(10,1./2)*k;
+		printf("\n");
 	}
-
-	printf("%lf, %lf, %le, %le \n", hk[0], hk[1], Dhk[0], Dhk[1]);
-
-	tps = 8*pow(k,3)/(2*pow(M_PI,2))*(hk[0]*hk[0] +hk[1]*hk[1]);
-
-	printf("%le \n", tps);
 
 	return (0);
 }

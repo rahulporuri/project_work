@@ -86,7 +86,6 @@ while N < Nf:
 
 print N, phi_, Dphi_
 
-'''
 # In[6]:
 
 phi = lambda _N : phi_array[int((_N-Ni)/step)]
