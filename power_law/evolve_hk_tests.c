@@ -112,13 +112,17 @@ main(void)
 	printf("%lf, %lf, %lf, %lf \n", phi_function(phi_array, Ni, Ni, step), Dphi_function(Dphi_array, Ni, Ni, step), phi_function(phi_array, Nf, Ni, step), Dphi_function(Dphi_array, Nf, Ni, step));
 	printf("%d \n", j);
 
-	Nics = find_Nics(k, N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step);
-	Nshss = find_Nshss(k, N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step);
+
+
 
 	while (k < pow(10,0))
 	{
 		printf("===================================");
 		printf("%le \n", k);
+
+		Nics = find_Nics(k, N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step);
+		Nshss = find_Nshss(k, N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step);
+
 
 		initialize_hk(k, Nics, ai, hk);
 		initialize_Dhk(k, Nics, ai, Dhk, Nics, V0, q, phi0, phi_array, Dphi_array, Ni, step);
@@ -218,7 +222,7 @@ double H(double N, double V0, double q, double phi0, double *phi_array, double *
 
 double DH(double N, double V0, double q, double phi0, double *phi_array, double *Dphi_array, double Ni, double step)
 {
-	return H(N, V0, q, phi0, phi_array, Dphi_array, Ni, step)*Dphi_function(Dphi_array, N, Ni, step);
+	return (-1.0/2)*H(N, V0, q, phi0, phi_array, Dphi_array, Ni, step)*Dphi_function(Dphi_array, N, Ni, step)*Dphi_function(Dphi_array, N, Ni, step);
 }
 
 /* root finding to estimate Nics and Nshss */
