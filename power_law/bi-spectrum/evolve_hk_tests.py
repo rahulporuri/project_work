@@ -32,6 +32,9 @@ dphi0 = (2.*q)**(1./2)/t0
 Ni = 0.
 Nf = 70.
 
+phi_ptr = open("../mathematica_codes/phi_vs_N_python.txt", "w")
+H_ptr = open("../mathematica_codes/H_vs_N_python.txt", "w")
+DH_ptr = open("../mathematica_codes/DH_vs_N_python.txt", "w")
 
 # In[4]:
 
@@ -59,7 +62,7 @@ def rk4_step(_N, _phi, _Dphi, _step):
 
 # In[5]:
 
-npts = 25000
+npts = 100000
 step = (Nf-Ni)/(npts)
 
 phi_ = phi0
@@ -68,11 +71,13 @@ Dphi_ = Dphi0
 phi_array = numpy.empty(0)
 Dphi_array = numpy.empty(0)
 N_array = numpy.empty(0)
+H_array = numpy.empty(0)
+DH_array = numpy.empty(0)
 
 N = Ni
 
 print N, phi_, Dphi_, dphi0, H0
-while N < Nf:
+while N < Nf+step:
     N_array = numpy.append(N_array, N)
     phi_array = numpy.append(phi_array, phi_)
     Dphi_array = numpy.append(Dphi_array, Dphi_)
@@ -85,6 +90,7 @@ while N < Nf:
 
 
 print N, phi_, Dphi_
+print len(N_array)
 
 # In[6]:
 
@@ -93,6 +99,24 @@ Dphi = lambda _N : Dphi_array[int((_N-Ni)/step)]
 
 H = lambda _N : (V(phi(_N))/(3. -Dphi(_N)**2/2.))**(1./2)
 DH = lambda _N : H(_N)*Dphi(_N)
+
+for i in range(len(N_array)):
+	H_array = numpy.append(H_array, (V(phi_array[i])/(3. -Dphi_array[i]**2/2.))**(1./2))
+	DH_array = numpy.append(DH_array, -(1./2)*(V(phi_array[i])/(3. -Dphi_array[i]**2/2.))**(1./2)*Dphi_array[i]**2)
+
+
+print H_array[0], DH_array[0], H_array[-1], DH_array[-1]
+
+for i in range(len(N_array)):
+	phi_ptr.write(str(N_array[i])+" , "+str(phi_array[i])+"\n")
+	H_ptr.write(str(N_array[i])+" , "+str(H_array[i])+"\n")
+	DH_ptr.write(str(N_array[i])+" , "+str(DH_array[i])+"\n")
+
+phi_ptr.close()
+H_ptr.close()
+DH_ptr.close()
+
+'''
 
 ai = 1e-05
 A = lambda _N : ai*numpy.exp(_N)
