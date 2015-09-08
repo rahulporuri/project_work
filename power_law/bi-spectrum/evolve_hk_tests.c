@@ -76,12 +76,12 @@ main(void)
 	eps1_ptr = fopen("../mathematica_codes/eps_vs_N_c.txt","w");
 
 	q = 51.0;
-	V0 = (204/100)*pow(10,-8);
+	V0 = (204.0/100.0)*pow(10,-8);
 	printf("%le, %le \n", 1e-8, (204/100)*1e-8);
-	t0 = sqrt(q*(3*q -1)/V0);
+	t0 = sqrt(q*(3.0*q -1.0)/V0);
 
 	phi0 = 1.0;
-	dphi0 = sqrt(2*q)/t0;
+	dphi0 = sqrt(2.0*q)/t0;
 
 	Ni = 0.0;
 	Nf = 70.0;
@@ -90,7 +90,7 @@ main(void)
 	k = pow(10, -6);
 
 //	H0 = sqrt((1./3)*((dphi0*dphi0)/2 +V(phi0, V0, q, phi0)));
-	H0 = sqrt((1./3)*((dphi0*dphi0)/2 +V0));
+	H0 = sqrt((1.0/3.0)*((dphi0*dphi0)/2.0 +V0));
 	Dphi0 = dphi0/H0;
 
 	/* solve ODE and obtain phi values */
@@ -128,8 +128,8 @@ main(void)
 
 	for (i=0; i<npts+1; i++)
 	{
-		H_array[i] = sqrt(V(phi_array[i], V0, q, phi0)/(3 -Dphi_array[i]*Dphi_array[i]/2));
-		DH_array[i] = (-1.0/2)*sqrt(V(phi_array[i], V0, q, phi0)/(3.0 -Dphi_array[i]*Dphi_array[i]/2.0))*Dphi_array[i]*Dphi_array[i];
+		H_array[i] = sqrt(V(phi_array[i], V0, q, phi0)/(3.0 -Dphi_array[i]*Dphi_array[i]/2.0));
+		DH_array[i] = (-1.0/2.0)*sqrt(V(phi_array[i], V0, q, phi0)/(3.0 -Dphi_array[i]*Dphi_array[i]/2.0))*Dphi_array[i]*Dphi_array[i];
 		eps1_array[i] = Dphi_array[i]*Dphi_array[i]/2.0;
 	}
 
@@ -197,7 +197,7 @@ main(void)
 
 double V(double phi, double V0, double q, double phi0)
 {
-	return V0*exp(-sqrt(2./q)*(phi -phi0));
+	return V0*exp(-sqrt(2.0/q)*(phi -phi0));
 }
 
 double dV(double phi, double V0, double q, double phi0)
