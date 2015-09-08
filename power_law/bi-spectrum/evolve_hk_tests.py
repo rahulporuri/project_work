@@ -35,7 +35,7 @@ Nf = 70.
 phi_ptr = open("../mathematica_codes/phi_vs_N_python.txt", "w")
 H_ptr = open("../mathematica_codes/H_vs_N_python.txt", "w")
 DH_ptr = open("../mathematica_codes/DH_vs_N_python.txt", "w")
-
+eps_ptr = open("../mathematica_codes/eps_vs_N_python.txt","w")
 # In[4]:
 
 V = lambda _phi : V0*numpy.exp(-(2./q)**(1./2)*(_phi -phi0))
@@ -73,6 +73,7 @@ Dphi_array = numpy.empty(0)
 N_array = numpy.empty(0)
 H_array = numpy.empty(0)
 DH_array = numpy.empty(0)
+eps_array = numpy.empty(0)
 
 N = Ni
 
@@ -103,7 +104,7 @@ DH = lambda _N : H(_N)*Dphi(_N)
 for i in range(len(N_array)):
 	H_array = numpy.append(H_array, (V(phi_array[i])/(3. -Dphi_array[i]**2/2.))**(1./2))
 	DH_array = numpy.append(DH_array, -(1./2)*(V(phi_array[i])/(3. -Dphi_array[i]**2/2.))**(1./2)*Dphi_array[i]**2)
-
+	eps_array = numpy.append(eps_array, Dphi_array[i]**2/2.0)
 
 print H_array[0], DH_array[0], H_array[-1], DH_array[-1]
 
@@ -111,10 +112,12 @@ for i in range(len(N_array)):
 	phi_ptr.write(str(N_array[i])+" , "+str(phi_array[i])+"\n")
 	H_ptr.write(str(N_array[i])+" , "+str(H_array[i])+"\n")
 	DH_ptr.write(str(N_array[i])+" , "+str(DH_array[i])+"\n")
+	eps_ptr.write(str(N_array[i])+" , "+str(eps_array[i])+"\n")
 
 phi_ptr.close()
 H_ptr.close()
 DH_ptr.close()
+eps_ptr.close()
 
 '''
 

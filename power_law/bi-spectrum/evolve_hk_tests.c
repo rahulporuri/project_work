@@ -129,8 +129,8 @@ main(void)
 	for (i=0; i<npts+1; i++)
 	{
 		H_array[i] = sqrt(V(phi_array[i], V0, q, phi0)/(3 -Dphi_array[i]*Dphi_array[i]/2));
-		DH_array[i] = (-1.0/2)*H_array[i]*Dphi_array[i]*Dphi_array[i];
-		eps1_array[i] = Dphi_array[i]*Dphi_array[i]/2;
+		DH_array[i] = (-1.0/2)*sqrt(V(phi_array[i], V0, q, phi0)/(3.0 -Dphi_array[i]*Dphi_array[i]/2.0))*Dphi_array[i]*Dphi_array[i];
+		eps1_array[i] = Dphi_array[i]*Dphi_array[i]/2.0;
 	}
 
 	for (i=0; i<npts+1; i++)
@@ -216,15 +216,15 @@ void rk4_stepper_phi(double N, double phi, double Dphi, double step, double V0, 
 
 	F1 = Dphi;
 	f1 = DDphi(N, phi, Dphi, V0, q, phi0);
-	F2 = Dphi +f1*step/2.;
-	f2 = DDphi(N +step/2., phi +F1*step/2., Dphi +f1*step/2., V0, q, phi0);
-	F3 = Dphi +f2*step/2.;
-	f3 = DDphi(N +step/2., phi +F2*step/2., Dphi +f2*step/2., V0, q, phi0);
+	F2 = Dphi +f1*step/2.0;
+	f2 = DDphi(N +step/2.0, phi +F1*step/2.0, Dphi +f1*step/2.0, V0, q, phi0);
+	F3 = Dphi +f2*step/2.0;
+	f3 = DDphi(N +step/2.0, phi +F2*step/2.0, Dphi +f2*step/2.0, V0, q, phi0);
 	F4 = Dphi +f3*step;
 	f4 = DDphi(N +step, phi +F3*step, Dphi +f3*step, V0, q, phi0);
 
-	update_phi[0] = (F1 +2*F2 +2*F3 +F4)*step/6.;
-	update_phi[1] = (f1 +2*f2 +2*f3 +f4)*step/6.;
+	update_phi[0] = (F1 +2*F2 +2*F3 +F4)*step/6.0;
+	update_phi[1] = (f1 +2*f2 +2*f3 +f4)*step/6.0;
 
 	return; 
 	/* (phi, Dphi) update */
