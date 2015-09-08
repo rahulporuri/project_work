@@ -50,8 +50,8 @@ H_array_m = [H_m_data[i][2] for i in range(100000 +1)]
 
 plt.cla()
 plt.xlabel(r'$N$')
-plt.ylabel(r'$\phi$')
-plt.title(r'$\phi$ as a function of $N$')
+plt.ylabel(r'${\rm H}$')
+plt.title(r'${\rm H}$ as a function of $N$')
 c, = plt.plot(N_array_c, H_array_c, '.')
 python, = plt.plot(N_array_py, H_array_py, '--')
 m, = plt.plot(N_array_m, H_array_m, '-')
@@ -78,8 +78,8 @@ DH_array_m = [DH_m_data[i][2].strip(' ') for i in range(100000 +1)]
 
 plt.cla()
 plt.xlabel(r'$N$')
-plt.ylabel(r'$\phi$')
-plt.title(r'$\phi$ as a function of $N$')
+plt.ylabel(r'$\frac{{\rm d}H}{{\rm d}N}$')
+plt.title(r'$\frac{{\rm d}H}{{\rm d}N}$ as a function of $N$')
 c, = plt.plot(N_array_c, DH_array_c, '.')
 python, = plt.plot(N_array_py, DH_array_py, '--')
 m, = plt.plot(N_array_m, numpy.asarray(DH_array_m, dtype=float)*(10**(-6)), '-')
@@ -105,8 +105,8 @@ eps_array_m = [eps_m_data[i][2] for i in range(100000 +1)]
 
 plt.cla()
 plt.xlabel(r'$N$')
-plt.ylabel(r'$\phi$')
-plt.title(r'$\phi$ as a function of $N$')
+plt.ylabel(r'$\epsilon_1$')
+plt.title(r'$\epsilon_1$ as a function of $N$')
 c, = plt.plot(N_array_c, eps_array_c, '.')
 python, = plt.plot(N_array_py, eps_array_py, '--')
 m, = plt.plot(N_array_m, eps_array_m, '-')
