@@ -36,6 +36,9 @@ phi_ptr = open("../mathematica_codes/phi_vs_N_python.txt", "w")
 H_ptr = open("../mathematica_codes/H_vs_N_python.txt", "w")
 DH_ptr = open("../mathematica_codes/DH_vs_N_python.txt", "w")
 eps_ptr = open("../mathematica_codes/eps_vs_N_python.txt","w")
+
+tps_data_ptr = open("../mathematica_codes/tps_python.txt","w")
+
 # In[4]:
 
 V = lambda _phi : V0*numpy.exp(-(2./q)**(1./2)*(_phi -phi0))
@@ -99,7 +102,7 @@ phi = lambda _N : phi_array[int((_N-Ni)/step)]
 Dphi = lambda _N : Dphi_array[int((_N-Ni)/step)]
 
 H = lambda _N : (V(phi(_N))/(3. -Dphi(_N)**2/2.))**(1./2)
-DH = lambda _N : H(_N)*Dphi(_N)
+DH = lambda _N : -(1.0/2)*H(_N)*Dphi(_N)**2
 
 for i in range(len(N_array)):
 	H_array = numpy.append(H_array, (V(phi_array[i])/(3. -Dphi_array[i]**2/2.))**(1./2))
@@ -118,8 +121,6 @@ phi_ptr.close()
 H_ptr.close()
 DH_ptr.close()
 eps_ptr.close()
-
-'''
 
 ai = 1e-05
 A = lambda _N : ai*numpy.exp(_N)
@@ -193,7 +194,7 @@ def evolve_hk(k, _Nics, _Nshss, _step):
     #print N, _Nshss, str(hk).strip('[]'), str(Dhk).strip('[]'), '\n'
     return hk_array
 
-
+'''
 # In[8]:
 
 k0 = 1e-06
@@ -210,22 +211,25 @@ Nics = solve_Nics(k0, N_array)
 while k0 < 1e-01:
     print k0, Nics, initialize_hk(k0, Nics), initialize_Dhk(k0, Nics)
     k0 = 10*k0
-
+'''
 
 # In[8]:
 
 k0 = 1e-06
-while k0 < 1e-01:
+while k0 < 1e-00:
     Nics = solve_Nics(k0, N_array)
     Nshss = solve_Nshss(k0, N_array)
 
     hk_k0_array = numpy.empty(0, dtype=complex)
     hk_k0_array = evolve_hk(k0, Nics, Nshss, step)
-    tps_k0 = 8.*(k0)**3./(2.*numpy.pi**2.)*(numpy.absolute(hk_k0_array[-1]))**2.
+    tps_k0 = 2.*(k0)**3./(2.*numpy.pi**2.)*(numpy.absolute(hk_k0_array[-1]))**2.
 
     print k0, Nics, Nshss, str(hk_k0_array[-1]).strip('[]'), str(tps_k0).strip('[]')
-    k0 = 10*k0
+    tps_data_ptr.write(str(k0) +" , " +str(Nics) +" , " +str(Nshss) +" , " +str(tps_k0) +"\n")
+    k0 = (10**(1.0/2))*k0
 
+tps_data_ptr.close()
+'''
 
 # In[11]:
 

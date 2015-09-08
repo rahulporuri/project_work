@@ -36,6 +36,8 @@ main(void)
 	FILE *DH_ptr;
 	FILE *eps1_ptr;
 
+	FILE *tps_data_ptr;
+
 	double q, V0, t0;
 	double phi0, dphi0;
 	double phi, Dphi;
@@ -74,6 +76,8 @@ main(void)
 	H_ptr = fopen("../mathematica_codes/H_vs_N_c.txt","w");
 	DH_ptr = fopen("../mathematica_codes/DH_vs_N_c.txt","w");
 	eps1_ptr = fopen("../mathematica_codes/eps_vs_N_c.txt","w");
+
+	tps_data_ptr = fopen("../mathematica_codes/tps_c.txt","w");
 
 	q = 51.0;
 	V0 = (204.0/100.0)*pow(10,-8);
@@ -146,8 +150,6 @@ main(void)
 	fclose(DH_ptr);
 	fclose(eps1_ptr);
 
-/*
-
 	while (k < pow(10,0))
 	{
 		printf("===================================");
@@ -184,13 +186,21 @@ main(void)
 
 		printf("%lf, %lf, %le, %le \n", hk[0], hk[1], Dhk[0], Dhk[1]);
 
-		tps = 8*pow(k,3)/(2*pow(M_PI,2))*(hk[0]*hk[0] +hk[1]*hk[1]);
+		tps = 2*pow(k,3)/(2*pow(M_PI,2))*(hk[0]*hk[0] +hk[1]*hk[1]);
 		printf("%le \n", tps);
+
+		fprintf(tps_data_ptr, "%le, %lf, %lf, %le \n", k, Nics, Nshss, tps);
 
 		k = pow(10,1./2)*k;
 		printf("\n");
 	}
-*/
+
+/*	fclose(phi_ptr);
+	fclose(H_ptr);
+	fclose(DH_ptr);
+	fclose(eps1_ptr);
+
+	fclose(tps_data_ptr);*/
 
 	return (0);
 }
