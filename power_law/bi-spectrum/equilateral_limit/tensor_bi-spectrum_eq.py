@@ -13,11 +13,10 @@ parallel_output = mp.Queue()
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
 
-
-tps_file = open('power_spectrum_power_law_func.dat','w')
-phi_file = open('phi_vs_N_power_law_func.dat','w')
-h_file = open('H_vs_N_power_law_func.dat','w')
-eps_file = open('eps1_vs_N_power_law_func.dat','w')
+#tps_file = open('power_spectrum_power_law_func.dat','w')
+#phi_file = open('phi_vs_N_power_law_func.dat','w')
+#h_file = open('H_vs_N_power_law_func.dat','w')
+#eps_file = open('eps1_vs_N_power_law_func.dat','w')
 
 q = 51.
 V0 = (204./100.)*1e-08
@@ -29,11 +28,6 @@ dphi0 = (2.*q)**(1./2)/t0
 Ni = 0.
 Nf = 70. 
 
-kp = 5.*1e-02
-beta = -((2.*q -1.)/(q -1.))
-eps1a = ((beta +2.)/(beta +1.))
-
-#V = lambda phi : V0*numpy.exp(-(2*q)**(1./2.)*(phi-phi_i))
 V = lambda phi : V0*numpy.exp(-(2./q)**(1./2)*(phi -phi0))
 dV = lambda phi : -(2./q)**(1./2)*V0*numpy.exp(-(2./q)**(1./2)*(phi -phi0))
 
@@ -55,37 +49,38 @@ def rk4_step(N, phi0, Dphi0, step):
 
     return [(f1 +2*f2 +2*f3 +f4)*step/6., (F1 +2*F2 +2*F3 +F4)*step/6.] # [Dhk, hk] update
 
-npts = 500000
+npts = 100000
 step = (Nf-Ni)/(npts)
 
 phi_ = phi0
 Dphi_ = Dphi0
 
-phi_array = numpy.array([phi_])
-Dphi_array = numpy.array([Dphi_])
-N_array = numpy.array([Ni]) 
-
-phi_theory = lambda N : (2./q)**(1./2)*N + phi0
+phi_array = numpy.empty(0)
+Dphi_array = numpy.empty(0)
+N_array = numpy.empty(0) 
 
 N = Ni
-phi_file.write(str(N)+"\t"+str(phi_)+"\t"+str(Dphi_)+"\t"+str(phi_theory(N))+"\n")
+#phi_file.write(str(N)+"\t"+str(phi_)+"\t"+str(Dphi_)+"\t"+str(phi_theory(N))+"\n")
 while N < Nf:
+    phi_array = numpy.append(phi_array, phi_)
+    Dphi_array = numpy.append(Dphi_array, Dphi_)
+    N_array = numpy.append(N_array, N)
+
     array = rk4_step(N, phi_, Dphi_, step)
     phi_ = phi_ + array[1]
     Dphi_ = Dphi_ + array[0]
-    phi_array = numpy.append(phi_array,phi_)
-    Dphi_array = numpy.append(Dphi_array,Dphi_)
     N += step
-    N_array = numpy.append(N_array,N)
-    phi_file.write(str(N)+"\t"+str(phi_)+"\t"+str(Dphi_)+"\t"+str(phi_theory(N))+"\n")
 
-phi_file.close()
+#    phi_file.write(str(N)+"\t"+str(phi_)+"\t"+str(Dphi_)+"\t"+str(phi_theory(N))+"\n")
+
+#phi_file.close()
 #plt.plot(numpy.linspace(0,70,npts+1), phi_array)
 
 # consider interpolating values from 100000 to 1000000
 
 phi = lambda N : phi_array[int((N-Ni)/step)]
 Dphi = lambda N : Dphi_array[int((N-Ni)/step)]
+
 '''
 plt.cla()
 plt.hold(True)
@@ -99,15 +94,9 @@ plt.legend([numerical, theory], ['numerical results', 'theoretical results'])
 plt.savefig('phi_vs_N_power_law.png')
 #plt.show()
 '''
-eps0 = (3./2)*((dphi0**2)/(dphi0**2/2. + V(phi0)))
-eps = 1./q 
-
-#H = [((V(phi_array[i]))/(3 -Dphi_array[i]**2/2))**(1./2) for i in range(len(phi_array))]
-
 H = lambda N : (V(phi(N))/(3 -Dphi(N)**2/2))**(1./2)
 DH = lambda N : H(N)*Dphi(N)
 
-H_theory = lambda N : H0*numpy.exp(-N/q)
 '''
 for N in N_array:
 	h_file.write(str(N)+"\t"+str(H(N)/H0)+"\t"+str(H_theory(N)/H0)+"\n")
@@ -123,10 +112,9 @@ theory, = plt.plot(N_array, [H_theory(N)/H0 for N in N_array], '-', label = 'the
 plt.legend([numerical, theory], ['numerical results', 'theoretical results'])
 plt.savefig('H_vs_N_power_law.png')
 '''
+
 ai = 1e-05
 
-eps1 = lambda N : Dphi_array[int((N-Ni)/step)]**2/2.
-eps1_theory = eps0
 '''
 for N in N_array:
 	eps_file.write(str(N)+"\t"+str(eps1(N))+"\t"+str(eps1_theory)+"\n")
@@ -141,7 +129,7 @@ plt.axhline(y=eps0)
 plt.legend([numerical], ['numerical results'])
 plt.savefig('eps1_vs_N_power_law.png')
 '''
-#z = [ai*numpy.exp(N_array[i])*Dphi_array[i] for i in range(len(N_array))]
+
 z = lambda N: ai*numpy.exp(N)*Dphi(N)
 A = lambda N : ai*numpy.exp(N)
 
