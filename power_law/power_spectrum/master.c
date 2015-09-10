@@ -31,7 +31,12 @@ main(void)
 {
 	/* define constants */
 
-//	FILE *tps_data_ptr;
+	FILE *phi_ptr;
+	FILE *H_ptr;
+	FILE *DH_ptr;
+	FILE *eps1_ptr;
+
+	FILE *tps_data_ptr;
 
 	double q, V0, t0;
 	double phi0, dphi0;
@@ -67,7 +72,12 @@ main(void)
 
 	double Nics, Nshss;
 
-//	tps_data_ptr = fopen("/mathematica_codes/tps_c.txt","w");
+	phi_ptr = fopen("../mathematica_codes/phi_vs_N_c.txt","w");
+	H_ptr = fopen("../mathematica_codes/H_vs_N_c.txt","w");
+	DH_ptr = fopen("../mathematica_codes/DH_vs_N_c.txt","w");
+	eps1_ptr = fopen("../mathematica_codes/eps_vs_N_c.txt","w");
+
+	tps_data_ptr = fopen("../mathematica_codes/tps_c.txt","w");
 
 	q = 51.0;
 	V0 = (204.0/100.0)*pow(10,-8);
@@ -115,7 +125,7 @@ main(void)
 		j += 1;
 	}
 
-/*	printf("%lf, %lf, %lf, %lf \n", N, step, phi, Dphi);
+	printf("%lf, %lf, %lf, %lf \n", N, step, phi, Dphi);
 	printf("%lf, %lf, %lf, %lf, %lf, %lf \n", N_array[0], N_array[npts], phi_array[0], phi_array[npts], Dphi_array[0], Dphi_array[npts]);
 	printf("%lf, %lf, %lf, %lf \n", phi_function(phi_array, Ni, Ni, step), Dphi_function(Dphi_array, Ni, Ni, step), phi_function(phi_array, Nf, Ni, step), Dphi_function(Dphi_array, Nf, Ni, step));
 	printf("%d \n", j);
@@ -138,18 +148,16 @@ main(void)
 	fclose(phi_ptr);
 	fclose(H_ptr);
 	fclose(DH_ptr);
-	fclose(eps1_ptr); */
-
-
-
+	fclose(eps1_ptr);
 
 	while (k < pow(10,0))
 	{
+		printf("===================================");
+		printf("%le \n", k);
+
 		Nics = find_Nics(k, N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step);
 		Nshss = find_Nshss(k, N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step);
 
-		printf("===================================");
-		printf("%le, %lf, %lf \n", k, Nics, Nshss);
 
 		initialize_hk(k, Nics, ai, hk);
 		initialize_Dhk(k, Nics, ai, Dhk, Nics, V0, q, phi0, phi_array, Dphi_array, Ni, step);
@@ -157,12 +165,12 @@ main(void)
 		printf("%lf, %lf \n", hk[0], hk[1]);
 		printf("%lf, %lf \n", Dhk[0], Dhk[1]);
 
-/*		printf("%lf \n", Nics);
+		printf("%lf \n", Nics);
 		printf("%lf \n", Nshss);
 		printf("%lf \n", find_Nics(pow(10,-5), N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step));
 		printf("%lf \n", find_Nshss(pow(10,-5), N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step));
 		printf("%lf \n", find_Nics(pow(10,-4), N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step));
-		printf("%lf \n", find_Nshss(pow(10,-4), N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step)); */
+		printf("%lf \n", find_Nshss(pow(10,-4), N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step)); 
 
 		N = Nics;
 		while (N < Nshss +step)
@@ -181,7 +189,7 @@ main(void)
 		tps = 2*pow(k,3)/(2*pow(M_PI,2))*(hk[0]*hk[0] +hk[1]*hk[1]);
 		printf("%le \n", tps);
 
-//		fprintf(tps_data_ptr, "%le, %lf, %lf, %le \n", k, Nics, Nshss, tps);
+		fprintf(tps_data_ptr, "%le, %lf, %lf, %le \n", k, Nics, Nshss, tps);
 
 		k = pow(10,1./2)*k;
 		printf("\n");

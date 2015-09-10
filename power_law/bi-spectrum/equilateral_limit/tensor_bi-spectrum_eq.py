@@ -95,7 +95,7 @@ plt.savefig('phi_vs_N_power_law.png')
 #plt.show()
 '''
 H = lambda N : (V(phi(N))/(3 -Dphi(N)**2/2))**(1./2)
-DH = lambda N : H(N)*Dphi(N)
+DH = lambda N : -(1./2)*H(N)*Dphi(N)**2
 
 '''
 for N in N_array:
@@ -191,21 +191,22 @@ def evolve_hk(k0, hk0, Dhk0, Nics, Nshss, step):
 
     return hk_array
 
+e = 10**(-1.)
 
 def calG(hk_array, k0, Nics, Nshss):
     N_range = numpy.linspace(Nics, Nshss, len(hk_array))
-    func_int = (A(N_range)/numpy.asarray([H(N) for N in N_range]))*numpy.conj(hk_array)**3
+    func_int = (A(N_range)/numpy.asarray([H(N) for N in N_range]))*numpy.conj(hk_array)**3*numpy.exp(-e*k0/(A(N_range)*numpy.asarray([H(N) for N in N_range])))
     #result = romb(func_int, N_Array[1]-N_Array[0])
     result = simps(func_int, N_range)
-    return (-3.*k0**2/4.)*result*numpy.array([0.+1.j], dtype=complex)
+    return (-1/4.)*result*numpy.array([0.+1.j], dtype=complex)
 
 
 def calG_cc(hk_array, k0, Nics, Nshss):
     N_range = numpy.linspace(Nics, Nshss, len(hk_array))
-    func_int = (A(N_range)/numpy.asarray([H(N) for N in N_range]))*(hk_array)**3
+    func_int = (A(N_range)/numpy.asarray([H(N) for N in N_range]))*(hk_array)**3*numpy.exp(-e*k0/(A(N_range)*numpy.asarray([H(N) for N in N_range])))
     #result = romb(func_int, N_Array[1]-N_Array[0])
     result = simps(func_int, N_range)
-    return (+3.*k0**2/4.)*result*numpy.array([0.+1.j], dtype=complex)
+    return (+1/4.)*result*numpy.array([0.+1.j], dtype=complex)
 
 
 def main(k0, N_array):
@@ -221,15 +222,16 @@ def main(k0, N_array):
 
     hk_array = numpy.empty(0, dtype=complex)
     hk_array = evolve_hk(k0, hk0, Dhk0, Nics, Nshss, step)
-    tps= 8.*(k0)**3/(2.*numpy.pi**2)*(numpy.absolute(hk_array[-1]))**2
+    tps= 2.*(k0)**3/(2.*numpy.pi**2)*(numpy.absolute(hk_array[-1]))**2
 
     CalG = calG(hk_array, k0, Nics, Nshss)
     CalG_cc = calG_cc(hk_array, k0, Nics, Nshss)
 
-    G = (hk_array[-1]**3)*CalG + (numpy.conj(hk_array[-1])**3)*CalG_cc
+    G = (3.*(k0)**2)*((hk_array[-1]**3)*CalG + (numpy.conj(hk_array[-1])**3)*CalG_cc)
     h_NL = (-1./6)*((4./(2.*numpy.pi**2))**2)*(k0**6)*G/(tps**2)
 
-    print k0, N-step, Nics, Nshss, str(hk0).strip('[]'), str(Dhk0).strip('[]'), str(tps).strip('[]'), str(CalG).strip('[]'), str((k0**(3./2))*numpy.absolute(CalG)).strip('[]'), str(G.real).strip('[]'), str((k0**6)*G.real).strip('[]'), str(h_NL.real).strip('[]')
+#    print k0, N-step, Nics, Nshss, str(hk0).strip('[]'), str(Dhk0).strip('[]'), str(tps).strip('[]'), str(CalG).strip('[]'), str((k0**(3./2))*numpy.absolute(CalG)).strip('[]'), str(G.real).strip('[]'), str((k0**6)*G.real).strip('[]'), str(h_NL.real).strip('[]')
+    print k0, N-step, Nics, Nshss, str(tps).strip('[]'), str((k0**(3./2))*numpy.absolute(CalG)).strip('[]'), str(G.real).strip('[]'), str((k0**6)*G.real).strip('[]'), str(h_NL.real).strip('[]')
 #    print '\n'
 #    return str(tps).strip('[]')
     return None
