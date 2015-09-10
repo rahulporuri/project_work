@@ -13,11 +13,6 @@ parallel_output = mp.Queue()
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
 
-#tps_file = open('power_spectrum_power_law_func.dat','w')
-#phi_file = open('phi_vs_N_power_law_func.dat','w')
-#h_file = open('H_vs_N_power_law_func.dat','w')
-#eps_file = open('eps1_vs_N_power_law_func.dat','w')
-
 q = 51.
 V0 = (204./100.)*1e-08
 t0 = (q*(3.*q -1.)/V0)**(1./2)
@@ -60,7 +55,6 @@ Dphi_array = numpy.empty(0)
 N_array = numpy.empty(0) 
 
 N = Ni
-#phi_file.write(str(N)+"\t"+str(phi_)+"\t"+str(Dphi_)+"\t"+str(phi_theory(N))+"\n")
 while N < Nf:
     phi_array = numpy.append(phi_array, phi_)
     Dphi_array = numpy.append(Dphi_array, Dphi_)
@@ -71,73 +65,18 @@ while N < Nf:
     Dphi_ = Dphi_ + array[0]
     N += step
 
-#    phi_file.write(str(N)+"\t"+str(phi_)+"\t"+str(Dphi_)+"\t"+str(phi_theory(N))+"\n")
-
-#phi_file.close()
-#plt.plot(numpy.linspace(0,70,npts+1), phi_array)
-
-# consider interpolating values from 100000 to 1000000
-
 phi = lambda N : phi_array[int((N-Ni)/step)]
 Dphi = lambda N : Dphi_array[int((N-Ni)/step)]
 
-'''
-plt.cla()
-plt.hold(True)
-plt.xlim([Ni,Nf])
-plt.xlabel(r'e-fold ${\rm N}$')
-plt.ylabel(r'$\phi({\rm N})$')
-plt.title(r'$\phi({\rm N})$ as a function of e-fold ${\rm N}$')
-numerical, = plt.plot(N_array, phi_array, '--', label = 'numerical results')
-theory, = plt.plot(N_array, [phi_theory(N) for N in N_array], '-', label = 'theory results')
-plt.legend([numerical, theory], ['numerical results', 'theoretical results'])
-plt.savefig('phi_vs_N_power_law.png')
-#plt.show()
-'''
 H = lambda N : (V(phi(N))/(3 -Dphi(N)**2/2))**(1./2)
 DH = lambda N : -(1./2)*H(N)*Dphi(N)**2
 
-'''
-for N in N_array:
-	h_file.write(str(N)+"\t"+str(H(N)/H0)+"\t"+str(H_theory(N)/H0)+"\n")
-
-plt.cla()
-plt.hold(True)
-plt.xlim([Ni,Nf])
-plt.xlabel(r'e-fold ${\rm N}$')
-plt.ylabel(r'${\rm H}({\rm N})$')
-plt.title(r'${\rm H}({\rm N})$ as a function of e-fold ${\rm N}$')
-numerical, = plt.plot(N_array, numpy.asarray([H(i) for i in N_array], dtype= numpy.float64)/H0, '--', label = 'numerical results')
-theory, = plt.plot(N_array, [H_theory(N)/H0 for N in N_array], '-', label = 'theory')
-plt.legend([numerical, theory], ['numerical results', 'theoretical results'])
-plt.savefig('H_vs_N_power_law.png')
-'''
-
 ai = 1e-05
-
-'''
-for N in N_array:
-	eps_file.write(str(N)+"\t"+str(eps1(N))+"\t"+str(eps1_theory)+"\n")
-
-plt.cla()
-plt.xlim([Ni,Nf])
-plt.xlabel(r'e-fold ${\rm N}$')
-plt.ylabel(r'$\epsilon_1({\rm N})$')
-plt.title(r'$\epsilon_1({\rm N})$ as a function of e-fold ${\rm N}$')
-numerical, = plt.plot(N_array, [str(eps1(i)).strip('[]') for i in N_array], '--', label = 'numerical results')
-plt.axhline(y=eps0)
-plt.legend([numerical], ['numerical results'])
-plt.savefig('eps1_vs_N_power_law.png')
-'''
-
-z = lambda N: ai*numpy.exp(N)*Dphi(N)
 A = lambda N : ai*numpy.exp(N)
-
 k0 = numpy.empty(0)
 
 def DDhk(k0, N, hk0, Dhk0):
     return -((3. +(DH(N)/H(N)))*Dhk0 +((k0/(A(N)*H(N)))**2)*hk0)
-
 
 def rk4_step(k0, N, hk0, Dhk0, step):
     F1 = Dhk0
@@ -151,13 +90,11 @@ def rk4_step(k0, N, hk0, Dhk0, step):
 
     return numpy.array([(f1 +2*f2 +2*f3 +f4)*step/6.], dtype=complex), numpy.array([(F1 +2*F2 +2*F3 +F4)*step/6.], dtype=complex) # [Dhk, hk] update
 
-
 def solve_Nics(k0, N_array):
     step = N_array[1] -N_array[0]
     Nics_temp = numpy.asarray([k0 - 1e+02*A(N)*H(N) for N in N_array])   
     nics_test = numpy.where(Nics_temp > 0)
     return Ni + nics_test[0][-1]*step
-
 
 def solve_Nshss(k0, N_array):
     step = N_array[1] -N_array[0]
@@ -165,19 +102,16 @@ def solve_Nshss(k0, N_array):
     nshss_test = numpy.where(Nshss_temp > 0)
     return Ni + nshss_test[0][-1]*step
 
-
 def initialize_hk(k0, Nics):
     hk0 = numpy.zeros(1,dtype=complex)             
     hk0.real = (((2.*k0)**(1./2))*A(Nics))**(-1.)
     return hk0
-
 
 def initialize_Dhk(k0, Nics):
     Dhk0 = numpy.zeros(1,dtype=complex)
     Dhk0.real = -(1/A(Nics))*((2*k0)**(-1./2))
     Dhk0.imag = -((k0/2)**(1./2))/(A(Nics)*A(Nics)*H(Nics))
     return Dhk0
-
 
 def evolve_hk(k0, hk0, Dhk0, Nics, Nshss, step):
     hk_array = numpy.empty(0, dtype=complex)
@@ -200,14 +134,12 @@ def calG(hk_array, k0, Nics, Nshss):
     result = simps(func_int, N_range)
     return (-1/4.)*result*numpy.array([0.+1.j], dtype=complex)
 
-
 def calG_cc(hk_array, k0, Nics, Nshss):
     N_range = numpy.linspace(Nics, Nshss, len(hk_array))
     func_int = (A(N_range)/numpy.asarray([H(N) for N in N_range]))*(hk_array)**3*numpy.exp(-e*k0/(A(N_range)*numpy.asarray([H(N) for N in N_range])))
     #result = romb(func_int, N_Array[1]-N_Array[0])
     result = simps(func_int, N_range)
     return (+1/4.)*result*numpy.array([0.+1.j], dtype=complex)
-
 
 def main(k0, N_array):
     Nics = solve_Nics(k0, N_array)
@@ -230,10 +162,7 @@ def main(k0, N_array):
     G = (3.*(k0)**2)*((hk_array[-1]**3)*CalG + (numpy.conj(hk_array[-1])**3)*CalG_cc)
     h_NL = (-1./6)*((4./(2.*numpy.pi**2))**2)*(k0**6)*G/(tps**2)
 
-#    print k0, N-step, Nics, Nshss, str(hk0).strip('[]'), str(Dhk0).strip('[]'), str(tps).strip('[]'), str(CalG).strip('[]'), str((k0**(3./2))*numpy.absolute(CalG)).strip('[]'), str(G.real).strip('[]'), str((k0**6)*G.real).strip('[]'), str(h_NL.real).strip('[]')
-    print k0, N-step, Nics, Nshss, str(tps).strip('[]'), str((k0**(3./2))*numpy.absolute(CalG)).strip('[]'), str(G.real).strip('[]'), str((k0**6)*G.real).strip('[]'), str(h_NL.real).strip('[]')
-#    print '\n'
-#    return str(tps).strip('[]')
+    print k0, str(tps).strip('[]'), str((k0**(3./2))*numpy.absolute(CalG)).strip('[]'), str(G.real).strip('[]'), str((k0**6)*G.real).strip('[]'), str(h_NL.real).strip('[]')
     return None
 
 k_list = numpy.array([10**((-12 + i)/2.) for i in range(13)])
@@ -250,30 +179,3 @@ for i in range(len(k_list)):
 #print k_list, results
 #print k_vs_hk
 #print '\n'
-
-'''
-for k0 in k_list:
-    hk0 = numpy.zeros(1,dtype=complex)
-    hk0 = main(k0, N_array)
-    k_vs_hk = numpy.append(k_vs_hk, hk0) 
-	temp = 8*(k0)**3/(2*numpy.pi**2)*(numpy.absolute(hk0))**2
-    print str(temp).strip('[]')
-    print '\n'
-    tps_file.write(str(k0)+"\t"+str(temp).strip('[]')+"\n")
-#    tps_file.write(str(k0)+"\t"+str(hk0.real)+"\t"+str(hk0.imag)+"\t"+str(temp).strip('[]')+"\n")
-
-#print len(k_list), len(k_vs_hkhk)
-#TPS = [8*(k_list[i])**3/(2*numpy.pi**2)*(numpy.absolute(k_vs_hk[i]))**2 for i in range(len(k_list))]
-#TPS = [8*(k_list[i])**3/(2*numpy.pi**2)*(k_vs_hk[i])**2 for i in range(len(k_list))]
-#print k_list, TPS
-
-tps_file.close()
-
-plt.cla()
-plt.xlabel(r'$k$')
-plt.ylabel(r'${\mathcal{P}}_{\rm T}(k)$')
-plt.title(r'${\mathcal{P}}_{\rm T}(k)$ as a function of $k$')
-numerics, = plt.loglog(k_list, TPS)
-plt.legend([numerics],['numerical results'])
-plt.savefig('power_spectrum_power_law.png')
-'''
