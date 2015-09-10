@@ -72,12 +72,12 @@ main(void)
 
 	double Nics, Nshss;
 
-	phi_ptr = fopen("../mathematica_codes/phi_vs_N_c.txt","w");
-	H_ptr = fopen("../mathematica_codes/H_vs_N_c.txt","w");
-	DH_ptr = fopen("../mathematica_codes/DH_vs_N_c.txt","w");
-	eps1_ptr = fopen("../mathematica_codes/eps_vs_N_c.txt","w");
+	phi_ptr = fopen("data_files/phi_vs_N_c.txt","w");
+	H_ptr = fopen("data_files/H_vs_N_c.txt","w");
+	DH_ptr = fopen("data_files/DH_vs_N_c.txt","w");
+	eps1_ptr = fopen("data_files/eps_vs_N_c.txt","w");
 
-	tps_data_ptr = fopen("../mathematica_codes/tps_c.txt","w");
+	tps_data_ptr = fopen("data_files/tps_c.txt","w");
 
 	q = 51.0;
 	V0 = (204.0/100.0)*pow(10,-8);

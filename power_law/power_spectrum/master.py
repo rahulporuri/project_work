@@ -1,26 +1,8 @@
-
-# coding: utf-8
-
-# In[1]:
-
 import numpy
 import matplotlib.pyplot as plt
-import scipy.optimize as opt
-from scipy.integrate import romb, simps
-
-import time
-import multiprocessing as mp
-import random
-import string
-
-
-# In[2]:
 
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
-
-
-# In[3]:
 
 q = 51.
 V0 = (204./100.)*1e-08
@@ -32,14 +14,12 @@ dphi0 = (2.*q)**(1./2)/t0
 Ni = 0.
 Nf = 70.
 
-phi_ptr = open("../mathematica_codes/phi_vs_N_python.txt", "w")
-H_ptr = open("../mathematica_codes/H_vs_N_python.txt", "w")
-DH_ptr = open("../mathematica_codes/DH_vs_N_python.txt", "w")
-eps_ptr = open("../mathematica_codes/eps_vs_N_python.txt","w")
+phi_ptr = open("data_files/phi_vs_N_python.txt", "w")
+H_ptr = open("data_files/H_vs_N_python.txt", "w")
+DH_ptr = open("data_files/DH_vs_N_python.txt", "w")
+eps_ptr = open("data_files/eps_vs_N_python.txt","w")
 
-tps_data_ptr = open("../mathematica_codes/tps_python.txt","w")
-
-# In[4]:
+tps_data_ptr = open("data_files/tps_python.txt","w")
 
 V = lambda _phi : V0*numpy.exp(-(2./q)**(1./2)*(_phi -phi0))
 dV = lambda _phi : -(2./q)**(1./2)*V0*numpy.exp(-(2./q)**(1./2)*(_phi -phi0)) 
@@ -62,9 +42,6 @@ def rk4_step(_N, _phi, _Dphi, _step):
 
     return (F1 +2*F2 +2*F3 +F4)*_step/6., (f1 +2*f2 +2*f3 +f4)*_step/6. # (phi, Dphi) update
 
-
-# In[5]:
-
 npts = 100000
 step = (Nf-Ni)/(npts)
 
@@ -80,7 +57,7 @@ eps_array = numpy.empty(0)
 
 N = Ni
 
-print N, phi_, Dphi_, dphi0, H0
+#print N, phi_, Dphi_, dphi0, H0
 while N < Nf+step:
     N_array = numpy.append(N_array, N)
     phi_array = numpy.append(phi_array, phi_)
@@ -92,14 +69,16 @@ while N < Nf+step:
 
     N += step
 
-
-print N, phi_, Dphi_
-print len(N_array)
-
-# In[6]:
+#print N, phi_, Dphi_
+#print len(N_array)
 
 phi = lambda _N : phi_array[int((_N-Ni)/step)]
 Dphi = lambda _N : Dphi_array[int((_N-Ni)/step)]
+
+phi_theory = lambda N : (2./q)**(1./2)*N +phi0
+H_theory = lambda N : H0*numpy.exp(-N/q)
+DH_theory = lambda N : (-H0/q)*numpy.exp(-N/q)
+eps_theory = (3./2)*((dphi0**2.)/(dphi0**2./2. +V(phi0)))
 
 H = lambda _N : (V(phi(_N))/(3. -Dphi(_N)**2/2.))**(1./2)
 DH = lambda _N : -(1.0/2)*H(_N)*Dphi(_N)**2
@@ -112,10 +91,10 @@ for i in range(len(N_array)):
 print H_array[0], DH_array[0], H_array[-1], DH_array[-1]
 
 for i in range(len(N_array)):
-	phi_ptr.write(str(N_array[i])+" , "+str(phi_array[i])+"\n")
-	H_ptr.write(str(N_array[i])+" , "+str(H_array[i])+"\n")
-	DH_ptr.write(str(N_array[i])+" , "+str(DH_array[i])+"\n")
-	eps_ptr.write(str(N_array[i])+" , "+str(eps_array[i])+"\n")
+	phi_ptr.write(str(N_array[i])+" , "+str(phi_array[i]) +" , "+str(phi_theory(N_array[i]))+"\n")
+	H_ptr.write(str(N_array[i])+" , "+str(H_array[i])+" , "+str(H_theory(N_array[i]))+"\n")
+	DH_ptr.write(str(N_array[i])+" , "+str(DH_array[i])+" , "+str(DH_theory(N_array[i]))+"\n")
+	eps_ptr.write(str(N_array[i])+" , "+str(eps_array[i])+" , "+str(eps_theory)+"\n")
 
 phi_ptr.close()
 H_ptr.close()
@@ -143,9 +122,6 @@ def rk4_step(_k, _N, _hk, _Dhk, _step):
     return (numpy.array([(F1 +2*F2 +2*F3 +F4)*_step/6.], dtype=complex),
             numpy.array([(f1 +2*f2 +2*f3 +f4)*_step/6.], dtype=complex))
             # [hk, Dhk] update
-
-
-# In[7]:
 
 def solve_Nics(k, eN_array):
     Ni = eN_array[0]
@@ -193,8 +169,6 @@ def evolve_hk(k, _Nics, _Nshss, _step):
 
     #print N, _Nshss, str(hk).strip('[]'), str(Dhk).strip('[]'), '\n'
     return hk_array
-
-# In[8]:
 
 k0 = 1e-06
 while k0 < 1e-00:
