@@ -126,26 +126,27 @@ def evolve_hk(k0, hk0, Dhk0, Nics, Nshss, step):
 	return hk_array
 
 e = 10**(-1.)
-'''
+
 def calG(hk_k1_array, hk_k2_array, hk_k3_array, k1, k2, k3, Nics, Nshss):
 	N_range = numpy.linspace(Nics, Nshss, len(hk_k1_array))
-	print len(N_range), len(A(N_range)), len(numpy.asarray([H(N) for N in N_range])), len(hk_k1_array), len(hk_k2_array), len(hk_k3_array)
-	func_int = A(N_range)/numpy.asarray([H(N) for N in N_range])*(numpy.conj(hk_k1_array)*numpy.conj(hk_k2_array)*numpy.conj(hk_k3_array))*numpy.exp(-e*k0/(A(N_range)*numpy.asarray([H(N) for N in N_range])))
-	#result = romb(func_int, N_Array[1]-N_Array[0])
+
+	func_int = (A(N_range)/numpy.asarray([H(N) for N in N_range])*
+		(numpy.conj(hk_k1_array)*numpy.conj(hk_k2_array)*numpy.conj(hk_k3_array))*
+		numpy.exp(-e*(k1 +k2 +k3)/(3*A(N_range)*numpy.asarray([H(N) for N in N_range]))))
+
 	result = simps(func_int, N_range)
 	return (-1/4.)*(k1**2+k2**2+k3**2)*result*numpy.array([0.+1.j], dtype=complex)
 
 def calG_cc(hk_kx_array, hk_ky_array, hk_kz_array, kx, ky, kz, N_ics, N_shss):
 	N_range = numpy.linspace(N_ics, N_shss, len(hk_kx_array))
-	print len(N_range), len(A(N_range)), len(numpy.asarray([H(N) for N in N_range])), len(hk_kx_array), len(hk_ky_array), len(hk_kz_array)
+
 	AoverH = numpy.asarray([A(N) for N in N_range])/numpy.asarray([H(N) for N in N_range])
-	factor = numpy.exp(-e*k0/(numpy.asarray([A(N) for N in N_range])*numpy.asarray([H(N) for N in N_range])))
-	print len(AoverH), len(factor)
+	factor = numpy.exp(-e*(k1+k2+k3)/(3*A(N_range)*numpy.asarray([H(N) for N in N_range])))
 	func_int = AoverH*(hk_kx_array*hk_ky_array*hk_kz_array)*factor
-	#result = romb(func_int, N_Array[1]-N_Array[0])
+
 	result = simps(func_int, N_range)
 	return (+1/4.)*(kx**2+ky**2+kz**2)*result*numpy.array([0.+1.j], dtype=complex)
-'''
+
 def main(k_set, N_array):
 	k2, k3 = k_set
 
@@ -187,18 +188,11 @@ def main(k_set, N_array):
 	tps_k2= 2.*(k2)**3/(2.*numpy.pi**2)*(numpy.absolute(hk_k2_array[-1]))**2
 	tps_k3= 2.*(k3)**3/(2.*numpy.pi**2)*(numpy.absolute(hk_k3_array[-1]))**2
 
-#	CalG = calG(hk_k1_array, hk_k2_array, hk_k3_array, k1, k2, k3, Nics, Nshss)
-#	CalG_cc = calG_cc(hk_k1_array, hk_k2_array, hk_k3_array, k1, k2, k3, Nics, Nshss)
-
-	N_range = numpy.linspace(Nics, Nshss, len(hk_k1_array))
-#	print len(N_range), len(A(N_range)), len(numpy.asarray([H(N) for N in N_range])), len(hk_k1_array), len(hk_k2_array), len(hk_k3_array)
-	func_int = A(N_range)/numpy.asarray([H(N) for N in N_range])*(numpy.conj(hk_k1_array)*numpy.conj(hk_k2_array)*numpy.conj(hk_k3_array))*numpy.exp(-e*k0/(A(N_range)*numpy.asarray([H(N) for N in N_range])))
-
-	CalG =  (-1/4.)*(k1**2+k2**2+k3**2)*simps(func_int, N_range)*numpy.array([0.+1.j], dtype=complex)
-	CalG_cc = numpy.conj(CalG_cc)
+	CalG = calG(hk_k1_array, hk_k2_array, hk_k3_array, k1, k2, k3, Nics, Nshss)
+	CalG_cc = calG_cc(hk_k1_array, hk_k2_array, hk_k3_array, k1, k2, k3, Nics, Nshss)
 
 	G = (hk_k1_array[-1]*hk_k2_array[-1]*hk_k3_array[-1])*CalG +(numpy.conj(hk_k1_array[-1])*numpy.conj(hk_k2_array[-1])*numpy.conj(hk_k3_array[-1]))*CalG_cc
-	h_NL = ((4./(2.*numpy.pi**2))**2)*(k1**3*k2**3*k3**3)*G/(2*k3**2*tps_k1*tps_k2 +2*k2**2*tps_k3*tps_k1 +2*k1**2*tps_k2*tps_k3)
+	h_NL = -((4./(2.*numpy.pi**2))**2)*(k1**3*k2**3*k3**3)*G/(2*k3**2*tps_k1*tps_k2 +2*k2**2*tps_k3*tps_k1 +2*k1**2*tps_k2*tps_k3)
 
 	print k1, str(tps_k1).strip('[]'), k2, str(tps_k2).strip('[]'), k3, str(tps_k3).strip('[]'),
 	print str(numpy.absolute(CalG)).strip('[]'), str(G.real).strip('[]'), str(h_NL.real).strip('[]')
@@ -214,16 +208,16 @@ k_list = []
 
 for i in range(len(k3)):
 	if k3[i] < 0.5:
-		k2 = numpy.arange(1. -k3[i]/k1, 1., 0.1)*k1
+		k2 = numpy.linspace(1. -k3[i]/k1, 1.,int(k3[i]/k1/0.1))*k1
 		[k_list.append([kx, k3[i]]) for kx in k2]
 	else :
-		k2 = numpy.arange(k3[i]/k1, 1., 0.1)*k1
+		k2 = numpy.linspace(k3[i]/k1, 1.,int((1 -k3[i]/k1) /0.1))*k1
 		[k_list.append([kx, k3[i]]) for kx in k2]
 
 #k_list = k_list[1]
 print len(k_list)
 #print k_list
-pool = mp.Pool(processes = 4)
+pool = mp.Pool(processes =4)
 #for i in range(len(k_list)):
 #	k2, k3 = k_list[i]
 #	print k2, k3

@@ -56,7 +56,7 @@ y = k2/k1
 #y = data[:,1]
 #z = data[:,2]
 
-z = data[:,11]
+z = data[:,10]
 
 xi = np.linspace(0,1,400)
 yi = np.linspace(0.5,1,400)
