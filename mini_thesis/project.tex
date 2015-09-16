@@ -678,7 +678,7 @@ theoretical and numerical estimates are in good agreement with one another.
 
 \begin{figure}
 \begin{center}
-\includegraphics[scale=0.6]{plots/eps1_vs_N_power_law.png}
+\includegraphics[scale=0.6]{plots/eps_vs_N_power_law.png}
 \caption[Plot of $\epsilon_1(N)$ as a function of $N$ during power law inflation]{Plot of $\epsilon_1(N)$ as a function of $N$ during power law inflation}
 \label{epsilon_p}
 \end{center}
@@ -963,7 +963,7 @@ eps0 = (3./2)*((dphi0**2)/(dphi0**2/2. + V(phi0)))
 eps = 1./q 
 
 H = lambda N : (V(phi(N))/(3 -Dphi(N)**2/2))**(1./2)
-DH = lambda N : H(N)*Dphi(N)
+DH = lambda N : -(1./2)*H(N)*Dphi(N)**2
 
 H_theory = lambda N : H0*numpy.exp(-N/q)
 
@@ -1070,13 +1070,13 @@ while k0 < k_max:
     k_vs_hk = numpy.append(k_vs_hk, hk0) 
     print '\n'
     
-    temp = 8*(k0)**3/(2*numpy.pi**2)*(numpy.absolute(hk0))**2
+    temp = 2*(k0)**3/(2*numpy.pi**2)*(numpy.absolute(hk0))**2
     tps_file.write(str(k0)+"\t"+str(temp).strip('[]')+"\n")
     k0 = 10**(1./2)*k0
     i += 1
 
 k_list = numpy.array([10**((-12 + i)/2.) for i in range(13)])
-TPS = [8*(k_list[i])**3/(2*numpy.pi**2)*
+TPS = [2*(k_list[i])**3/(2*numpy.pi**2)*
 		(numpy.absolute(k_vs_hk[i+1]))**2 for i in range(len(k_list))]
 print k_list, TPS
 
