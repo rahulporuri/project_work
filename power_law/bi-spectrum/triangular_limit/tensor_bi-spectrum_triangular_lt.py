@@ -23,16 +23,32 @@ dphi0 = (2.*q)**(1./2)/t0
 Ni = 0.
 Nf = 70. 
 
+'''Note that in this code, I use the prefix 'd' to represent derivative with 
+respect to time (except for the case of dV where the derivative is with respect 
+to phi) and the prefix 'D' to represent derivative with respect to e-fold N. 
+Also, the suffix '0' is used to represent the initial conditions in various cases. 
+Also, as can be seen here, we evaluate the scalar field in the e-fold N range Ni to Nf.'''
+
 V = lambda phi : V0*numpy.exp(-(2./q)**(1./2)*(phi -phi0))
 dV = lambda phi : -(2./q)**(1./2)*V0*numpy.exp(-(2./q)**(1./2)*(phi -phi0))
 
 H0 = ((1./3)*(dphi0**2/2. +V(phi0)))**(1./2.)
 Dphi0 = dphi0/H0
 
+''' Functions to evaluate the values of the potential function V(phi)
+and the derivative of V with respect to phi.
+Note that functions can be defined using the lambda notation, as shown 
+above or using the usual def and return statements, as shown below.'''
+
 def DDphi(N, phi0, Dphi0):
+	''' Returns the value of the second derivative of 
+	phi with respect to e-fold N.'''
 	return -(3 -Dphi0**2/2.)*Dphi0 -(dV(phi0)/(2*V(phi0)))*(6 -Dphi0**2)
 
 def rk4_step(N, phi0, Dphi0, step):
+	''' Returns 2 values, the first of the two is the value by which phi 
+	needs to be updated and the second of the two is the value by which the 
+	first derivative of phi with respect to e-fold N needs to be updated.'''
 	F1 = Dphi0
 	f1 = DDphi(N, phi0, Dphi0)
 	F2 = Dphi0 +f1*step/2.
@@ -43,6 +59,8 @@ def rk4_step(N, phi0, Dphi0, step):
 	f4 = DDphi(N +step, phi0 +F3*step, Dphi0 +f3*step)  
 
 	return [(f1 +2*f2 +2*f3 +f4)*step/6., (F1 +2*F2 +2*F3 +F4)*step/6.] # [Dhk, hk] update
+
+'''We evolve the scalar field phi for e-fold N ranging from Ni to Nf.'''
 
 npts = 100000
 step = (Nf-Ni)/(npts)
@@ -71,14 +89,25 @@ Dphi = lambda N : Dphi_array[int((N-Ni)/step)]
 H = lambda N : (V(phi(N))/(3. -Dphi(N)**2/2.))**(1./2)
 DH = lambda N : -(1./2)*H(N)*Dphi(N)**2
 
+'''The above functions let us access the values of H(N) and DH(N) 
+when we try to evaluate the tensor perturbations h_k. We have obtained 
+these values from the phi and Dphi values earlier.'''
+
 ai = 1e-05
 A = lambda N : ai*numpy.exp(N)
+'''The scale factor in terms of e-fold N.'''
+
 k0 = numpy.empty(0)
 
 def DDhk(k0, N, hk0, Dhk0):
+	'''Returns the value of the second derivative of the tensor perturbatons
+	h_k th respec to e-fold N. We need this value when we are trying to 
+	evluate h_k'''
 	return -((3. +(DH(N)/H(N)))*Dhk0 +((k0/(A(N)*H(N)))**2)*hk0)
 
 def rk4_step(k0, N, hk0, Dhk0, step):
+	'''a runge-kutta 4 stepper function that returns the value by which
+	h_k nd Dh_k need to be updated.'''
 	F1 = Dhk0
 	f1 = DDhk(k0, N, hk0, Dhk0)
 	F2 = Dhk0 +f1*step/2.
@@ -91,29 +120,45 @@ def rk4_step(k0, N, hk0, Dhk0, step):
 	return numpy.array([(f1 +2*f2 +2*f3 +f4)*step/6.], dtype=complex), numpy.array([(F1 +2*F2 +2*F3 +F4)*step/6.], dtype=complex) # [Dhk, hk] update
 
 def solve_Nics(k0, N_array):
+	'''Returns the value of e-fold N when the mode is
+	in the sub-Hubble domain, which we define as k/(A*H) =10^2.'''
 	step = N_array[1] -N_array[0]
 	Nics_temp = numpy.asarray([k0 - 1e+02*A(N)*H(N) for N in N_array])   
 	nics_test = numpy.where(Nics_temp > 0)
 	return Ni + nics_test[0][-1]*step
 
 def solve_Nshss(k0, N_array):
+	'''Returns the value of e-fold N when the mode is
+	in the super-Hubble domain, which we define as k/(A*H) =10^(-5).'''
 	step = N_array[1] -N_array[0]
 	Nshss_temp = numpy.asarray([k0 - 1e-05*A(N)*H(N) for N in N_array])
 	nshss_test = numpy.where(Nshss_temp > 0)
 	return Ni + nshss_test[0][-1]*step
 
 def initialize_hk(k0, Nics):
+	'''Returns the value of h_k for the mode k at e-fold N of _Nics.
+	We obtain his value by imposing the Bunch-Davies initial conditions'''
 	hk0 = numpy.zeros(1,dtype=complex)             
 	hk0.real = (((2.*k0)**(1./2))*A(Nics))**(-1.)
 	return hk0
 
 def initialize_Dhk(k0, Nics):
+	'''Returns the value of h_k for the mode k at e-fold N of _Nshss.
+	We obtain his value by imposing the Bunch-Davies initial conditions'''
 	Dhk0 = numpy.zeros(1,dtype=complex)
 	Dhk0.real = -(1/A(Nics))*((2*k0)**(-1./2))
 	Dhk0.imag = -((k0/2)**(1./2))/(A(Nics)*A(Nics)*H(Nics))
 	return Dhk0
 
-def evolve_hk(k0, hk0, Dhk0, Nics, Nshss, step):
+def evolve_hk(k0, Nics, Nshss, step):
+	'''Returns the values of h_k for the mode k for e-fold N ranging from
+	_Nics to _Nshss. We use the h_k values later on to estimate calG.'''
+	hk = numpy.empty(0, dtype=complex)
+	Dhk = numpy.empty(0, dtype=complex)
+
+	hk = initialize_hk(k, _Nics)
+	Dhk = initialize_Dhk(k, _Nics)
+
 	hk_array = numpy.empty(0, dtype=complex)
 	N = Nics
 	while N < Nshss:
@@ -128,6 +173,10 @@ def evolve_hk(k0, hk0, Dhk0, Nics, Nshss, step):
 e = 10**(-1.)
 
 def calG(hk_k1_array, hk_k2_array, hk_k3_array, k1, k2, k3, Nics, Nshss):
+	'''Returns the value of \mathcal{G} which is in turn used to estimate G, the 
+	tensor bi-spectrum. The integral is evaluated for e-fold N ranging from 
+	_Nics till _Nshss. Note that the extra factor exp(-(e*k)/(A*H)) is put in by 
+	hand to satisfy the consistency relation.'''
 	N_range = numpy.linspace(Nics, Nshss, len(hk_k1_array))
 
 	func_int = (A(N_range)/numpy.asarray([H(N) for N in N_range])*
@@ -138,6 +187,10 @@ def calG(hk_k1_array, hk_k2_array, hk_k3_array, k1, k2, k3, Nics, Nshss):
 	return (-1/4.)*(k1**2+k2**2+k3**2)*result*numpy.array([0.+1.j], dtype=complex)
 
 def calG_cc(hk_kx_array, hk_ky_array, hk_kz_array, kx, ky, kz, N_ics, N_shss):
+	 '''Returns the value of the complex conjugate of \mathcal{G} which is 
+	 in turn used to estimate G, the tensor bi-spectrum. The integral is 
+	 evaluated for e-fold N ranging from _Nics till _Nshss. Note that the 
+	 extra factor exp(-(e*k)/(A*H)) is put in by hand to satisfy the consistency relation.'''
 	N_range = numpy.linspace(N_ics, N_shss, len(hk_kx_array))
 
 	AoverH = numpy.asarray([A(N) for N in N_range])/numpy.asarray([H(N) for N in N_range])
@@ -157,24 +210,6 @@ def main(k_set, N_array):
 
 	Nshss = solve_Nshss(k1, N_array)
 	step = N_array[1] -N_array[0]
-
-	hk_k1 = numpy.empty(0,dtype=complex) 
-	Dhk_k1 = numpy.empty(0,dtype=complex)
-
-	hk_k1 = initialize_hk(k1, Nics)
-	Dhk_k1 = initialize_Dhk(k1, Nics)
-
-	hk_k2 = numpy.empty(0,dtype=complex) 
-	Dhk_k2 = numpy.empty(0,dtype=complex)
-
-	hk_k2 = initialize_hk(k2, Nics)
-	Dhk_k2 = initialize_Dhk(k2, Nics)
-
-	hk_k3 = numpy.empty(0,dtype=complex) 
-	Dhk_k3 = numpy.empty(0,dtype=complex)
-
-	hk_k3 = initialize_hk(k3, Nics)
-	Dhk_k3 = initialize_Dhk(k3, Nics)
 
 	hk_k1_array = numpy.empty(0, dtype=complex)
 	hk_k2_array = numpy.empty(0, dtype=complex)
@@ -205,7 +240,7 @@ k1 = 1e-6
 k3 = numpy.arange(0.,1.,0.1)*k1
 
 k_list = []
-
+'''Since k1 is fixed, k_list will contain the set of [k2, k3] values.'''
 for i in range(len(k3)):
 	if k3[i] < 0.5:
 		k2 = numpy.linspace(1. -k3[i]/k1, 1.,int(k3[i]/k1/0.1))*k1

@@ -13,6 +13,8 @@ plt.rc('font', family='serif')
 
 #h_NL_c_data = [line.split() for line in open("phi_vs_N_c.txt")]
 h_NL_py_data = numpy.loadtxt('test.dat')
+h_NL_m_data = numpy.loadtxt('numerical-powerlaw-GGG-q51-hNL.txt')
+G_m_data = numpy.loadtxt('numerical-powerlaw-GGG1-q51.txt')
 #h_NL_m_data = [line.split(",") for line in open("phi_vs_N_mathematica.txt")]
 
 #print c_data[0][0], c_data[0][2], py_data[0][0], py_data[0][2]
@@ -32,8 +34,22 @@ plt.ylabel(r'$h_{NL}$')
 plt.title(r'$h_{NL}$ as a function of $k$')
 plt.ylim([0.87,0.89])
 #c, = plt.plot(h_NL_c_data[:,], h_NL_c_data[:,], '.')
-python, = plt.semilogx(h_NL_py_data[:,0], h_NL_py_data[:,8], '--')
+python, = plt.semilogx(h_NL_py_data[:,0], h_NL_py_data[:,8], '.')
+mathematica, = plt.semilogx(h_NL_m_data[:,0], h_NL_m_data[:,1], '--')
 #m, = plt.plot(h_NL_m_data[:,], h_NL_m_data[:,], '.')
 #plt.legend([c, python, m],['c', 'python', 'mathematica'])
-plt.legend([python],['python'])
+plt.legend([python, mathematica],['mine','sreenath'])
 plt.savefig('h_NL_vs_k.png')
+
+plt.cla()
+plt.xlabel(r'$k$')
+plt.ylabel(r'$-G$')
+plt.title(r'$-G$ as a function of $k$')
+#plt.ylim([0.87,0.89])
+#c, = plt.plot(h_NL_c_data[:,], h_NL_c_data[:,], '.')
+python, = plt.loglog(h_NL_py_data[:,0], numpy.absolute(h_NL_py_data[:,7]), '.')
+mathematica, = plt.loglog(G_m_data[:,0], numpy.absolute(G_m_data[:,1]), '--')
+#m, = plt.plot(h_NL_m_data[:,], h_NL_m_data[:,], '.')
+#plt.legend([c, python, m],['c', 'python', 'mathematica'])
+plt.legend([python, mathematica],['mine','sreenath'])
+plt.savefig('G_vs_k.png')
