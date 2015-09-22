@@ -47,9 +47,9 @@ pylab.axes([0.125,0.125,0.825,0.825])
 
 data = [line.split() for line in open('amm-hnla.txt')]
 
-k1 = np.asarray([data[i][2] for i in range(3, len(data))], dtype=float)
-k2 = np.asarray([data[i][3] for i in range(3, len(data))], dtype=float)
-k3 = np.asarray([data[i][4] for i in range(3, len(data))], dtype=float)
+k1 = np.asarray([data[i][2] for i in range(len(data))], dtype=float)
+k2 = np.asarray([data[i][3] for i in range(len(data))], dtype=float)
+k3 = np.asarray([data[i][4] for i in range(len(data))], dtype=float)
 
 x = k3/k1
 y = k2/k1
@@ -58,7 +58,7 @@ y = k2/k1
 #y = data[:,1]
 #z = data[:,2]
 
-z = np.asarray([data[i][10] for i in range(3, len(data))], dtype=float)
+z = np.asarray([data[i][10] for i in range(len(data))], dtype=float)
 
 xi = np.linspace(0,1,400)
 yi = np.linspace(0.5,1,400)
