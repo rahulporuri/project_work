@@ -13,12 +13,12 @@ dphi0 = (2.*q)**(1./2)/t0
 
 Ni = 0.
 Nf = 70.
-
+'''
 phi_ptr = open("data_files/phi_vs_N_python.txt", "w")
 H_ptr = open("data_files/H_vs_N_python.txt", "w")
 DH_ptr = open("data_files/DH_vs_N_python.txt", "w")
 eps_ptr = open("data_files/eps_vs_N_python.txt","w")
-
+'''
 tps_data_ptr = open("data_files/tps_python.txt","w")
 
 V = lambda _phi : V0*numpy.exp(-(2./q)**(1./2)*(_phi -phi0))
@@ -42,6 +42,11 @@ def rk4_step(_N, _phi, _Dphi, _step):
 
     return (F1 +2*F2 +2*F3 +F4)*_step/6., (f1 +2*f2 +2*f3 +f4)*_step/6. # (phi, Dphi) update
 
+phi_theory = lambda N : (2./q)**(1./2)*N +phi0
+H_theory = lambda N : H0*numpy.exp(-N/q)
+DH_theory = lambda N : (-H0/q)*numpy.exp(-N/q)
+eps1_theory = (3./2)*((dphi0**2.)/(dphi0**2./2. +V(phi0)))
+
 npts = 100000
 step = (Nf-Ni)/(npts)
 
@@ -60,7 +65,7 @@ N = Ni
 #print N, phi_, Dphi_, dphi0, H0
 while N < Nf+step:
     N_array = numpy.append(N_array, N)
-    phi_array = numpy.append(phi_array, phi_)
+    phi_array = numpy.append(phi_array, numpy.array([phi_, phi_theory(N)]))
     Dphi_array = numpy.append(Dphi_array, Dphi_)
 
     phi_inc, Dphi_inc = rk4_step(N, phi_, Dphi_, step)
@@ -75,21 +80,22 @@ while N < Nf+step:
 phi = lambda _N : phi_array[int((_N-Ni)/step)]
 Dphi = lambda _N : Dphi_array[int((_N-Ni)/step)]
 
-phi_theory = lambda N : (2./q)**(1./2)*N +phi0
-H_theory = lambda N : H0*numpy.exp(-N/q)
-DH_theory = lambda N : (-H0/q)*numpy.exp(-N/q)
-eps_theory = (3./2)*((dphi0**2.)/(dphi0**2./2. +V(phi0)))
-
 H = lambda _N : (V(phi(_N))/(3. -Dphi(_N)**2/2.))**(1./2)
 DH = lambda _N : -(1.0/2)*H(_N)*Dphi(_N)**2
 
 for i in range(len(N_array)):
-	H_array = numpy.append(H_array, (V(phi_array[i])/(3. -Dphi_array[i]**2/2.))**(1./2))
-	DH_array = numpy.append(DH_array, -(1./2)*(V(phi_array[i])/(3. -Dphi_array[i]**2/2.))**(1./2)*Dphi_array[i]**2)
-	eps_array = numpy.append(eps_array, Dphi_array[i]**2/2.0)
+	H_array = numpy.append(H_array, numpy.array([N_array[i], (V(phi_array[i])/(3. -Dphi_array[i]**2/2.))**(1./2), H_theory(N_array[i])]))
+	DH_array = numpy.append(DH_array, numpy.array([N_array[i], -(1./2)*(V(phi_array[i])/(3. -Dphi_array[i]**2/2.))**(1./2)*Dphi_array[i]**2, DH_theory(N_array[i])]))
+	eps_array = numpy.append(eps_array, numpy.array([Dphi_array[i]**2/2.0, eps1_theory]))
 
-print H_array[0], DH_array[0], H_array[-1], DH_array[-1]
+#print H_array[0], DH_array[0], H_array[-1], DH_array[-1]
 
+numpy.savetxt('phi_vs_N_py.txt', phi_array)
+numpy.savetxt('H_vs_N_py.txt', H_array)
+numpy.savetxt('DH_vs_N_py.txt', DH_array)
+numpy.savetxt('eps1_vs_V_py.txt', eps_array)
+
+'''
 for i in range(len(N_array)):
 	phi_ptr.write(str(N_array[i])+" , "+str(phi_array[i]) +" , "+str(phi_theory(N_array[i]))+"\n")
 	H_ptr.write(str(N_array[i])+" , "+str(H_array[i])+" , "+str(H_theory(N_array[i]))+"\n")
@@ -184,3 +190,4 @@ while k0 < 1e-00:
     k0 = (10**(1.0/2))*k0
 
 tps_data_ptr.close()
+'''
