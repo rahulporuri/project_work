@@ -26,6 +26,8 @@ void initialize_Dhk(double k, double Nics, double ai, double *Dhk, double Ni, do
 double DDhk(double k, double N, double hk, double Dhk, double Ni, double step, double ai, double *H_array, double *DH_array);
 void rk4_stepper_hk(double k, double N, double *hk, double *Dhk, double Ni, double step, double *update_hk, double *update_Dhk, double ai, double *H_array, double *DH_array);
 
+void evolve_hk(double k, double Nics, double Nshss, double ai, double Ni, double step, double *H_array, double *DH_array, double **hk_array);
+
 //void calG(double *CalG);
 //void calG_cc(double *CalG_cc);
 
@@ -33,11 +35,6 @@ int
 main(void)
 {
 	/* define constants */
-
-	FILE *phi_ptr;
-	FILE *H_ptr;
-	FILE *DH_ptr;
-	FILE *eps1_ptr;
 
 	FILE *tps_data_ptr;
 
@@ -55,13 +52,14 @@ main(void)
 
 	int npts;
 	double tps;
+	double tps_k1, tps_k2, tps_k3;
 
 	int i, j;
 	double step;
 
 	double increment_phi[2];
-	double increment_hk[2];
-	double increment_Dhk[2];
+
+
 
 	double *N_array = malloc(10000001*sizeof(double));
 	double *phi_array = malloc(10000001*sizeof(double));
@@ -71,8 +69,8 @@ main(void)
 	double *DH_array = malloc(10000001*sizeof(double));
 	double *eps1_array = malloc(10000001*sizeof(double));
 
-	double hk[2];
-	double Dhk[2];
+
+
 	double DDhk[2];
 
 	double Nics, Nshss;
@@ -80,14 +78,29 @@ main(void)
 	double CalG[2];
 	double CalG_cc[2];
 
-/*	need to figure out how to use malloc to store matrices
-	double *hk_k1_array = malloc(10000001*sizeof(double));
-	double *hk_k2_array = malloc(10000001*sizeof(double));
-	double *hk_k3_array = malloc(10000001*sizeof(double));
+	double **hk_k1_array = malloc(10000001*sizeof(double));
+	for (i=0; i<10000001; i++)
+	{
+		hk_k1_array[i] = (double*) malloc(2*sizeof(double));
+	}
 
-	double *N_int_range = malloc(10000001*sizeof(double));*/
+	double **hk_k2_array = malloc(10000001*sizeof(double));
+	for (i=0; i<10000001; i++)
+	{
+		hk_k2_array[i] = (double*) malloc(2*sizeof(double));
+	}
 
-	tps_data_ptr = fopen("data_files/tps_c.txt","w");
+	double **hk_k3_array = malloc(10000001*sizeof(double));
+	for (i=0; i<10000001; i++)
+	{
+		hk_k3_array[i] = (double*) malloc(2*sizeof(double));
+	}
+
+	double *N_int_range = malloc(10000001*sizeof(double));
+
+	int size_hk_array;
+
+//	tps_data_ptr = fopen("data_files/tps_c.txt","w");
 
 	q = 51.0;
 	V0 = (204.0/100.0)*pow(10,-8);
@@ -147,31 +160,25 @@ main(void)
 	Nics = 8.880899999991;
 	Nshss = 30.018590000083;
 
+	size_hk_array = floor((Nshss-Nics)/step);
+
 	while (k < 5*pow(10,-1))
 	{
 		printf("=================================== \t");
 		printf("%le \n", k);
+		k1 = k; k2 = k; k3 = k;
 
-//		Nics = find_Nics(k, N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step);
-//		Nshss = find_Nshss(k, N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step);
+		evolve_hk(k1, Nics, Nshss, ai, Ni, step, H_array, DH_array, hk_k1_array);
+		evolve_hk(k2, Nics, Nshss, ai, Ni, step, H_array, DH_array, hk_k2_array);
+		evolve_hk(k3, Nics, Nshss, ai, Ni, step, H_array, DH_array, hk_k3_array);
 
-		initialize_hk(k, Nics, ai, hk);
-		initialize_Dhk(k, Nics, ai, Dhk, Ni, step, H_array);
+		tps = 2*pow(k1,3)/(2*pow(M_PI,2))*(hk_k1_array[size_hk_array][0]*hk_k1_array[size_hk_array][0] +hk_k1_array[size_hk_array][1]*hk_k1_array[size_hk_array][1]);
+		tps = 2*pow(k2,3)/(2*pow(M_PI,2))*(hk_k2_array[size_hk_array][0]*hk_k2_array[size_hk_array][0] +hk_k2_array[size_hk_array][1]*hk_k2_array[size_hk_array][1]);
+		tps = 2*pow(k3,3)/(2*pow(M_PI,2))*(hk_k3_array[size_hk_array][0]*hk_k3_array[size_hk_array][0] +hk_k3_array[size_hk_array][1]*hk_k3_array[size_hk_array][1]);
 
-		N = Nics;
-		while (N < Nshss +step)
-		{
-			rk4_stepper_hk(k, N, hk, Dhk, Ni, step, increment_hk, increment_Dhk, ai, H_array, DH_array);
-			hk[0] += increment_hk[0];
-			hk[1] += increment_hk[1];
-			Dhk[0] += increment_Dhk[0];
-			Dhk[1] += increment_Dhk[1];
-
-			N += step;
-		}
-
-		tps = 2*pow(k,3)/(2*pow(M_PI,2))*(hk[0]*hk[0] +hk[1]*hk[1]);
-		printf("%le, %le \n", k, tps);
+		printf("%le, %le \n", k1, tps_k1);
+		printf("%le, %le \n", k2, tps_k2);
+		printf("%le, %le \n", k3, tps_k3);
 
 //		fprintf(tps_data_ptr, "%le, %lf, %lf, %le \n", k, Nics, Nshss, tps);
 
@@ -179,6 +186,34 @@ main(void)
 	}
 
 //	fclose(tps_data_ptr);
+
+	free(N_array);
+	free(phi_array);
+	free(Dphi_array);
+
+	free(H_array);
+	free(DH_array);
+	free(eps1_array);
+
+/*	for(i=0; i<10000001; i++)
+	{
+		free(hk_k1_array[i]);
+	}
+	free(hk_k1_array);
+
+	for(i=0; i<10000001; i++)
+	{
+		free(hk_k1_array[i]);
+	}
+	free(H_array);
+
+	for(i=0; i<10000001; i++)
+	{
+		free(hk_k1_array[i]);
+	}
+	free(H_array);*/
+
+	free(N_int_range);
 
 	return (0);
 }
@@ -367,6 +402,50 @@ void rk4_stepper_hk(double k, double N, double *hk, double *Dhk, double Ni, doub
 	update_Dhk[0] = (f1_real +2*f2_real +2*f3_real +f4_real)*step/6.;
 	update_hk[1] = (F1_imag +2*F2_imag +2*F3_imag +F4_imag)*step/6.;
 	update_Dhk[1] = (f1_imag +2*f2_imag +2*f3_imag +f4_imag)*step/6.;
+
+	return;
+}
+
+void evolve_hk(double k, double Nics, double Nshss, double ai, double Ni, double step, double *H_array, double *DH_array, double **hk_array)
+{
+	double hk[2];
+	double Dhk[2];
+
+	double increment_hk[2];
+	double increment_Dhk[2];
+
+	double tps;
+
+	double N;
+	int i;
+
+//	Nics = find_Nics(k, N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step);
+//	Nshss = find_Nshss(k, N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step);
+
+	initialize_hk(k, Nics, ai, hk);
+	initialize_Dhk(k, Nics, ai, Dhk, Ni, step, H_array);
+
+	i = 0;
+	N = Nics;
+	while (N < Nshss +step)
+	{
+		hk_array[i][0] = hk[0];
+		hk_array[i][1] = hk[1];
+
+		rk4_stepper_hk(k, N, hk, Dhk, Ni, step, increment_hk, increment_Dhk, ai, H_array, DH_array);
+		hk[0] += increment_hk[0];
+		hk[1] += increment_hk[1];
+		Dhk[0] += increment_Dhk[0];
+		Dhk[1] += increment_Dhk[1];
+
+		N += step;
+		i += 1;
+	}
+
+/*	tps = 2*pow(k,3)/(2*pow(M_PI,2))*(hk[0]*hk[0] +hk[1]*hk[1]);
+	printf("=================== \n");
+	printf("%le, %le \n", k, tps);
+	printf("size : %d", i-1); */
 
 	return;
 }
