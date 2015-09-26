@@ -51,15 +51,13 @@ main(void)
  	double k1, k2, k3;
 
 	int npts;
-	double tps;
 	double tps_k1, tps_k2, tps_k3;
 
 	int i, j;
 	double step;
 
-	double increment_phi[2];
-
-
+	double increment_phi[2]; 
+/*	increment_phi[0] is the phi increment and increment_phi[1] is the Dphi increment*/
 
 	double *N_array = malloc(10000001*sizeof(double));
 	double *phi_array = malloc(10000001*sizeof(double));
@@ -67,16 +65,13 @@ main(void)
 
 	double *H_array = malloc(10000001*sizeof(double));
 	double *DH_array = malloc(10000001*sizeof(double));
-	double *eps1_array = malloc(10000001*sizeof(double));
-
-
 
 	double DDhk[2];
 
 	double Nics, Nshss;
 
-	double CalG[2];
-	double CalG_cc[2];
+/*	double CalG[2];
+	double CalG_cc[2]; */
 
 	double **hk_k1_array = malloc(10000001*sizeof(double));
 	for (i=0; i<10000001; i++)
@@ -96,11 +91,11 @@ main(void)
 		hk_k3_array[i] = (double*) malloc(2*sizeof(double));
 	}
 
-	double *N_int_range = malloc(10000001*sizeof(double));
+/*	double *N_int_range = malloc(10000001*sizeof(double)); */
 
 	int size_hk_array;
 
-//	tps_data_ptr = fopen("data_files/tps_c.txt","w");
+/*	tps_data_ptr = fopen("data_files/tps_c.txt","w"); */
 
 	q = 51.0;
 	V0 = (204.0/100.0)*pow(10,-8);
@@ -151,7 +146,6 @@ main(void)
 	{
 		H_array[i] = sqrt(V(phi_array[i], V0, q, phi0)/(3.0 -Dphi_array[i]*Dphi_array[i]/2.0));
 		DH_array[i] = (-1.0/2.0)*sqrt(V(phi_array[i], V0, q, phi0)/(3.0 -Dphi_array[i]*Dphi_array[i]/2.0))*Dphi_array[i]*Dphi_array[i];
-		eps1_array[i] = Dphi_array[i]*Dphi_array[i]/2.0;
 	}
 
 /*	Nics = find_Nics(5*pow(10,-4), N_array, npts, ai, Ni, step);
@@ -172,9 +166,9 @@ main(void)
 		evolve_hk(k2, Nics, Nshss, ai, Ni, step, H_array, DH_array, hk_k2_array);
 		evolve_hk(k3, Nics, Nshss, ai, Ni, step, H_array, DH_array, hk_k3_array);
 
-		tps = 2*pow(k1,3)/(2*pow(M_PI,2))*(hk_k1_array[size_hk_array][0]*hk_k1_array[size_hk_array][0] +hk_k1_array[size_hk_array][1]*hk_k1_array[size_hk_array][1]);
-		tps = 2*pow(k2,3)/(2*pow(M_PI,2))*(hk_k2_array[size_hk_array][0]*hk_k2_array[size_hk_array][0] +hk_k2_array[size_hk_array][1]*hk_k2_array[size_hk_array][1]);
-		tps = 2*pow(k3,3)/(2*pow(M_PI,2))*(hk_k3_array[size_hk_array][0]*hk_k3_array[size_hk_array][0] +hk_k3_array[size_hk_array][1]*hk_k3_array[size_hk_array][1]);
+		tps_k1 = 2*pow(k1,3)/(2*pow(M_PI,2))*(hk_k1_array[size_hk_array][0]*hk_k1_array[size_hk_array][0] +hk_k1_array[size_hk_array][1]*hk_k1_array[size_hk_array][1]);
+		tps_k2 = 2*pow(k2,3)/(2*pow(M_PI,2))*(hk_k2_array[size_hk_array][0]*hk_k2_array[size_hk_array][0] +hk_k2_array[size_hk_array][1]*hk_k2_array[size_hk_array][1]);
+		tps_k3 = 2*pow(k3,3)/(2*pow(M_PI,2))*(hk_k3_array[size_hk_array][0]*hk_k3_array[size_hk_array][0] +hk_k3_array[size_hk_array][1]*hk_k3_array[size_hk_array][1]);
 
 		printf("%le, %le \n", k1, tps_k1);
 		printf("%le, %le \n", k2, tps_k2);
@@ -193,7 +187,6 @@ main(void)
 
 	free(H_array);
 	free(DH_array);
-	free(eps1_array);
 
 /*	for(i=0; i<10000001; i++)
 	{
@@ -211,9 +204,9 @@ main(void)
 	{
 		free(hk_k1_array[i]);
 	}
-	free(H_array);*/
+	free(H_array);
 
-	free(N_int_range);
+	free(N_int_range); */
 
 	return (0);
 }
