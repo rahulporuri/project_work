@@ -36,8 +36,6 @@ main(void)
 {
 	/* define constants */
 
-	FILE *tps_data_ptr;
-
 	double q, V0, t0;
 	double phi0, dphi0;
 	double phi, Dphi;
@@ -46,8 +44,6 @@ main(void)
 	double H0, Dphi0;
 
 	double ai;
-	double k;
-
  	double k1, k2, k3;
 
 	int npts;
@@ -109,7 +105,6 @@ main(void)
 	Nf = 70.0;
 
 	ai = pow(10, -5);
-	k = 5*pow(10, -4);
 
 	H0 = sqrt((1.0/3.0)*((dphi0*dphi0)/2.0 +V0));
 	Dphi0 = dphi0/H0;
@@ -156,30 +151,46 @@ main(void)
 
 	size_hk_array = floor((Nshss-Nics)/step);
 
-	while (k < 5*pow(10,-1))
+	k2 = 5*pow(10,-4); k3 = 5*pow(10, -4);
+
+	k1 = 5*pow(10,-2);
+	evolve_hk(k1, Nics, Nshss, ai, Ni, step, H_array, DH_array, hk_k1_array);
+	tps_k1 = 2*pow(k1,3)/(2*pow(M_PI,2))*(hk_k1_array[size_hk_array][0]*hk_k1_array[size_hk_array][0] +hk_k1_array[size_hk_array][1]*hk_k1_array[size_hk_array][1]);
+
+	while (k3/k1 < 1)
 	{
 		printf("=================================== \t");
-		printf("%le \n", k);
-		k1 = k; k2 = k; k3 = k;
 
-		evolve_hk(k1, Nics, Nshss, ai, Ni, step, H_array, DH_array, hk_k1_array);
-		evolve_hk(k2, Nics, Nshss, ai, Ni, step, H_array, DH_array, hk_k2_array);
 		evolve_hk(k3, Nics, Nshss, ai, Ni, step, H_array, DH_array, hk_k3_array);
-
-		tps_k1 = 2*pow(k1,3)/(2*pow(M_PI,2))*(hk_k1_array[size_hk_array][0]*hk_k1_array[size_hk_array][0] +hk_k1_array[size_hk_array][1]*hk_k1_array[size_hk_array][1]);
-		tps_k2 = 2*pow(k2,3)/(2*pow(M_PI,2))*(hk_k2_array[size_hk_array][0]*hk_k2_array[size_hk_array][0] +hk_k2_array[size_hk_array][1]*hk_k2_array[size_hk_array][1]);
 		tps_k3 = 2*pow(k3,3)/(2*pow(M_PI,2))*(hk_k3_array[size_hk_array][0]*hk_k3_array[size_hk_array][0] +hk_k3_array[size_hk_array][1]*hk_k3_array[size_hk_array][1]);
 
-		printf("%le, %le \n", k1, tps_k1);
-		printf("%le, %le \n", k2, tps_k2);
-		printf("%le, %le \n", k3, tps_k3);
+		if (k3/k1 < 0.5)
+		{
+			k2 = k1 -k3;
+			while (k2/k1 < 1)
+			{
+				evolve_hk(k2, Nics, Nshss, ai, Ni, step, H_array, DH_array, hk_k2_array);
+				tps_k2 = 2*pow(k2,3)/(2*pow(M_PI,2))*(hk_k2_array[size_hk_array][0]*hk_k2_array[size_hk_array][0] +hk_k2_array[size_hk_array][1]*hk_k2_array[size_hk_array][1]);
+				printf("%le, %le, %le, %le, %le, %le  \n", k1, k2, k3, tps_k1, tps_k2, tps_k3);
 
-//		fprintf(tps_data_ptr, "%le, %lf, %lf, %le \n", k, Nics, Nshss, tps);
+				k2 = k2 +0.1*k1;
+			}
+		}
+		else
+		{
+			k2 = k3;
+			while (k2/k1 < 1)
+			{
+				evolve_hk(k2, Nics, Nshss, ai, Ni, step, H_array, DH_array, hk_k2_array);
+				tps_k2 = 2*pow(k2,3)/(2*pow(M_PI,2))*(hk_k2_array[size_hk_array][0]*hk_k2_array[size_hk_array][0] +hk_k2_array[size_hk_array][1]*hk_k2_array[size_hk_array][1]);
+				printf("%le, %le, %le, %le, %le, %le  \n", k1, k2, k3, tps_k1, tps_k2, tps_k3);
 
-		k = pow(10,1./2)*k;
+				k2 = k2 +0.1*k1;
+			}
+		}
+
+		k3 = k3 +0.1*k1;
 	}
-
-//	fclose(tps_data_ptr);
 
 	free(N_array);
 	free(phi_array);
