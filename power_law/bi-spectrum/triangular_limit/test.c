@@ -482,7 +482,7 @@ void calG(double k1, double k2, double k3, int size_hk_array, double Nics, doubl
 	int_imag = 0;
 
 	double e;
-	e = 1/100;
+	e = 1/50;
 
 	for(i=0; i<size_hk_array; i++)
 	{
@@ -492,22 +492,25 @@ void calG(double k1, double k2, double k3, int size_hk_array, double Nics, doubl
 					*exp(e*(k1+k2+k3)/(3*A(N, ai)*H(N, Ni, step, H_array)));
 
 		func_int_imag[i] = (A(N, ai)/H(N, Ni, step, H_array))
-					*(-hk_k1_array[i][0]*hk_k2_array[i][0]*hk_k3_array[i][1] +hk_k1_array[i][1]*hk_k2_array[i][1]*hk_k3_array[i][1]
-						-(hk_k1_array[i][0]*hk_k2_array[i][1] +hk_k1_array[i][1]*hk_k2_array[i][0])*hk_k3_array[i][0])
+					*(hk_k1_array[i][0]*hk_k2_array[i][0]*hk_k3_array[i][1] -hk_k1_array[i][1]*hk_k2_array[i][1]*hk_k3_array[i][1]
+						+(hk_k1_array[i][0]*hk_k2_array[i][1] +hk_k1_array[i][1]*hk_k2_array[i][0])*hk_k3_array[i][0])
 					*exp(e*(k1+k2+k3)/(3*A(N, ai)*H(N, Ni, step, H_array)));
 		N += step;
 	}
 
+	int_real = func_int_real[0] +func_int_real[size_hk_array];
+	int_imag = func_int_imag[0] +func_int_imag[size_hk_array];
+
 	for(i=0;i<size_hk_array/2;i++)
 	{
-		int_real += (2/3)*func_int_real[2*i];
-		int_real += (4/3)*func_int_real[2*i-1];
-		int_imag += (2/3)*func_int_imag[2*i];
-		int_imag += (4/3)*func_int_imag[2*i-1];
+		int_real += 2*func_int_real[2*i];
+		int_real += 4*func_int_real[2*i-1];
+		int_imag += 2*func_int_imag[2*i];
+		int_imag += 4*func_int_imag[2*i-1];
 	}
 
-	CalG[1] = -((k1*k1 +k2*k2 +k3*k3)/4)*((func_int_real[0] +func_int_real[size_hk_array])*(1/3) +int_real)*step;
-	CalG[0] = ((k1*k1 +k2*k2 +k3*k3)/4)*((func_int_imag[0] +func_int_imag[size_hk_array])*(1/3) +int_imag)*step;
+	CalG[0] = ((k1*k1 +k2*k2 +k3*k3)/4)*int_imag*step/3;
+	CalG[1] = -((k1*k1 +k2*k2 +k3*k3)/4)*int_real*step/3;
 
 	free(func_int_real);
 	free(func_int_imag);
@@ -515,7 +518,7 @@ void calG(double k1, double k2, double k3, int size_hk_array, double Nics, doubl
 	return;
 }
 
-void calG_cc(double k1, double k2, double k3, int size_hk_array, double Nics, double Nshss, double **hk_k1_array, double **hk_k2_array, double **hk_k3_array, double *CalG, double Ni, double step, double ai, double *H_array)
+void calG_cc(double k1, double k2, double k3, int size_hk_array, double Nics, double Nshss, double **hk_k1_array, double **hk_k2_array, double **hk_k3_array, double *CalG_cc, double Ni, double step, double ai, double *H_array)
 {
 	double *func_int_real = malloc(size_hk_array*sizeof(double));
 	double *func_int_imag = malloc(size_hk_array*sizeof(double));
@@ -532,7 +535,7 @@ void calG_cc(double k1, double k2, double k3, int size_hk_array, double Nics, do
 	int_imag = 0;
 
 	double e;
-	e = 1/100;
+	e = 1/50;
 
 	for(i=0; i<size_hk_array; i++)
 	{
@@ -548,16 +551,19 @@ void calG_cc(double k1, double k2, double k3, int size_hk_array, double Nics, do
 		N += step;
 	}
 
+	int_real = func_int_real[0] +func_int_real[size_hk_array];
+	int_imag = func_int_imag[0] +func_int_imag[size_hk_array];
+
 	for(i=0;i<size_hk_array/2;i++)
 	{
-		int_real += (2/3)*func_int_real[2*i];
-		int_real += (4/3)*func_int_real[2*i-1];
-		int_imag += (2/3)*func_int_imag[2*i];
-		int_imag += (4/3)*func_int_imag[2*i-1];
+		int_real += 2*func_int_real[2*i];
+		int_real += 4*func_int_real[2*i-1];
+		int_imag += 2*func_int_imag[2*i];
+		int_imag += 4*func_int_imag[2*i-1];
 	}
 
-	CalG[1] = ((k1*k1 +k2*k2 +k3*k3)/4)*((func_int_real[0] +func_int_real[size_hk_array])*(1/3) +int_real)*step;
-	CalG[0] = -((k1*k1 +k2*k2 +k3*k3)/4)*((func_int_imag[0] +func_int_imag[size_hk_array])*(1/3) +int_imag)*step;
+	CalG_cc[0] = ((k1*k1 +k2*k2 +k3*k3)/4)*int_imag*step/3;
+	CalG_cc[1] = ((k1*k1 +k2*k2 +k3*k3)/4)*int_real*step/3;
 
 	free(func_int_real);
 	free(func_int_imag);
@@ -567,15 +573,17 @@ void calG_cc(double k1, double k2, double k3, int size_hk_array, double Nics, do
 
 void G_func(double *G, double a, double Ib, double c, double Id, double e, double If, double *CalG, double *CalG_cc)
 {
-	G[0] = (a*c*e -Ib*Id*e - (a*Id +Ib*c)*If)*CalG[0]
+	G[0] = (a*c*e -Ib*Id*e -(a*Id +Ib*c)*If)*CalG[0]
 		-(a*c*If -Ib*Id*If +(a*Id +Ib*c)*e)*CalG[1]
-		+(a*c*e -Ib*Id*e - (a*Id +Ib*c)*If)*CalG_cc[0]
-		+(-a*c*If +Ib*Id*If -(a*Id +Ib*c)*e)*(-CalG_cc[1]);
+		+(a*c*e -Ib*Id*e -(a*Id +Ib*c)*If)*CalG_cc[0]
+		-(a*c*If -Ib*Id*If +(a*Id +Ib*c)*e)*CalG_cc[1];
 
 	G[1] = (a*c*e -Ib*Id*e -(a*Id +Ib*c)*If)*CalG[1]
 		+(a*c*If -Ib*Id*If +(a*Id +Ib*c)*e)*CalG[0]
-		-(a*c*e -Ib*Id*e -(a*Id +Ib*c)*If)*(-CalG_cc[1])
-		+(-a*c*If +Ib*Id*If -(a*Id +Ib*c)*e)*CalG_cc[0];
+		+(a*c*e -Ib*Id*e -(a*Id +Ib*c)*If)*CalG_cc[1]
+		-(a*c*If -Ib*Id*If +(a*Id +Ib*c)*e)*CalG_cc[0];
 	
+	printf("%le, %le, %le, %le \n", (a*c*e -Ib*Id*e -(a*Id +Ib*c)*If)*CalG[0], -(a*c*If -Ib*Id*If +(a*Id +Ib*c)*e)*CalG[1], +(a*c*e -Ib*Id*e - (a*Id +Ib*c)*If)*CalG_cc[0], -(a*c*If -Ib*Id*If +(a*Id +Ib*c)*e)*CalG_cc[1]);
+
 	return;
 }

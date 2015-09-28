@@ -257,7 +257,7 @@ pool = mp.Pool(processes =4)
 #	k2, k3 = k_list[i]
 #	print k2, k3
 
-temp_results = [pool.apply_async(main, args = (k_set, N_array,)) for k_set in k_list]
+temp_results = [pool.apply_async(main, args = (k_set, N_array,)) for k_set in k_list[20:]]
 results = []
 
 for i in range(len(k_list)):
