@@ -1,5 +1,10 @@
-/* dammit! since the rk4_stepper is returning more than one value,
- we need to define an array that will hold its values or a struct! */
+/*
+Note that in this code, I use the prefix 'd' to represent derivative with respect to time 
+(except for the case of dV where the derivative is with respect to phi) and the prefix 'D' 
+to represent derivative with respect to e-fold N. Also, the suffix '0' is used to represent 
+the initial conditions in various cases. Also, as can be seen here, 
+we evaluate the scalar field in the e-fold N range Ni to Nf.
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -36,8 +41,6 @@ void G_func(double *G, double a, double Ib, double c, double Id, double e, doubl
 int
 main(void)
 {
-	/* define constants */
-
 	double q, V0, t0;
 	double phi0, dphi0;
 	double phi, Dphi;
@@ -46,34 +49,41 @@ main(void)
 	double H0, Dphi0;
 
 	double ai;
- 	double k1, k2, k3;
+ 	double k1, k2, k3; /* the triangular set of modes*/
 
-	int npts;
-	double tps_k1, tps_k2, tps_k3;
+	int npts; /* number of points of integration need to be > 10^8! */
+	/* otherwise, larger modes will die off faster and becomes NaN at Nshss */
+	double tps_k1, tps_k2, tps_k3; /* tensor power spectrum values for the three modes k1, k2 and k3*/
 
 	int i, j;
-	double step;
+	double step; /* step size for integration*/
 
-	double increment_phi[2]; 
-/*	increment_phi[0] is the phi increment and increment_phi[1] is the Dphi increment*/
+	double increment_phi[2]; /* increment_phi[0] is the phi increment and increment_phi[1] is the Dphi increment */
 
+	/* hold the values for N, phi and Dphi which are needed to estimate */
 	double *N_array = malloc(10000001*sizeof(double));
 	double *phi_array = malloc(10000001*sizeof(double));
 	double *Dphi_array = malloc(10000001*sizeof(double));
-
+	/* the following arrays containing H and DH corresponding to the above N */
 	double *H_array = malloc(10000001*sizeof(double));
 	double *DH_array = malloc(10000001*sizeof(double));
 
+	/* stores the real and imaginary values of the second derivative of hk during integration */
 	double DDhk[2];
 
+	/* starting and ending points of hk integration */
 	double Nics, Nshss;
 
+	/* stores the value of script G and it's complex conjugate which are used to estimate */
 	double CalG[2];
 	double CalG_cc[2];
-
+	/* the tensor bi-spectrum G and the non gaussianity parameter h_NL*/
 	double G[2];
 	double h_NL;
 
+	/* the following arrays hold the real and imaginary values of hk
+	corresponding to the three modes k1, k2, k3 - which are used to estimate calG and calG_cc.
+	dynamic memory allocation is done because static arrays don't support 10^8 data points! */
 	double **hk_k1_array = malloc(10000001*sizeof(double));
 	for (i=0; i<10000001; i++)
 	{
@@ -94,8 +104,7 @@ main(void)
 
 	int size_hk_array;
 
-/*	tps_data_ptr = fopen("data_files/tps_c.txt","w"); */
-
+	/* define initial conditions */
 	q = 51.0;
 	V0 = (204.0/100.0)*pow(10,-8);
 	printf("%le, %le \n", 1e-8, (204/100)*1e-8);
@@ -129,8 +138,6 @@ main(void)
 		N_array[j] = N;
 		phi_array[j] = phi;
 		Dphi_array[j] = Dphi;
-		
-/*		how to load the arrays so they can be saved for later use? */
 
 		rk4_stepper_phi(N, phi, Dphi, step, V0, q, phi0, increment_phi);
 		phi = phi +increment_phi[0];
@@ -156,14 +163,18 @@ main(void)
 
 	k2 = 5*pow(10,-4); k3 = 5*pow(10, -4);
 
+	/* evolve the mode k1 from Nics to Nshss */
 	k1 = 5*pow(10,-2);
 	evolve_hk(k1, Nics, Nshss, ai, Ni, step, H_array, DH_array, hk_k1_array);
 	tps_k1 = 2*pow(k1,3)/(2*pow(M_PI,2))*(hk_k1_array[size_hk_array][0]*hk_k1_array[size_hk_array][0] +hk_k1_array[size_hk_array][1]*hk_k1_array[size_hk_array][1]);
 
+	/* generate values k2 and k3 and evolve the hk for the corresponding modes */
 	while (k3/k1 < 1)
 	{
 		evolve_hk(k3, Nics, Nshss, ai, Ni, step, H_array, DH_array, hk_k3_array);
 		tps_k3 = 2*pow(k3,3)/(2*pow(M_PI,2))*(hk_k3_array[size_hk_array][0]*hk_k3_array[size_hk_array][0] +hk_k3_array[size_hk_array][1]*hk_k3_array[size_hk_array][1]);
+
+		printf("=================================== \n");
 
 		if (k3/k1 < 0.5)
 		{
@@ -172,21 +183,20 @@ main(void)
 			{
 				evolve_hk(k2, Nics, Nshss, ai, Ni, step, H_array, DH_array, hk_k2_array);
 				tps_k2 = 2*pow(k2,3)/(2*pow(M_PI,2))*(hk_k2_array[size_hk_array][0]*hk_k2_array[size_hk_array][0] +hk_k2_array[size_hk_array][1]*hk_k2_array[size_hk_array][1]);
-				printf("=================================== \t");
-				printf("%le, %le, %le, %le, %le, %le  \n", k1, k2, k3, tps_k1, tps_k2, tps_k3);
-
+				/* now that we have hk corresponding to k1, k2 and k3; we estimate the value of script G and it's complex conjugate */
 				calG(k1, k2, k3, size_hk_array, Nics, Nshss, hk_k1_array, hk_k2_array, hk_k3_array, CalG, Ni, step, ai, H_array);
 				calG_cc(k1, k2, k3, size_hk_array, Nics, Nshss, hk_k1_array, hk_k2_array, hk_k3_array, CalG_cc, Ni, step, ai, H_array);
 
-				G_func(G, hk_k1_array[size_hk_array][0], hk_k1_array[size_hk_array][1], 
-						hk_k1_array[size_hk_array][0], hk_k1_array[size_hk_array][1], 
+				/* and using the above, calculate the tensor bi-spectrum and */
+				G_func(G, hk_k1_array[size_hk_array][0], hk_k1_array[size_hk_array][1],
+						hk_k1_array[size_hk_array][0], hk_k1_array[size_hk_array][1],
 						hk_k1_array[size_hk_array][0], hk_k1_array[size_hk_array][1], CalG, CalG_cc);
 
+				/* the non-gaussianity parameter h_NL */
 				h_NL = (-(4/(2*M_PI*M_PI))*(4/(2*M_PI*M_PI))*(k1*k1*k1*k2*k2*k2*k3*k3*k3)*G[0]/
 					(2*k1*k1*k1*tps_k2*tps_k3 +2*k2*k2*k2*tps_k3*tps_k1 +2*k3*k3*k3*tps_k1*tps_k2));
 
-				printf("calG real :%lf, imag :%lf; calG_cc real :%lf, imag :%lf G real :%lf, imag :%lf h_NL :%lf \n", CalG[0], CalG[1], CalG_cc[0], CalG_cc[1], G[0], G[1], h_NL);
-
+				printf("%le, %le, %le, %le, %le, %le, %lf, %lf, %lf, %lf, %lf, %lf, %lf \n", k1, k2, k3, tps_k1, tps_k2, tps_k3 CalG[0], CalG[1], CalG_cc[0], CalG_cc[1], G[0], G[1], h_NL);
 				k2 = k2 +0.1*k1;
 			}
 		}
@@ -197,21 +207,20 @@ main(void)
 			{
 				evolve_hk(k2, Nics, Nshss, ai, Ni, step, H_array, DH_array, hk_k2_array);
 				tps_k2 = 2*pow(k2,3)/(2*pow(M_PI,2))*(hk_k2_array[size_hk_array][0]*hk_k2_array[size_hk_array][0] +hk_k2_array[size_hk_array][1]*hk_k2_array[size_hk_array][1]);
-				printf("=================================== \t");
-				printf("%le, %le, %le, %le, %le, %le  \n", k1, k2, k3, tps_k1, tps_k2, tps_k3);
-
+				/* now that we have hk corresponding to k1, k2 and k3; we estimate the value of script G and it's complex conjugate */
 				calG(k1, k2, k3, size_hk_array, Nics, Nshss, hk_k1_array, hk_k2_array, hk_k3_array, CalG, Ni, step, ai, H_array);
 				calG_cc(k1, k2, k3, size_hk_array, Nics, Nshss, hk_k1_array, hk_k2_array, hk_k3_array, CalG_cc, Ni, step, ai, H_array);
 
+				/* and using the above, calculate the tensor bi-spectrum and */
 				G_func(G, hk_k1_array[size_hk_array][0], hk_k1_array[size_hk_array][1], 
 						hk_k1_array[size_hk_array][0], hk_k1_array[size_hk_array][1], 
 						hk_k1_array[size_hk_array][0], hk_k1_array[size_hk_array][1], CalG, CalG_cc);
 
+				/* the non-gaussianity parameter h_NL */
 				h_NL = (-(4/(2*M_PI*M_PI))*(4/(2*M_PI*M_PI))*(k1*k1*k1*k2*k2*k2*k3*k3*k3)*G[0]/
 					(2*k1*k1*k1*tps_k2*tps_k3 +2*k2*k2*k2*tps_k3*tps_k1 +2*k3*k3*k3*tps_k1*tps_k2));
 
-				printf("calG real :%lf, imag :%lf; calG_cc real :%lf, imag :%lf G real :%lf, imag :%lf h_NL :%lf \n", CalG[0], CalG[1], CalG_cc[0], CalG_cc[1], G[0], G[1], h_NL);
-
+				printf("%le, %le, %le, %le, %le, %le, %lf, %lf, %lf, %lf, %lf, %lf, %lf \n", k1, k2, k3, tps_k1, tps_k2, tps_k3 CalG[0], CalG[1], CalG_cc[0], CalG_cc[1], G[0], G[1], h_NL);
 				k2 = k2 +0.1*k1;
 			}
 		}
@@ -243,27 +252,35 @@ main(void)
 		free(hk_k3_array[i]);
 	}
 	free(hk_k3_array);
-
+	/* DONT FORGET TO FREE THE MEMORY USED USING MALLOC */
+	/* IF YOU DECIDE TO KILL THE PROGRAM HALF-WAY, IT'LL TAKE */
+	/* THE SYSTEM A VERY LONG TIME TO CLEANUP ALL OF THE GARBAGE! */
 
 	return (0);
 }
 
 double V(double phi, double V0, double q, double phi0)
+/* The value of the potential V as a function of the scalar field phi */
 {
 	return V0*exp(-sqrt(2.0/q)*(phi -phi0));
 }
 
 double dV(double phi, double V0, double q, double phi0)
+/* the value of the derivative of the potential V with respect to phi, 
+as a function of the scalar field phi*/
 {
 	return -sqrt(2/q)*V0*exp(-sqrt(2/q)*(phi -phi0));
 }
 
 double DDphi(double N, double phi, double Dphi, double V0, double q, double phi0)
+/* the value of the second derivative of the scalar field phi with respect to e-fold N */
+/* it is used when we are evaluating and integrating phi */
 {
 	return -(3 -(Dphi*Dphi)/2.)*Dphi -(dV(phi, V0, q, phi0)/(2*V(phi, V0, q, phi0)))*(6 -(Dphi*Dphi));
 }
 
 void rk4_stepper_phi(double N, double phi, double Dphi, double step, double V0, double q, double phi0, double *update_phi)
+/* the stepper function used to evaluate phi as a function of e-fold N */
 {
 	double F1, f1, F2, f2, F3, f3, F4, f4;
 
@@ -284,6 +301,8 @@ void rk4_stepper_phi(double N, double phi, double Dphi, double step, double V0, 
 }
 
 double phi_function(double *phi_array, double N, double Ni, double step)
+/* given the array phi_array, this function gives us access to the values 
+as a function of N instead of using an array index */
 {
 	int index;
 	index = floor((N-Ni)/step);
@@ -291,6 +310,8 @@ double phi_function(double *phi_array, double N, double Ni, double step)
 }
 
 double Dphi_function(double *Dphi_array, double N, double Ni, double step)
+/* given the array Dphi_array, this function gives us access to the values 
+ as a function of N instead of using an array index */
 {
 	int index;
 	index = floor((N-Ni)/step);
@@ -298,11 +319,14 @@ double Dphi_function(double *Dphi_array, double N, double Ni, double step)
 }
 
 double A(double N, double ai)
+/* the value of the scale factor as a function of e-fold N */
 {
 	return ai*exp(N);
 }
 
 double H(double N, double Ni, double step, double *H_array)
+/* given the array H_array, this function gives us access to the values 
+as a function of N instead of using an array index */
 {
 	int index;
 	index = floor((N-Ni)/step);
@@ -310,6 +334,8 @@ double H(double N, double Ni, double step, double *H_array)
 }
 
 double DH(double N, double Ni, double step, double *DH_array)
+/* given the array DH_array, this function gives us access to the values 
+as a function of N instead of using an array index */
 {
 	int index;
 	index = floor((N-Ni)/step);
@@ -317,18 +343,19 @@ double DH(double N, double Ni, double step, double *DH_array)
 }
 
 /* root finding to estimate Nics and Nshss */
-
 double find_Nics(double k, double *N_array, int npts, double ai, double Ni, double step, double *H_array)
 {
 	double test_array[npts+1];
 	int i, j;
 	double min;
 
+	/* creates a test array containing the absolute values of k -10^2*A*H fr various N */
 	for (i=0; i<npts+2; i++)
 	{
 		test_array[i] = fabs(k -pow(10,2)*A(N_array[i], ai)*H(N_array[i], Ni, step, H_array));
 	}
 
+	/* look for the minimum value of the test array, the array index and corresponding value of N */
 	min = test_array[0];
 	j = 0;
 	for (i=1; i<npts+2; i++)
@@ -350,11 +377,13 @@ double find_Nshss(double k, double *N_array, int npts, double ai, double Ni, dou
 	int i, j;
 	double min;
 
+	/* creates a test array containing the absolute values of k -10^(-5)*A*H fr various N */
 	for (i=0; i<npts+2; i++)
 	{
 		test_array[i] = fabs(k -pow(10,-5)*A(N_array[i], ai)*H(N_array[i], Ni, step, H_array));
 	}
 
+	/* look for the minimum value of the test array, the array index and corresponding value of N */
 	min = test_array[0];
 	j = 0;
 	for (i=1; i<npts+2; i++)
@@ -369,8 +398,8 @@ double find_Nshss(double k, double *N_array, int npts, double ai, double Ni, dou
 	return N_array[j];
 }
 
-/*initialize hk and Dhk values*/
-
+/* initialize hk and Dhk values */
+/* according to the Bunch-Davies initial conditions */
 void initialize_hk(double k, double Nics, double ai, double *hk)
 {
 	hk[0] = 1/sqrt(2*k)/A(Nics, ai);
@@ -386,7 +415,6 @@ void initialize_Dhk(double k, double Nics, double ai, double *Dhk, double Ni, do
 }
 
 /* evolve hk values from Nics to Nshss */
-
 double DDhk(double k, double N, double hk, double Dhk, double Ni, double step, double ai, double *H_array, double *DH_array)
 {
 	double DDhk_val;
@@ -449,6 +477,7 @@ void evolve_hk(double k, double Nics, double Nshss, double ai, double Ni, double
 	N = Nics;
 	while (N < Nshss +step)
 	{
+		/* stores the real and imaginary values of hk in hk_kx_arrays */
 		hk_array[i][0] = hk[0];
 		hk_array[i][1] = hk[1];
 
@@ -466,6 +495,7 @@ void evolve_hk(double k, double Nics, double Nshss, double ai, double Ni, double
 }
 
 void calG(double k1, double k2, double k3, int size_hk_array, double Nics, double Nshss, double **hk_k1_array, double **hk_k2_array, double **hk_k3_array, double *CalG, double Ni, double step, double ai, double *H_array)
+/* function to estimate of script G */
 {
 	double *func_int_real = malloc(size_hk_array*sizeof(double));
 	double *func_int_imag = malloc(size_hk_array*sizeof(double));
@@ -484,6 +514,8 @@ void calG(double k1, double k2, double k3, int size_hk_array, double Nics, doubl
 	double e;
 	e = 1/50;
 
+	/* evaluates and stores the values of (A/H)*hk(k1)*hk(k2)*hk(k3)*exp(-e*k/(A*H)) */
+	/* which is to be integrated over Nics to Nshss.*/
 	for(i=0; i<size_hk_array; i++)
 	{
 		func_int_real[i] = (A(N, ai)/H(N, Ni, step, H_array))
@@ -498,9 +530,11 @@ void calG(double k1, double k2, double k3, int size_hk_array, double Nics, doubl
 		N += step;
 	}
 
+	/* note that the exponential factor is being put in by hand.*/
 	int_real = func_int_real[0] +func_int_real[size_hk_array];
 	int_imag = func_int_imag[0] +func_int_imag[size_hk_array];
 
+	/* simpson's rule of integration */
 	for(i=0;i<size_hk_array/2;i++)
 	{
 		int_real += 2*func_int_real[2*i];
@@ -519,6 +553,7 @@ void calG(double k1, double k2, double k3, int size_hk_array, double Nics, doubl
 }
 
 void calG_cc(double k1, double k2, double k3, int size_hk_array, double Nics, double Nshss, double **hk_k1_array, double **hk_k2_array, double **hk_k3_array, double *CalG_cc, double Ni, double step, double ai, double *H_array)
+/* function to estimate the complex conjugate of script G */
 {
 	double *func_int_real = malloc(size_hk_array*sizeof(double));
 	double *func_int_imag = malloc(size_hk_array*sizeof(double));
@@ -537,6 +572,8 @@ void calG_cc(double k1, double k2, double k3, int size_hk_array, double Nics, do
 	double e;
 	e = 1/50;
 
+	/* evaluates and stores the values of (A/H)*hk(k1)*hk(k2)*hk(k3)*exp(-e*k/(A*H)) */
+	/* which is to be integrated over Nics to Nshss.*/
 	for(i=0; i<size_hk_array; i++)
 	{
 		func_int_real[i] = (A(N, ai)/H(N, Ni, step, H_array))
@@ -551,9 +588,11 @@ void calG_cc(double k1, double k2, double k3, int size_hk_array, double Nics, do
 		N += step;
 	}
 
+	/* note that the exponential factor is being put in by hand.*/
 	int_real = func_int_real[0] +func_int_real[size_hk_array];
 	int_imag = func_int_imag[0] +func_int_imag[size_hk_array];
 
+	/* simpson's rule of integration */
 	for(i=0;i<size_hk_array/2;i++)
 	{
 		int_real += 2*func_int_real[2*i];
@@ -572,18 +611,15 @@ void calG_cc(double k1, double k2, double k3, int size_hk_array, double Nics, do
 }
 
 void G_func(double *G, double a, double Ib, double c, double Id, double e, double If, double *CalG, double *CalG_cc)
+/* function to estimate the value of the tensor bi-spectrum G using hk_kx[Nshss] and CalG, CalG_cc */
 {
-	G[0] = (a*c*e -Ib*Id*e -(a*Id +Ib*c)*If)*CalG[0]
-		-(a*c*If -Ib*Id*If +(a*Id +Ib*c)*e)*CalG[1]
-		+(a*c*e -Ib*Id*e -(a*Id +Ib*c)*If)*CalG_cc[0]
-		-(a*c*If -Ib*Id*If +(a*Id +Ib*c)*e)*CalG_cc[1];
+	G[0] = (a*c*e -Ib*Id*e -(a*Id +Ib*c)*If)*CalG[0] -(a*c*If -Ib*Id*If +(a*Id +Ib*c)*e)*CalG[1]
+		+(a*c*e -Ib*Id*e -(a*Id +Ib*c)*If)*CalG_cc[0] -(a*c*If -Ib*Id*If +(a*Id +Ib*c)*e)*CalG_cc[1];
 
-	G[1] = (a*c*e -Ib*Id*e -(a*Id +Ib*c)*If)*CalG[1]
-		+(a*c*If -Ib*Id*If +(a*Id +Ib*c)*e)*CalG[0]
-		+(a*c*e -Ib*Id*e -(a*Id +Ib*c)*If)*CalG_cc[1]
-		-(a*c*If -Ib*Id*If +(a*Id +Ib*c)*e)*CalG_cc[0];
+	G[1] = (a*c*e -Ib*Id*e -(a*Id +Ib*c)*If)*CalG[1] +(a*c*If -Ib*Id*If +(a*Id +Ib*c)*e)*CalG[0]
+		+(a*c*e -Ib*Id*e -(a*Id +Ib*c)*If)*CalG_cc[1] -(a*c*If -Ib*Id*If +(a*Id +Ib*c)*e)*CalG_cc[0];
 	
-	printf("%le, %le, %le, %le \n", (a*c*e -Ib*Id*e -(a*Id +Ib*c)*If)*CalG[0], -(a*c*If -Ib*Id*If +(a*Id +Ib*c)*e)*CalG[1], +(a*c*e -Ib*Id*e - (a*Id +Ib*c)*If)*CalG_cc[0], -(a*c*If -Ib*Id*If +(a*Id +Ib*c)*e)*CalG_cc[1]);
+//	printf("%le, %le, %le, %le \n", (a*c*e -Ib*Id*e -(a*Id +Ib*c)*If)*CalG[0], -(a*c*If -Ib*Id*If +(a*Id +Ib*c)*e)*CalG[1], +(a*c*e -Ib*Id*e - (a*Id +Ib*c)*If)*CalG_cc[0], -(a*c*If -Ib*Id*If +(a*Id +Ib*c)*e)*CalG_cc[1]);
 
 	return;
 }
