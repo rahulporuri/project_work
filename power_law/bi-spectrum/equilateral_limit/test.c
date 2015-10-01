@@ -31,7 +31,7 @@ void initialize_Dhk(double k, double Nics, double ai, double *Dhk, double Ni, do
 double DDhk(double k, double N, double hk, double Dhk, double Ni, double step, double ai, double *H_array, double *DH_array);
 void rk4_stepper_hk(double k, double N, double *hk, double *Dhk, double Ni, double step, double *update_hk, double *update_Dhk, double ai, double *H_array, double *DH_array);
 
-void evolve_hk(double k, double Nics, double Nshss, double ai, double Ni, double step, double *H_array, double *DH_array, double **hk_array);
+void evolve_hk(double k, double ai, double Ni, double step, double *N_array, int npts, double *H_array, double *DH_array, double **hk_array, double size_hk_array);
 
 void calG(double k1, double k2, double k3, int size_hk_array, double Nics, double Nshss, double **hk_k1_array, double **hk_k2_array, double **hk_k3_array, double *CalG, double Ni, double step, double ai, double *H_array);
 void calG_cc(double k1, double k2, double k3, int size_hk_array, double Nics, double Nshss, double **hk_k1_array, double **hk_k2_array, double **hk_k3_array, double *CalG, double Ni, double step, double ai, double *H_array);
@@ -49,11 +49,11 @@ main(void)
 	double H0, Dphi0;
 
 	double ai;
- 	double k1, k2, k3; /* the triangular set of modes*/
+ 	double k; /* the triangular set of modes*/
 
 	int npts; /* number of points of integration need to be > 10^8! */
 	/* otherwise, larger modes will die off faster and becomes NaN at Nshss */
-	double tps_k1, tps_k2, tps_k3; /* tensor power spectrum values for the three modes k1, k2 and k3*/
+	double tps; /* tensor power spectrum values for the three modes k1, k2 and k3*/
 
 	int i, j;
 	double step; /* step size for integration*/
@@ -84,25 +84,15 @@ main(void)
 	/* the following arrays hold the real and imaginary values of hk
 	corresponding to the three modes k1, k2, k3 - which are used to estimate calG and calG_cc.
 	dynamic memory allocation is done because static arrays don't support 10^8 data points! */
-	double **hk_k1_array = malloc(10000001*sizeof(double));
+	double **hk_array = malloc(10000001*sizeof(double));
 	for (i=0; i<10000001; i++)
 	{
-		hk_k1_array[i] = (double*) malloc(2*sizeof(double));
-	}
-
-	double **hk_k2_array = malloc(10000001*sizeof(double));
-	for (i=0; i<10000001; i++)
-	{
-		hk_k2_array[i] = (double*) malloc(2*sizeof(double));
-	}
-
-	double **hk_k3_array = malloc(10000001*sizeof(double));
-	for (i=0; i<10000001; i++)
-	{
-		hk_k3_array[i] = (double*) malloc(2*sizeof(double));
+		hk_array[i] = (double*) malloc(2*sizeof(double));
 	}
 
 	int size_hk_array;
+
+	printf("now we start loading params \n");
 
 	/* define initial conditions */
 	q = 51.0;
@@ -131,13 +121,18 @@ main(void)
 	printf("%lf, %lf, %lf, %lf, %lf \n", Ni, phi, Dphi, dphi0, H0);
 
 	N = Ni;
+	printf("Ni value");
 	j = 0;
+
+	printf("starting phi evolution");
 
 	while (N < Nf +step)
 	{
 		N_array[j] = N;
 		phi_array[j] = phi;
 		Dphi_array[j] = Dphi;
+
+		printf("p");
 
 		rk4_stepper_phi(N, phi, Dphi, step, V0, q, phi0, increment_phi);
 		phi = phi +increment_phi[0];
@@ -147,85 +142,44 @@ main(void)
 		j += 1;
 	}
 
+	printf("\n");
+	printf("done with phi evolution \n");
+
 	for (i=0; i<npts+1; i++)
 	{
+		printf("H");
 		H_array[i] = sqrt(V(phi_array[i], V0, q, phi0)/(3.0 -Dphi_array[i]*Dphi_array[i]/2.0));
 		DH_array[i] = (-1.0/2.0)*sqrt(V(phi_array[i], V0, q, phi0)/(3.0 -Dphi_array[i]*Dphi_array[i]/2.0))*Dphi_array[i]*Dphi_array[i];
 	}
 
-/*	Nics = find_Nics(5*pow(10,-4), N_array, npts, ai, Ni, step);
-	Nshss = find_Nshss(5*pow(10,-2), N_array, npts, ai, Ni, step); */
+	printf("loaded H and DH arrays");
 
-	Nics = 8.880899999991;
-	Nshss = 30.018590000083;
-
-	size_hk_array = floor((Nshss-Nics)/step);
-
-	k2 = 5*pow(10,-4); k3 = 5*pow(10, -4);
-
-	/* evolve the mode k1 from Nics to Nshss */
-	k1 = 5*pow(10,-2);
-	evolve_hk(k1, Nics, Nshss, ai, Ni, step, H_array, DH_array, hk_k1_array);
-	tps_k1 = 2*pow(k1,3)/(2*pow(M_PI,2))*(hk_k1_array[size_hk_array][0]*hk_k1_array[size_hk_array][0] +hk_k1_array[size_hk_array][1]*hk_k1_array[size_hk_array][1]);
+	k = pow(10,-6);
 
 	/* generate values k2 and k3 and evolve the hk for the corresponding modes */
-	while (k3/k1 < 1)
+	while (k < pow(10,0))
 	{
-		evolve_hk(k3, Nics, Nshss, ai, Ni, step, H_array, DH_array, hk_k3_array);
-		tps_k3 = 2*pow(k3,3)/(2*pow(M_PI,2))*(hk_k3_array[size_hk_array][0]*hk_k3_array[size_hk_array][0] +hk_k3_array[size_hk_array][1]*hk_k3_array[size_hk_array][1]);
+		printf("evolving hk now");
+		evolve_hk(k, ai, Ni, step, N_array, npts, H_array, DH_array, hk_array, size_hk_array);
+		tps = 2*pow(k,3)/(2*pow(M_PI,2))*(hk_array[size_hk_array][0]*hk_array[size_hk_array][0] +hk_array[size_hk_array][1]*hk_array[size_hk_array][1]);
 
 		printf("=================================== \n");
 
-		if (k3/k1 < 0.5)
-		{
-			k2 = k1 -k3;
-			while (k2/k1 < 1)
-			{
-				evolve_hk(k2, Nics, Nshss, ai, Ni, step, H_array, DH_array, hk_k2_array);
-				tps_k2 = 2*pow(k2,3)/(2*pow(M_PI,2))*(hk_k2_array[size_hk_array][0]*hk_k2_array[size_hk_array][0] +hk_k2_array[size_hk_array][1]*hk_k2_array[size_hk_array][1]);
-				/* now that we have hk corresponding to k1, k2 and k3; we estimate the value of script G and it's complex conjugate */
-				calG(k1, k2, k3, size_hk_array, Nics, Nshss, hk_k1_array, hk_k2_array, hk_k3_array, CalG, Ni, step, ai, H_array);
-				calG_cc(k1, k2, k3, size_hk_array, Nics, Nshss, hk_k1_array, hk_k2_array, hk_k3_array, CalG_cc, Ni, step, ai, H_array);
+		/* now that we have hk corresponding to k1, k2 and k3; we estimate the value of script G and it's complex conjugate */
+		calG(k, k, k, size_hk_array, Nics, Nshss, hk_array, hk_array, hk_array, CalG, Ni, step, ai, H_array);
+		calG_cc(k, k, k, size_hk_array, Nics, Nshss, hk_array, hk_array, hk_array, CalG_cc, Ni, step, ai, H_array);
 
-				/* and using the above, calculate the tensor bi-spectrum and */
-				G_func(G, hk_k1_array[size_hk_array][0], hk_k1_array[size_hk_array][1],
-						hk_k2_array[size_hk_array][0], hk_k2_array[size_hk_array][1],
-						hk_k3_array[size_hk_array][0], hk_k3_array[size_hk_array][1], CalG, CalG_cc);
+		/* and using the above, calculate the tensor bi-spectrum and */
+		G_func(G, hk_array[size_hk_array][0], hk_array[size_hk_array][1],
+			hk_array[size_hk_array][0], hk_array[size_hk_array][1],
+			hk_array[size_hk_array][0], hk_array[size_hk_array][1], CalG, CalG_cc);
 
-				/* the non-gaussianity parameter h_NL */
-				h_NL = (-(4/(2*M_PI*M_PI))*(4/(2*M_PI*M_PI))*(k1*k1*k1*k2*k2*k2*k3*k3*k3)*G[0]/
-					(2*k1*k1*k1*tps_k2*tps_k3 +2*k2*k2*k2*tps_k3*tps_k1 +2*k3*k3*k3*tps_k1*tps_k2));
+		/* the non-gaussianity parameter h_NL */
+		h_NL = (-(4/(2*M_PI*M_PI))*(4/(2*M_PI*M_PI))*(k*k*k*k*k*k*k*k*k)*G[0]/
+			(2*k*k*k*tps*tps +2*k*k*k*tps*tps +2*k*k*k*tps*tps));
 
-				printf("%le, %le, %le, %le, %le, %le, %lf, %lf, %lf, %lf, %lf, %lf, %lf \n", k1, k2, k3, tps_k1, tps_k2, tps_k3, CalG[0], CalG[1], CalG_cc[0], CalG_cc[1], G[0], G[1], h_NL);
-				k2 = k2 +0.2*k1;
-			}
-		}
-		else
-		{
-			k2 = k3;
-			while (k2/k1 < 1)
-			{
-				evolve_hk(k2, Nics, Nshss, ai, Ni, step, H_array, DH_array, hk_k2_array);
-				tps_k2 = 2*pow(k2,3)/(2*pow(M_PI,2))*(hk_k2_array[size_hk_array][0]*hk_k2_array[size_hk_array][0] +hk_k2_array[size_hk_array][1]*hk_k2_array[size_hk_array][1]);
-				/* now that we have hk corresponding to k1, k2 and k3; we estimate the value of script G and it's complex conjugate */
-				calG(k1, k2, k3, size_hk_array, Nics, Nshss, hk_k1_array, hk_k2_array, hk_k3_array, CalG, Ni, step, ai, H_array);
-				calG_cc(k1, k2, k3, size_hk_array, Nics, Nshss, hk_k1_array, hk_k2_array, hk_k3_array, CalG_cc, Ni, step, ai, H_array);
-
-				/* and using the above, calculate the tensor bi-spectrum and */
-				G_func(G, hk_k1_array[size_hk_array][0], hk_k1_array[size_hk_array][1], 
-						hk_k2_array[size_hk_array][0], hk_k2_array[size_hk_array][1], 
-						hk_k3_array[size_hk_array][0], hk_k3_array[size_hk_array][1], CalG, CalG_cc);
-
-				/* the non-gaussianity parameter h_NL */
-				h_NL = (-(4/(2*M_PI*M_PI))*(4/(2*M_PI*M_PI))*(k1*k1*k1*k2*k2*k2*k3*k3*k3)*G[0]/
-					(2*k1*k1*k1*tps_k2*tps_k3 +2*k2*k2*k2*tps_k3*tps_k1 +2*k3*k3*k3*tps_k1*tps_k2));
-
-				printf("%le, %le, %le, %le, %le, %le, %lf, %lf, %lf, %lf, %lf, %lf, %lf \n", k1, k2, k3, tps_k1, tps_k2, tps_k3, CalG[0], CalG[1], CalG_cc[0], CalG_cc[1], G[0], G[1], h_NL);
-				k2 = k2 +0.2*k1;
-			}
-		}
-
-		k3 = k3 +0.2*k1;
+		printf("%le, %le, %lf, %lf, %lf, %lf, %lf, %lf, %lf \n", k, tps, CalG[0], CalG[1], CalG_cc[0], CalG_cc[1], G[0], G[1], h_NL);
+		k = k*pow(10,1/4);
 	}
 
 	free(N_array);
@@ -237,21 +191,10 @@ main(void)
 
 	for(i=0; i<10000001; i++)
 	{
-		free(hk_k1_array[i]);
+		free(hk_array[i]);
 	}
-	free(hk_k1_array);
+	free(hk_array);
 
-	for(i=0; i<10000001; i++)
-	{
-		free(hk_k2_array[i]);
-	}
-	free(hk_k2_array);
-
-	for(i=0; i<10000001; i++)
-	{
-		free(hk_k3_array[i]);
-	}
-	free(hk_k3_array);
 	/* DONT FORGET TO FREE THE MEMORY USED USING MALLOC */
 	/* IF YOU DECIDE TO KILL THE PROGRAM HALF-WAY, IT'LL TAKE */
 	/* THE SYSTEM A VERY LONG TIME TO CLEANUP ALL OF THE GARBAGE! */
@@ -454,7 +397,7 @@ void rk4_stepper_hk(double k, double N, double *hk, double *Dhk, double Ni, doub
 	return;
 }
 
-void evolve_hk(double k, double Nics, double Nshss, double ai, double Ni, double step, double *H_array, double *DH_array, double **hk_array)
+void evolve_hk(double k, double ai, double Ni, double step, double *N_array, int npts, double *H_array, double *DH_array, double **hk_array, double size_hk_array)
 {
 	double hk[2];
 	double Dhk[2];
@@ -462,13 +405,17 @@ void evolve_hk(double k, double Nics, double Nshss, double ai, double Ni, double
 	double increment_hk[2];
 	double increment_Dhk[2];
 
+	double Nics, Nshss;
+
 	double tps;
 
 	double N;
 	int i;
 
-//	Nics = find_Nics(k, N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step);
-//	Nshss = find_Nshss(k, N_array, npts, ai, V0, q, phi0, phi_array, Dphi_array, N, Ni, step);
+	Nics = find_Nics(k, N_array, npts, ai, Ni, step, H_array);
+	Nshss = find_Nshss(k, N_array, npts, ai, Ni, step, H_array);
+
+	size_hk_array = floor((Nshss-Nics)/step);
 
 	initialize_hk(k, Nics, ai, hk);
 	initialize_Dhk(k, Nics, ai, Dhk, Ni, step, H_array);
@@ -512,7 +459,7 @@ void calG(double k1, double k2, double k3, int size_hk_array, double Nics, doubl
 	int_imag = 0;
 
 	double e;
-	e = 1/10;
+	e = 1/50;
 
 	/* evaluates and stores the values of (A/H)*hk(k1)*hk(k2)*hk(k3)*exp(-e*k/(A*H)) */
 	/* which is to be integrated over Nics to Nshss.*/
@@ -570,7 +517,7 @@ void calG_cc(double k1, double k2, double k3, int size_hk_array, double Nics, do
 	int_imag = 0;
 
 	double e;
-	e = 1/10;
+	e = 1/50;
 
 	/* evaluates and stores the values of (A/H)*hk(k1)*hk(k2)*hk(k3)*exp(-e*k/(A*H)) */
 	/* which is to be integrated over Nics to Nshss.*/

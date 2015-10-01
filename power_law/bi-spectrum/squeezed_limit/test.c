@@ -189,15 +189,15 @@ main(void)
 
 				/* and using the above, calculate the tensor bi-spectrum and */
 				G_func(G, hk_k1_array[size_hk_array][0], hk_k1_array[size_hk_array][1],
-						hk_k2_array[size_hk_array][0], hk_k2_array[size_hk_array][1],
-						hk_k3_array[size_hk_array][0], hk_k3_array[size_hk_array][1], CalG, CalG_cc);
+						hk_k1_array[size_hk_array][0], hk_k1_array[size_hk_array][1],
+						hk_k1_array[size_hk_array][0], hk_k1_array[size_hk_array][1], CalG, CalG_cc);
 
 				/* the non-gaussianity parameter h_NL */
 				h_NL = (-(4/(2*M_PI*M_PI))*(4/(2*M_PI*M_PI))*(k1*k1*k1*k2*k2*k2*k3*k3*k3)*G[0]/
 					(2*k1*k1*k1*tps_k2*tps_k3 +2*k2*k2*k2*tps_k3*tps_k1 +2*k3*k3*k3*tps_k1*tps_k2));
 
-				printf("%le, %le, %le, %le, %le, %le, %lf, %lf, %lf, %lf, %lf, %lf, %lf \n", k1, k2, k3, tps_k1, tps_k2, tps_k3, CalG[0], CalG[1], CalG_cc[0], CalG_cc[1], G[0], G[1], h_NL);
-				k2 = k2 +0.2*k1;
+				printf("%le, %le, %le, %le, %le, %le, %lf, %lf, %lf, %lf, %lf, %lf, %lf \n", k1, k2, k3, tps_k1, tps_k2, tps_k3 CalG[0], CalG[1], CalG_cc[0], CalG_cc[1], G[0], G[1], h_NL);
+				k2 = k2 +0.1*k1;
 			}
 		}
 		else
@@ -213,19 +213,19 @@ main(void)
 
 				/* and using the above, calculate the tensor bi-spectrum and */
 				G_func(G, hk_k1_array[size_hk_array][0], hk_k1_array[size_hk_array][1], 
-						hk_k2_array[size_hk_array][0], hk_k2_array[size_hk_array][1], 
-						hk_k3_array[size_hk_array][0], hk_k3_array[size_hk_array][1], CalG, CalG_cc);
+						hk_k1_array[size_hk_array][0], hk_k1_array[size_hk_array][1], 
+						hk_k1_array[size_hk_array][0], hk_k1_array[size_hk_array][1], CalG, CalG_cc);
 
 				/* the non-gaussianity parameter h_NL */
 				h_NL = (-(4/(2*M_PI*M_PI))*(4/(2*M_PI*M_PI))*(k1*k1*k1*k2*k2*k2*k3*k3*k3)*G[0]/
 					(2*k1*k1*k1*tps_k2*tps_k3 +2*k2*k2*k2*tps_k3*tps_k1 +2*k3*k3*k3*tps_k1*tps_k2));
 
-				printf("%le, %le, %le, %le, %le, %le, %lf, %lf, %lf, %lf, %lf, %lf, %lf \n", k1, k2, k3, tps_k1, tps_k2, tps_k3, CalG[0], CalG[1], CalG_cc[0], CalG_cc[1], G[0], G[1], h_NL);
-				k2 = k2 +0.2*k1;
+				printf("%le, %le, %le, %le, %le, %le, %lf, %lf, %lf, %lf, %lf, %lf, %lf \n", k1, k2, k3, tps_k1, tps_k2, tps_k3 CalG[0], CalG[1], CalG_cc[0], CalG_cc[1], G[0], G[1], h_NL);
+				k2 = k2 +0.1*k1;
 			}
 		}
 
-		k3 = k3 +0.2*k1;
+		k3 = k3 +0.1*k1;
 	}
 
 	free(N_array);
@@ -512,7 +512,7 @@ void calG(double k1, double k2, double k3, int size_hk_array, double Nics, doubl
 	int_imag = 0;
 
 	double e;
-	e = 1/10;
+	e = 1/50;
 
 	/* evaluates and stores the values of (A/H)*hk(k1)*hk(k2)*hk(k3)*exp(-e*k/(A*H)) */
 	/* which is to be integrated over Nics to Nshss.*/
@@ -570,7 +570,7 @@ void calG_cc(double k1, double k2, double k3, int size_hk_array, double Nics, do
 	int_imag = 0;
 
 	double e;
-	e = 1/10;
+	e = 1/50;
 
 	/* evaluates and stores the values of (A/H)*hk(k1)*hk(k2)*hk(k3)*exp(-e*k/(A*H)) */
 	/* which is to be integrated over Nics to Nshss.*/
