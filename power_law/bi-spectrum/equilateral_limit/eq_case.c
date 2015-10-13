@@ -10,6 +10,9 @@ we evaluate the scalar field in the e-fold N range Ni to Nf.
 #include <stdlib.h>
 #include <math.h>
 
+#include <gsl/gsl_complex.h>
+#include <gsl/gsl_complex_math.h>
+
 double V(double phi, double V0, double q, double phi0);
 double dV(double phi, double V0, double q, double phi0);
 double DDphi(double N, double phi, double Dphi, double V0, double q, double phi0);
@@ -92,6 +95,16 @@ main(void)
 
 	int size_hk_array;
 
+	gsl_complex term1;	/*hk[Nshss]*/
+	gsl_complex term2;	/*calG*/
+	gsl_complex term3; 	/*calG_cc*/
+	
+	gsl_complex temp1;
+	gsl_complex temp2;
+
+	gsl_complex G_test;
+	gsl_complex h_NL_test;
+
 	/* define initial conditions */
 	q = 51.0;
 	V0 = (204.0/100.0)*pow(10,-8);
@@ -140,8 +153,7 @@ main(void)
 	}
 
 	k = pow(10,-6);
-	/* generate values k2 and k3 and evolve the hk for the corresponding modes */
-	while (k < pow(10,0))
+	while (k < pow(10,-5))
 	{
 		evolve_hk(k, npts, ai, Ni, step, N_array, H_array, DH_array, hk_array, &Nics, &Nshss);
 		size_hk_array = floor((Nshss-Nics)/step);
@@ -152,16 +164,36 @@ main(void)
 		calG(k, k, k, size_hk_array, Nics, Nshss, hk_array, hk_array, hk_array, CalG, Ni, step, ai, H_array);
 		calG_cc(k, k, k, size_hk_array, Nics, Nshss, hk_array, hk_array, hk_array, CalG_cc, Ni, step, ai, H_array);
 
+		GSL_SET_COMPLEX(&term1, hk_array[size_hk_array][0], hk_array[size_hk_array][1]);
+		GSL_SET_COMPLEX(&term2, CalG[0], CalG[1]);
+		GSL_SET_COMPLEX(&term3, CalG_cc[0], CalG_cc[1]);
+
+		GSL_SET_COMPLEX(&temp1, GSL_REAL(gsl_complex_mul(gsl_complex_pow_real(term1, 3), term2)),
+					GSL_IMAG(gsl_complex_mul(gsl_complex_pow_real(term1, 3), term2)));
+
+		GSL_SET_COMPLEX(&temp2, GSL_REAL(gsl_complex_mul(gsl_complex_pow_real(gsl_complex_conjugate(term1), 3), term3)),
+					GSL_IMAG(gsl_complex_mul(gsl_complex_pow_real(gsl_complex_conjugate(term1), 3), term3)));
+
+		GSL_SET_COMPLEX(&G_test, GSL_REAL(gsl_complex_add(temp1, temp2)), GSL_IMAG(gsl_complex_add(temp1, temp2)));
+
+		GSL_SET_COMPLEX(&h_NL_test, (-(4/(2*M_PI*M_PI))*(4/(2*M_PI*M_PI))*(k*k*k*k*k*k*k*k*k)*GSL_REAL(G_test)/
+						(2*k*k*k*tps*tps +2*k*k*k*tps*tps +2*k*k*k*tps*tps)),
+					    (-(4/(2*M_PI*M_PI))*(4/(2*M_PI*M_PI))*(k*k*k*k*k*k*k*k*k)*GSL_IMAG(G_test)/
+        					(2*k*k*k*tps*tps +2*k*k*k*tps*tps +2*k*k*k*tps*tps)));
+
+		printf("%le, %lf, %lf, %le, %le \n", k, G_test, (k*k*k*k*k*k)*gsl_complex_abs(G_test), gsl_complex_abs(h_NL_test));
+
 		/* and using the above, calculate the tensor bi-spectrum and */
 		G_func(G, hk_array[size_hk_array-1][0], hk_array[size_hk_array-1][1],
-				hk_array[size_hk_array-1][0], hk_array[size_hk_array-1][1],
-				hk_array[size_hk_array-1][0], hk_array[size_hk_array-1][1], CalG, CalG_cc);
+			hk_array[size_hk_array-1][0], hk_array[size_hk_array-1][1],
+			hk_array[size_hk_array-1][0], hk_array[size_hk_array-1][1], CalG, CalG_cc);
 
 		/* the non-gaussianity parameter h_NL */
 		h_NL = (-(4/(2*M_PI*M_PI))*(4/(2*M_PI*M_PI))*(k*k*k*k*k*k*k*k*k)*G[0]/
 			(2*k*k*k*tps*tps +2*k*k*k*tps*tps +2*k*k*k*tps*tps));
 
-		printf("%le, %le, %le, %le, %le, %le, %lf \n", k, tps, CalG[0]*CalG[0] +CalG[1]*CalG[1], G[0], G[1], (k*k*k*k*k*k)*G[0], h_NL);
+		printf("%le, %lf, %lf, %lf, %lf, %le, %le, %le, %le, %le, %le \n", 
+			k, Nics, Nshss, tps, hk_array[size_hk_array][0], hk_array[size_hk_array][1], CalG[0]*CalG[0] +CalG[1]*CalG[1], G[0], G[1], (k*k*k*k*k*k)*G[0], h_NL);
 		k = k*pow(10,1.0/2);
 	}
 
@@ -446,7 +478,7 @@ void calG(double k1, double k2, double k3, int size_hk_array, double Nics, doubl
 	int_imag = 0;
 
 	double e;
-	e = 1/10;
+	e = 1/50;
 
 	/* evaluates and stores the values of (A/H)*hk(k1)*hk(k2)*hk(k3)*exp(-e*k/(A*H)) */
 	/* which is to be integrated over Nics to Nshss.*/
@@ -504,7 +536,7 @@ void calG_cc(double k1, double k2, double k3, int size_hk_array, double Nics, do
 	int_imag = 0;
 
 	double e;
-	e = 1/10;
+	e = 1/50;
 
 	/* evaluates and stores the values of (A/H)*hk(k1)*hk(k2)*hk(k3)*exp(-e*k/(A*H)) */
 	/* which is to be integrated over Nics to Nshss.*/
