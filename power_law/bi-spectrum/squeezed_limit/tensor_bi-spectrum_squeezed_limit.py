@@ -68,7 +68,7 @@ def rk4_step(_N, _phi, _Dphi, _step):
 # In[ ]:
 
 '''We evolve the scalar field phi for e-fold N ranging from Ni to Nf.'''
-npts = 100000
+npts = 1000000
 step = (Nf-Ni)/(npts)
 
 phi_ = phi0
@@ -227,14 +227,17 @@ def calG_cc(hk_k1_array, hk_k2_array, hk_k3_array, k1, k2, k3, _Nics, _Nshss):
 
 '''We first evolve the pseudo-zero mode 'k0' from Nics 
 corresponding to k0 to Nshss corresponding to the largest mode.'''
-k0 = 1e-06
+k0 = 4e-08
 
-k_min = k0
-k_max = 1e+05*k0
+k_min = 1e-05
+k_max = 1e-01
 
-Nics_k0 = solve_Nics(k_min, N_array)
-Nshss_k0 = solve_Nshss(k_max, N_array)
+Nics_k0 = solve_Nics(k0, N_array)
+Nshss_k0 = solve_Nshss(k0, N_array)
 
+print Nics_k0, Nshss_k0
+
+'''
 hk_k0_array = numpy.empty(0, dtype=complex)
 hk_k0_array = evolve_hk(k0, Nics_k0, Nshss_k0, step)
 tps_k0 = 2.*(k0)**3./(2.*numpy.pi**2.)*(numpy.absolute(hk_k0_array[-1]))**2.
@@ -245,7 +248,7 @@ print k0, Nics_k0, Nshss_k0, str(hk_k0_array[-1]).strip('[]'), str(tps_k0).strip
 # In[11]:
 
 k_list = [10**((-24.+i)/4.) for i in range(24)]
-'''k_list contains the mode k = k1= k2.'''
+k_list contains the mode k = k1= k2.
 
 for ki in k_list:
     Nics = solve_Nics(ki, N_array)
@@ -272,4 +275,4 @@ for ki in k_list:
 # In[ ]:
 
 
-
+'''

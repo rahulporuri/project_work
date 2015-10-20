@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 G_py_data = numpy.loadtxt('h_NL_py.txt')
 G_m_data = numpy.loadtxt('p-law-ggg-one-sl-n.txt')
 
+#print G_py_data[:,0]**6.*G_py_data[:,1]
+
 #print h_NL_py_data
 
 #k_py_data = numpy.asarray([h_NL_py_data[i][0] for i in  range(9)])
@@ -23,7 +25,7 @@ plt.ylabel(r'$-G$')
 plt.title(r'$-G$ as a function of $k$')
 #plt.ylim([0.87,0.89])
 #c, = plt.plot(h_NL_c_data[:,], h_NL_c_data[:,], '.')
-python, = plt.loglog(G_py_data[:,0], (G_py_data[:,0]**6.)*numpy.absolute(G_py_data[:,1]), '.')
+python, = plt.loglog(G_py_data[:,0], (G_py_data[:,0]**6.)*numpy.absolute(G_py_data[:,4]), '.')
 mathematica, = plt.loglog(G_m_data[:,0], numpy.absolute(G_m_data[:,1]), '--')
 #m, = plt.plot(h_NL_m_data[:,], h_NL_m_data[:,], '.')
 #plt.legend([c, python, m],['c', 'python', 'mathematica'])
@@ -36,7 +38,7 @@ plt.ylabel(r'$h_{NL}$')
 plt.title(r'$h_{NL}$ as a function of $k$')
 #plt.ylim([0.87,0.89])
 #c, = plt.plot(h_NL_c_data[:,], h_NL_c_data[:,], '.')
-python, = plt.loglog(G_py_data[:,0], G_py_data[:,2], '.')
+python, = plt.semilogx(G_py_data[:,0], G_py_data[:,5], '.')
 #mathematica, = plt.loglog(h_NL_m_data[:,0], h_NL_m_data[:,1], '--')
 #m, = plt.plot(h_NL_m_data[:,], h_NL_m_data[:,], '.')
 #plt.legend([c, python, m],['c', 'python', 'mathematica'])
