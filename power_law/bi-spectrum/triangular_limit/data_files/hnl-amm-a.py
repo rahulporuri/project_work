@@ -43,7 +43,8 @@ pylab.axes([0.125,0.125,0.825,0.825])
 ######################################################################
 #Reading data from files and plotting them
 #read from textfile to x and y
-data = genfromtxt('amm-hnla_131.txt')
+#data = genfromtxt('amm-hnla_131.txt')
+data = genfromtxt('correct_data.dat')
 #data = loadtxt('amm-hnla_131.txt')
 
 k1 = data[:,0]
@@ -58,6 +59,8 @@ z = data[:,10]
 #x = data[:,0]
 #y = data[:,1]
 #z = data[:,2]
+
+print z
 
 xi = np.linspace(0,1,400)
 yi = np.linspace(0.5,1,400)
