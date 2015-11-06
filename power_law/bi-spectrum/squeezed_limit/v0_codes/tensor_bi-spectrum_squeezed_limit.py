@@ -1,16 +1,22 @@
+
+# coding: utf-8
+
+# In[1]:
+
 import numpy
 import matplotlib.pyplot as plt
 from scipy.integrate import simps
 
-import time
-import multiprocessing as mp
-import random
-import string
 
-parallel_output = mp.Queue()
+# In[2]:
+
+get_ipython().magic(u'matplotlib inline')
 
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
+
+
+# In[3]:
 
 q = 51.
 V0 = (204./100.)*1e-08
@@ -22,11 +28,10 @@ dphi0 = (2.*q)**(1./2)/t0
 Ni = 0.
 Nf = 70.
 
-''' Note that in this code, I use the prefix 'd' to represent derivative with respect 
-to time (except for the case of dV where the derivative is with respect to phi) and 
-the prefix 'D' to represent derivative with respect to e-fold N. Also, the suffix '0' 
-is used to represent the initial conditions in various cases. Also, as can be seen here, 
-we evaluate the scalar field in the e-fold N range Ni to Nf.'''
+
+# Note that in this code, I use the prefix 'd' to represent derivative with respect to time (except for the case of dV where the derivative is with respect to phi) and the prefix 'D' to represent derivative with respect to e-fold N. Also, the suffix '0' is used to represent the initial conditions in various cases. Also, as can be seen here, we evaluate the scalar field in the e-fold N range Ni to Nf.
+
+# In[4]:
 
 V = lambda _phi : V0*numpy.exp(-(2./q)**(1./2)*(_phi -phi0))
 dV = lambda _phi : -(2./q)**(1./2)*V0*numpy.exp(-(2./q)**(1./2)*(_phi -phi0))
@@ -59,8 +64,11 @@ def rk4_step(_N, _phi, _Dphi, _step):
 
     return (F1 +2*F2 +2*F3 +F4)*_step/6., (f1 +2*f2 +2*f3 +f4)*_step/6. # [phi, Dphi] update
 
+
+# In[ ]:
+
 '''We evolve the scalar field phi for e-fold N ranging from Ni to Nf.'''
-npts = 50000
+npts = 1000000
 step = (Nf-Ni)/(npts)
 
 phi_ = phi0
@@ -82,14 +90,8 @@ while N < Nf +step:
     
     N += step
 
-N_new = numpy.linspace(Ni,Nf,500001)
-phi_array_new = numpy.interp(N_new, N_array, phi_array)
-Dphi_array_new = numpy.interp(N_new, N_array, Dphi_array)
 
-phi_array = phi_array_new
-Dphi_array = Dphi_array_new
-N_array = N_new
-step = (Nf-Ni)/(500000)
+# In[7]:
 
 phi = lambda _N : phi_array[int((_N-Ni)/step)]
 Dphi = lambda _N : Dphi_array[int((_N-Ni)/step)]
@@ -105,11 +107,14 @@ ai = 1e-05
 A = lambda _N : ai*numpy.exp(_N)
 '''The scale factor in terms of e-fold N.'''
 
+k0 = numpy.empty(0)
+
 def DDhk(_k, _N, _hk, _Dhk):
     '''Returns the value of the second derivative of the tensor perturbatons
     h_k th respec to e-fold N. We need this value when we are trying to 
     evluate h_k'''
     return -((3. +(DH(_N)/H(_N)))*_Dhk +((_k/(A(_N)*H(_N)))**2)*_hk)
+
 
 def rk4_step(_k, _N, _hk, _Dhk, _step):
     '''a runge-kutta 4 stepper function that returns the value by which
@@ -127,12 +132,15 @@ def rk4_step(_k, _N, _hk, _Dhk, _step):
             numpy.array([(F1 +2*F2 +2*F3 +F4)*_step/6.], dtype=complex))
             # [Dhk, hk] update
 
+
+# In[8]:
+
 def solve_Nics(k, eN_array):
     '''Returns the value of e-fold N when the mode is
     in the sub-Hubble domain, which we define as k/(A*H) =10^2.'''
     Ni = eN_array[0]
     step = eN_array[1] -eN_array[0]
-    Nics_temp = numpy.asarray([k - 1e+03*A(N)*H(N) for N in eN_array])
+    Nics_temp = numpy.asarray([k - 1e+02*A(N)*H(N) for N in eN_array])
     nics_test = numpy.where(Nics_temp > 0)
     return Ni + nics_test[0][-1]*step
 
@@ -149,15 +157,15 @@ def initialize_hk(k, _Nics):
     '''Returns the value of h_k for the mode k at e-fold N of _Nics.
     We obtain his value by imposing the Bunch-Davies initial conditions'''
     hk0 = numpy.zeros(1,dtype=complex)             
-    hk0.real = 1./(k**(1./2))/A(_Nics)
+    hk0.real = (((2.*k)**(1./2))*A(_Nics))**(-1.)
     return hk0
 
 def initialize_Dhk(k, _Nics):
     '''Returns the value of h_k for the mode k at e-fold N of _Nshss.
     We obtain his value by imposing the Bunch-Davies initial conditions'''
     Dhk0 = numpy.zeros(1,dtype=complex)
-    Dhk0.real = -1./(k**(1./2))/A(_Nics)
-    Dhk0.imag = -k**(1./2)/(A(_Nics)*A(_Nics)*H(_Nics))
+    Dhk0.real = -(1/A(_Nics))*((2*k)**(-1./2))
+    Dhk0.imag = -((k/2)**(1./2))/(A(_Nics)*A(_Nics)*H(_Nics))
     return Dhk0
 
 def evolve_hk(k, _Nics, _Nshss, _step):    
@@ -183,7 +191,10 @@ def evolve_hk(k, _Nics, _Nshss, _step):
 
     return hk_array
 
-e = 50**(-1)
+
+# In[9]:
+
+e = 10**(-1)
 
 def calG(hk_k1_array, hk_k2_array, hk_k3_array, k1, k2, k3, _Nics, _Nshss):
     '''Returns the value of \mathcal{G} which is in turn used to estimate G, the 
@@ -211,104 +222,57 @@ def calG_cc(hk_k1_array, hk_k2_array, hk_k3_array, k1, k2, k3, _Nics, _Nshss):
 
     return (k1**2. +k2**2. +k3**2)/4.*result*numpy.array([0.+1.j], dtype=complex)
 
+
+# In[10]:
+
 '''We first evolve the pseudo-zero mode 'k0' from Nics 
 corresponding to k0 to Nshss corresponding to the largest mode.'''
-k0 = 1000*ai*numpy.exp(Ni)*H(Ni)
+k0 = 4e-08
 
 k_min = 1e-05
 k_max = 1e-01
 
-print 'evolving k0'
+Nics_k0 = solve_Nics(k0, N_array)
+Nshss_k0 = solve_Nshss(k0, N_array)
 
-#Nics_k0 = solve_Nics(k0, N_array)
-Nics_k0 = 0.
-Nshss_k0 = solve_Nshss(k_max, N_array)
+print Nics_k0, Nshss_k0
 
+'''
 hk_k0_array = numpy.empty(0, dtype=complex)
 hk_k0_array = evolve_hk(k0, Nics_k0, Nshss_k0, step)
-tps_k0 = 4.*(k0)**3./(2.*numpy.pi**2.)*(numpy.absolute(hk_k0_array[-1]))**2.
+tps_k0 = 2.*(k0)**3./(2.*numpy.pi**2.)*(numpy.absolute(hk_k0_array[-1]))**2.
 
-print k0, str(tps_k0).strip('[]')
+print k0, Nics_k0, Nshss_k0, str(hk_k0_array[-1]).strip('[]'), str(tps_k0).strip('[]')
 
-def main(ki, N_array):
-    '''The main routine that calls the other functions. It takes the mode k as input and 
-    estimates Nics and Nshss. Afterwards, it evaluates the h_k array from Nics to Nshss. 
-    Following that, it estimates the tensor power spectrum, \mathcal{G}, G and h_NL.'''
+
+# In[11]:
+
+k_list = [10**((-24.+i)/4.) for i in range(24)]
+k_list contains the mode k = k1= k2.
+
+for ki in k_list:
     Nics = solve_Nics(ki, N_array)
     Nshss = solve_Nshss(ki, N_array)
 
     hk_ki_array = numpy.empty(0, dtype=complex)
     hk_ki_array = evolve_hk(ki, Nics, Nshss, step)
-    tps_ki = 4.*(ki)**3./(2.*numpy.pi**2.)*(numpy.absolute(hk_ki_array[-1]))**2.
+    tps_ki = 2.*(ki)**3./(2.*numpy.pi**2.)*(numpy.absolute(hk_ki_array[-1]))**2.
 
-    test_array= hk_k0_array[int((Nics -Nics_k0)/step):int((Nics -Nics_k0)/step)+len(hk_ki_array)]
+    if int((Nshss -Nics_k0)/step) -int((Nics -Nics_k0)/step) == len(hk_ki_array):
+        test_array= hk_k0_array[int((Nics -Nics_k0)/step):int((Nshss -Nics_k0)/step)]
 
-    CalG = calG(test_array, hk_ki_array, hk_ki_array, k0, ki, ki, Nics, Nshss)
-    CalG_cc = calG_cc(test_array, hk_ki_array, hk_ki_array, k0, ki, ki, Nics, Nshss)
+        CalG = calG(test_array, hk_ki_array, hk_ki_array, k0, ki, ki, Nics, Nshss)
+        CalG_cc = calG_cc(test_array, hk_ki_array, hk_ki_array, k0, ki, ki, Nics, Nshss)
 
-    G = (test_array[-1]*hk_ki_array[-1]**2)*CalG +(numpy.conj(test_array[-1])*numpy.conj(hk_ki_array[-1])**2)*CalG_cc
-    h_NL = -(((4./(2.*numpy.pi**2.))**2.)*(k0**3.*ki**3.*ki**3.*G)/
-        (2*k0**3.*tps_ki*tps_ki +2.*ki**3.*tps_k0*tps_ki +2.*ki**3.*tps_k0*tps_ki))
+        G = (test_array[-1]*hk_ki_array[-1]**2)*CalG +(numpy.conj(test_array[-1])*numpy.conj(hk_ki_array[-1])**2)*CalG_cc
+        h_NL = -(((4./(2.*numpy.pi**2.))**2.)*(k0**3.*ki**3.*ki**3.*G)/
+            (2*k0**3.*tps_ki*tps_ki +2.*ki**3.*tps_k0*tps_ki +2.*ki**3.*tps_k0*tps_ki))
 
-    return k0, ki, str(tps_ki).strip('[]'), str(numpy.absolute(CalG)).strip('[]'), str(G.real).strip('[]'), str(h_NL.real).strip('[]')
+        print ki, Nics, Nshss, str(tps_ki).strip('[]')
+        print str(G).strip('[]'), str(h_NL).strip('[]')
 
-k_list = numpy.asarray([10**((-12.+i)/2.) for i in range(4)])
-'''k_list contains the mode k =k1 =k2.'''
 
-pool = mp.Pool(processes = 4)
-temp_results = [pool.apply_async(main, args = (ki, N_array,)) for ki in k_list]
-results = []
+# In[ ]:
 
-for i in range(len(k_list)):
-    results.append(temp_results[i].get())
 
-data = numpy.asarray(results,dtype=float)
-numpy.savetxt('squeezed_limit.dat', data)
-
-plt.cla()
-plt.xlabel(r'$k$')
-plt.ylabel(r'${\mathcal P}_T$')
-plt.title(r'${\mathcal P}_T$ as a function of $k$')
-python, = plt.loglog(data[:,1], data[:,2], '--')
-plt.legend([python],['python'])
-plt.savefig('tps_vs_k_sq.png')
-
-plt.cla()
-plt.xlabel(r'$k$')
-plt.ylabel(r'${\mathcal G}$')
-plt.title(r'${\mathcal G}$ as a function of $k$')
-python, = plt.loglog(data[:,1], data[:,3], '--')
-plt.legend([python],['python'])
-plt.savefig('calG_vs_k_sq.png')
 '''
-plt.cla()
-plt.xlabel(r'$k$')
-plt.ylabel(r'$k^{3/2}{\mathcal G}$')
-plt.title(r'$k^{3/2}{\mathcal G}$ as a function of $k$')
-python, = plt.semilogx(data[:,1], data[:,0]**()*data[:,3], '--')
-plt.legend([python],['python'])
-plt.savefig('k32calG_vs_k_sq.png')
-'''
-plt.cla()
-plt.xlabel(r'$k$')
-plt.ylabel(r'G')
-plt.title(r'G as a function of $k$')
-python, = plt.loglog(data[:,1], -data[:,4], '--')
-plt.legend([python],['python'])
-plt.savefig('G_vs_k_sq.png')
-
-plt.cla()
-plt.xlabel(r'$k$')
-plt.ylabel(r'G')
-plt.title(r'$k^6$G as a function of $k$')
-python, = plt.loglog(data[:,1], -data[:,0]**3.*data[:,1]**3.*data[:,4], '--')
-plt.legend([python],['python'])
-plt.savefig('k6G_vs_k_sq.png')
-
-plt.cla()
-plt.xlabel(r'$k$')
-plt.ylabel(r'${\rm h}_{NL}$')
-plt.title(r'${\rm h}_{NL}$ as a function of $k$')
-python, = plt.semilogx(data[:,1], data[:,5], '--')
-plt.legend([python],['python'])
-plt.savefig('h_NL_vs_k_sq.png')
