@@ -3,7 +3,7 @@ import numpy
 
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
-
+'''
 #data  = [line.split() for line in open('power_spectrum_power_law.dat')]
 
 #phi_c_data = [line.split() for line in open("phi_vs_N_c.txt")]
@@ -126,7 +126,7 @@ python, = plt.plot(N_array_py, eps_array_py, '--')
 plt.legend([python],['numerical results'], loc = 'upper left')
 #plt.legend([c, python],['c', 'python'])
 plt.savefig('eps_vs_N.png')
-
+'''
 #tps_c_data = [line.split() for line in open("tps_c.txt")]
 tps_py_data = [line.split() for line in open("tps_py.txt")]
 #tps_m_data = [line.split() for line in open("tps_mathematica.txt")]
@@ -146,12 +146,13 @@ tps_array_py = [tps_py_data[i][1] for i in range(11)]
 
 plt.cla()
 plt.xlabel(r'$k$')
-plt.ylabel('tps')
-plt.title(r'tps as a function of $k$')
+plt.ylabel(r'${\mathcal P}_T$')
+plt.title(r'$k^{3/2}{\mathcal P}_T$ as a function of $k$')
 #c, = plt.semilogx(numpy.asarray(k_array_py,dtype=float), tps_array_c, '.')
 python, = plt.semilogx(numpy.asarray(k_array_py, dtype=float), tps_array_py, '--')
 #m, = plt.semilogx(numpy.asarray(k_array_py, dtype=float), numpy.asarray(tps_array_m,dtype=float)*(10**(-10)), '-')
 #plt.legend([c, python, m],['c', 'python', 'mathematica'])
 #plt.legend([c, python],['c', 'python'], loc = 'center right')
 plt.legend([python],['numerical results'], loc = 'upper left')
-plt.savefig('tps.png')
+plt.show()
+#plt.savefig('tps.png')

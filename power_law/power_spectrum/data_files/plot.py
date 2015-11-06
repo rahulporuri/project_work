@@ -4,6 +4,7 @@ import numpy
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
 
+'''
 #data  = [line.split() for line in open('power_spectrum_power_law.dat')]
 
 phi_c_data = [line.split() for line in open("phi_vs_N_c.txt")]
@@ -122,6 +123,8 @@ plt.legend([c, python, py_theory, m],['c', 'python', 'theory', 'mathematica'], l
 #plt.legend([c, python],['c', 'python'])
 plt.savefig('eps_vs_N.png')
 
+'''
+
 tps_c_data = [line.split() for line in open("tps_c.txt")]
 tps_py_data = [line.split() for line in open("tps_python.txt")]
 tps_m_data = [line.split() for line in open("tps_mathematica.txt")]
@@ -141,10 +144,10 @@ print tps_array_py
 
 plt.cla()
 plt.xlabel(r'$k$')
-plt.ylabel('tps')
-plt.title(r'tps as a function of $k$')
+plt.ylabel(r'{\mathcal P}_T')
+plt.title(r'${\mathcal P}_T$ as a function of $k$')
 c, = plt.semilogx(numpy.asarray(k_array_py,dtype=float), tps_array_c, '.')
 python, = plt.semilogx(numpy.asarray(k_array_py, dtype=float), tps_array_py, '--')
 m, = plt.semilogx(numpy.asarray(k_array_py, dtype=float), numpy.asarray(tps_array_m,dtype=float)*(10**(-10)), '-')
 plt.legend([c, python, m],['c', 'python', 'mathematica'])
-plt.savefig('tps.png')
+#plt.savefig('tps.png')
