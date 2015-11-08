@@ -3,11 +3,11 @@ import numpy
 
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
-'''
+
 #data  = [line.split() for line in open('power_spectrum_power_law.dat')]
 
 #phi_c_data = [line.split() for line in open("phi_vs_N_c.txt")]
-phi_py_data = [line.split() for line in open("phi_vs_N_py.txt")]
+phi_py_data = [line.split() for line in open("phi_vs_N_python.txt")]
 #phi_m_data = [line.split(",") for line in open("phi_vs_N_mathematica.txt")]
 
 #print c_data[0][0], c_data[0][2], py_data[0][0], py_data[0][2]
@@ -38,7 +38,7 @@ plt.savefig('phi_vs_N.png')
 ##################################
 
 #H_c_data = [line.split() for line in open("H_vs_N_c.txt")]
-H_py_data = [line.split() for line in open("H_vs_N_py.txt")]
+H_py_data = [line.split() for line in open("H_vs_N_python.txt")]
 #H_m_data = [line.split(",") for line in open("H_vs_N_mathematica.txt")]
 
 #print c_data[0][0], c_data[0][2], py_data[0][0], py_data[0][2]
@@ -69,7 +69,7 @@ plt.savefig('H_vs_N.png')
 ##################################
 
 #DH_c_data = [line.split() for line in open("DH_vs_N_c.txt")]
-DH_py_data = [line.split() for line in open("DH_vs_N_py.txt")]
+DH_py_data = [line.split() for line in open("DH_vs_N_python.txt")]
 #DH_m_data = [line.split(",") for line in open("DH_vs_N_mathematica.txt")]
 
 #print c_data[0][0], c_data[0][2], py_data[0][0], py_data[0][2]
@@ -99,7 +99,7 @@ plt.savefig('DH_vs_N.png')
 
 #################################
 #eps_c_data = [line.split() for line in open("eps_vs_N_c.txt")]
-eps_py_data = [line.split() for line in open("eps_vs_N_py.txt")]
+eps_py_data = [line.split() for line in open("eps_vs_N_python.txt")]
 #eps_m_data = [line.split(",") for line in open("eps_vs_N_mathematica.txt")]
 
 #print c_data[0][0], c_data[0][2], py_data[0][0], py_data[0][2]
@@ -126,9 +126,9 @@ python, = plt.plot(N_array_py, eps_array_py, '--')
 plt.legend([python],['numerical results'], loc = 'upper left')
 #plt.legend([c, python],['c', 'python'])
 plt.savefig('eps_vs_N.png')
-'''
+
 #tps_c_data = [line.split() for line in open("tps_c.txt")]
-tps_py_data = [line.split() for line in open("tps_py.txt")]
+tps_py_data = [line.split() for line in open("tps_python.txt")]
 #tps_m_data = [line.split() for line in open("tps_mathematica.txt")]
 
 #print c_data[0][0], c_data[0][2], py_data[0][0], py_data[0][2]
@@ -155,4 +155,4 @@ python, = plt.semilogx(numpy.asarray(k_array_py, dtype=float), tps_array_py, '--
 #plt.legend([c, python],['c', 'python'], loc = 'center right')
 plt.legend([python],['numerical results'], loc = 'upper left')
 plt.show()
-#plt.savefig('tps.png')
+plt.savefig('tps.png')

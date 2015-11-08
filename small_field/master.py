@@ -32,12 +32,7 @@ dphi0 = (2.*q)**(1./2)/t0
 Ni = 0.
 Nf = 70.
 
-phi_ptr = open("../mathematica_codes/phi_vs_N_python.txt", "w")
-H_ptr = open("../mathematica_codes/H_vs_N_python.txt", "w")
-DH_ptr = open("../mathematica_codes/DH_vs_N_python.txt", "w")
-eps_ptr = open("../mathematica_codes/eps_vs_N_python.txt","w")
-
-tps_data_ptr = open("../mathematica_codes/tps_python.txt","w")
+tps_data_ptr = open("tps_python.txt","w")
 
 # In[4]:
 
@@ -111,16 +106,10 @@ for i in range(len(N_array)):
 
 print H_array[0], DH_array[0], H_array[-1], DH_array[-1]
 
-for i in range(len(N_array)):
-	phi_ptr.write(str(N_array[i])+" , "+str(phi_array[i])+"\n")
-	H_ptr.write(str(N_array[i])+" , "+str(H_array[i])+"\n")
-	DH_ptr.write(str(N_array[i])+" , "+str(DH_array[i])+"\n")
-	eps_ptr.write(str(N_array[i])+" , "+str(eps_array[i])+"\n")
-
-phi_ptr.close()
-H_ptr.close()
-DH_ptr.close()
-eps_ptr.close()
+numpy.savetxt('phi_vs_N_python.txt', phi_array)
+numpy.savetxt('H_vs_N_python.txt', H_array)
+numpy.savetxt('DH_vs_N_python.txt', DH_array)
+numpy.savetxt('eps_vs_N_python.txt', eps_array)
 
 ai = 1e-05
 A = lambda _N : ai*numpy.exp(_N)
@@ -163,13 +152,13 @@ def solve_Nshss(k, eN_array):
 
 def initialize_hk(k, _Nics):
     hk0 = numpy.zeros(1,dtype=complex)             
-    hk0.real = 1./((2.*k)**(1./2.))/A(_Nics)
+    hk0.real = 1./(k**(1./2.))/A(_Nics)
     return hk0
 
 def initialize_Dhk(k, _Nics):
     Dhk0 = numpy.zeros(1,dtype=complex)
-    Dhk0.real = -1./((2.*k)**(1./2.))/A(_Nics)
-    Dhk0.imag = -((k/2.)**(1./2.))/(A(_Nics)*A(_Nics)*H(_Nics))
+    Dhk0.real = -1./(k**(1./2.))/A(_Nics)
+    Dhk0.imag = -(k**(1./2.))/(A(_Nics)*A(_Nics)*H(_Nics))
     return Dhk0 
 
 def evolve_hk(k, _Nics, _Nshss, _step):    
@@ -203,7 +192,7 @@ while k0 < 1e-00:
 
     hk_k0_array = numpy.empty(0, dtype=complex)
     hk_k0_array = evolve_hk(k0, Nics, Nshss, step)
-    tps_k0 = 2.*(k0)**3./(2.*numpy.pi**2.)*(numpy.absolute(hk_k0_array[-1]))**2.
+    tps_k0 = 4.*(k0)**3./(2.*numpy.pi**2.)*(numpy.absolute(hk_k0_array[-1]))**2.
 
     print k0, Nics, Nshss, str(hk_k0_array[-1]).strip('[]'), str(tps_k0).strip('[]')
     tps_data_ptr.write(str(k0) +" , " +str(Nics) +" , " +str(Nshss) +" , " +str(tps_k0) +"\n")
