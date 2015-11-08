@@ -334,15 +334,15 @@ double find_Nshss(double k, double *N_array, int npts, double ai, double V0, dou
 
 void initialize_hk(double k, double Nics, double ai, double *hk)
 {
-	hk[0] = 1/sqrt(2*k)/A(Nics, ai);
+	hk[0] = 1/sqrt(k)/A(Nics, ai);
 	hk[1] = 0;
 	return;	
 }
 
 void initialize_Dhk(double k, double Nics, double ai, double *Dhk, double N, double V0, double q, double phi0, double *phi_array, double *Dphi_array, double Ni, double step)
 {
-	Dhk[0] = -1/sqrt(2*k)/A(Nics, ai);
-	Dhk[1] = -sqrt(k/2)/(A(Nics, ai)*A(Nics, ai)*H(Nics, V0, q, phi0, phi_array, Dphi_array, Ni, step));
+	Dhk[0] = -1/sqrt(k)/A(Nics, ai);
+	Dhk[1] = -sqrt(k)/(A(Nics, ai)*A(Nics, ai)*H(Nics, V0, q, phi0, phi_array, Dphi_array, Ni, step));
 	return;
 }
 

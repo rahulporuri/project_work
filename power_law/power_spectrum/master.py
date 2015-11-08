@@ -90,11 +90,10 @@ for i in range(len(N_array)):
 
 #print H_array[0], DH_array[0], H_array[-1], DH_array[-1]
 
-numpy.savetxt('phi_vs_N_py.txt', phi_array)
-numpy.savetxt('H_vs_N_py.txt', H_array)
-numpy.savetxt('DH_vs_N_py.txt', DH_array)
-numpy.savetxt('eps1_vs_V_py.txt', eps_array)
-
+numpy.savetxt('phi_vs_N_python.txt', phi_array)
+numpy.savetxt('H_vs_N_python.txt', H_array)
+numpy.savetxt('DH_vs_N_python.txt', DH_array)
+numpy.savetxt('eps1_vs_V_python.txt', eps_array)
 '''
 for i in range(len(N_array)):
 	phi_ptr.write(str(N_array[i])+" , "+str(phi_array[i]) +" , "+str(phi_theory(N_array[i]))+"\n")
@@ -106,7 +105,7 @@ phi_ptr.close()
 H_ptr.close()
 DH_ptr.close()
 eps_ptr.close()
-
+'''
 ai = 1e-05
 A = lambda _N : ai*numpy.exp(_N)
 
@@ -190,4 +189,3 @@ while k0 < 1e-00:
     k0 = (10**(1.0/2))*k0
 
 tps_data_ptr.close()
-'''
