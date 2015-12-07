@@ -32,6 +32,8 @@ mathematica, = plt.loglog(G_m_data[:,0], numpy.absolute(G_m_data[:,1]), '--')
 plt.legend([python, mathematica],['mine','sreenath'])
 plt.savefig('G_vs_k.png')
 
+ data[:,0]**(4.*(-(2.*q-1.)/(q-1.)+2.))*10**(-17)
+
 plt.cla()
 plt.xlabel(r'$k$')
 plt.ylabel(r'$h_{NL}$')
