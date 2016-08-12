@@ -64,7 +64,7 @@ for k0 in k_list:
     k0 = 10*k0
 
 
-TPS = [8*(k_list[i])**3/(2*numpy.pi**2)*(numpy.absolute(k_vs_hk[i]))**2 for i in range(len(k_list))]
+TPS = [8*(k)**3/(2*numpy.pi**2)*(numpy.absolute(k_vs_hk[i]))**2 for i, k in enumerate(k_list)]
 print k_list, TPS
 
 tps_file.close()

@@ -81,7 +81,7 @@ plt.savefig('phi_vs_N_small_field.png')
 eps0 = (3./2)*((dphi0**2)/(dphi0**2/2. + V(phi0)))
 #eps = 1./q 
 
-#H = [((V(phi_array[i]))/(3 -Dphi_array[i]**2/2))**(1./2) for i in range(len(phi_array))]
+#H = [((V(phi))/(3 -Dphi_array[i]**2/2))**(1./2) for i in enumerate(phi_array)]
 
 phi = lambda N : phi_array[int((N-Ni)/step)]
 Dphi = lambda N : Dphi_array[int((N-Ni)/step)]
@@ -119,7 +119,7 @@ numerics, = plt.plot(N_array, [str(eps1(i)).strip('[]') for i in N_array], '--',
 plt.legend([numerics],['numerical results'])
 plt.savefig('eps1_vs_N_small_field.png')
 '''
-#z = [ai*numpy.exp(N_array[i])*Dphi_array[i] for i in range(len(N_array))]
+#z = [ai*numpy.exp(N)*Dphi_array[i] for i in enumerate(N_array)]
 z = lambda N: ai*numpy.exp(N)*Dphi(N)
 A = lambda N : ai*numpy.exp(N)
 
@@ -201,7 +201,7 @@ while k0 < k_max:
 
 k_list = numpy.array([10**((-12 + i)/2.) for i in range(13)])
 #print len(k_list), len(k_vs_hkhk)
-TPS = [2*(k_list[i])**3/(2*numpy.pi**2)*(numpy.absolute(k_vs_hk[i+1]))**2 for i in range(len(k_list))]
+TPS = [2*(k)**3/(2*numpy.pi**2)*(numpy.absolute(k_vs_hk[i+1]))**2 for i in enumerate(k_list)]
 print k_list, TPS
 
 tps_file.close()

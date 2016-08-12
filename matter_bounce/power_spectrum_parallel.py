@@ -111,7 +111,7 @@ pool = mp.Pool(processes = 4)
 temp_results = [pool.apply_async(main, args = (k,Nshss,)) for k in k_list]
 results = []
 
-for i in range(len(temp_results)):
+for i, k in enumerate(temp_results):
     results.append(temp_results[i].get())
 
 results = numpy.asarray(results, dtype=numpy.float)
@@ -124,7 +124,7 @@ plt.ylabel(r'${\mathcal{P}}_{\rm T}(k)$')
 plt.title(r'${\mathcal{P}}_{\rm T}(k)$ as a function of $k$')
 numerics, = plt.loglog(k_list, TPS)
 plt.legend([numerics],['numerical results'])
-plt.savefig('power_spectrum_bouncing_model.png')
+plt.savefig('plots/power_spectrum_bouncing_model.png')
 
 data = [line.split() for line in open('fort.30')]
 data = numpy.asarray(data, dtype=numpy.float)
@@ -137,7 +137,7 @@ plt.title(r'${\mathcal{P}}_{\rm T}(k)$ as a function of $k$')
 py_numerics, = plt.loglog(k_list, TPS)
 f_numerics, = plt.loglog(data[:,0], data[:,1])
 plt.legend([py_numerics, f_numerics],['python', 'fortran'], loc='lower left')
-plt.savefig('power_spectrum_matter_bounce.png')
+plt.savefig('plots/power_spectrum_matter_bounce.png')
 
 plt.cla()
 plt.hold(True)
@@ -147,5 +147,5 @@ plt.title(r'${\mathcal{P}}_{\rm T}(k)$ as a function of $k$')
 py_numerics, = plt.loglog(k_list[:24], TPS[:24])
 f_numerics, = plt.loglog(data[:19,0], data[:19,1])
 plt.legend([py_numerics, f_numerics],['python', 'fortran'], loc='lower left')
-plt.savefig('power_spectrum_matter_bounce_2.png')
+plt.savefig('plots/power_spectrum_matter_bounce_2.png')
 '''
