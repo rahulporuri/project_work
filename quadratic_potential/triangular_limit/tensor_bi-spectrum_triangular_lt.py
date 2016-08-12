@@ -241,26 +241,26 @@ k3 = numpy.arange(0.,1.,0.1)*k1
 
 k_list = []
 '''Since k1 is fixed, k_list will contain the set of [k2, k3] values.'''
-for i in range(len(k3)):
-	if k3[i] < 0.5:
-		k2 = numpy.linspace(1. -k3[i]/k1, 1.,int(k3[i]/k1/0.1))*k1
-		[k_list.append([kx, k3[i]]) for kx in k2]
+for i, k in enumerate(k3):
+	if k < 0.5:
+		k2 = numpy.linspace(1. -k/k1, 1.,int(k/k1/0.1))*k1
+		[k_list.append([kx, k]) for kx in k2]
 	else :
-		k2 = numpy.linspace(k3[i]/k1, 1.,int((1 -k3[i]/k1) /0.1))*k1
-		[k_list.append([kx, k3[i]]) for kx in k2]
+		k2 = numpy.linspace(k/k1, 1.,int((1 -k/k1) /0.1))*k1
+		[k_list.append([kx, k]) for kx in k2]
 
 #k_list = k_list[1]
 print len(k_list)
 #print k_list
 pool = mp.Pool(processes =4)
-#for i in range(len(k_list)):
+#for i, k in enumerate(k_list):
 #	k2, k3 = k_list[i]
 #	print k2, k3
 
 temp_results = [pool.apply_async(main, args = (k_set, N_array,)) for k_set in k_list[20:]]
 results = []
 
-for i in range(len(k_list)):
+for i, result in enumerate(k_list):
 	results.append(temp_results[i].get())
 #    k_vs_hk[i] = temp_results[i].get()
 
