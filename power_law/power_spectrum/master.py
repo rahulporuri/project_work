@@ -1,5 +1,9 @@
+import logging
+
 import numpy
 import matplotlib.pyplot as plt
+
+logging.basicConfig(filename='output.log', level=logging.DEBUG)
 
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
@@ -62,7 +66,6 @@ eps_array = numpy.empty(0)
 
 N = Ni
 
-#print N, phi_, Dphi_, dphi0, H0
 while N < Nf+step:
     N_array = numpy.append(N_array, N)
     phi_array = numpy.append(phi_array, numpy.array([phi_, phi_theory(N)]))
@@ -74,9 +77,6 @@ while N < Nf+step:
 
     N += step
 
-#print N, phi_, Dphi_
-#print len(N_array)
-
 phi = lambda _N : phi_array[int((_N-Ni)/step)]
 Dphi = lambda _N : Dphi_array[int((_N-Ni)/step)]
 
@@ -87,8 +87,6 @@ for i in range(len(N_array)):
 	H_array = numpy.append(H_array, numpy.array([N_array[i], (V(phi_array[i])/(3. -Dphi_array[i]**2/2.))**(1./2), H_theory(N_array[i])]))
 	DH_array = numpy.append(DH_array, numpy.array([N_array[i], -(1./2)*(V(phi_array[i])/(3. -Dphi_array[i]**2/2.))**(1./2)*Dphi_array[i]**2, DH_theory(N_array[i])]))
 	eps_array = numpy.append(eps_array, numpy.array([Dphi_array[i]**2/2.0, eps1_theory]))
-
-#print H_array[0], DH_array[0], H_array[-1], DH_array[-1]
 
 numpy.savetxt('phi_vs_N_python.txt', phi_array)
 numpy.savetxt('H_vs_N_python.txt', H_array)
@@ -160,8 +158,6 @@ def evolve_hk(k, _Nics, _Nshss, _step):
     hk = initialize_hk(k, _Nics)
     Dhk = initialize_Dhk(k, _Nics)
 
-    #print _Nics, str(hk).strip('[]'), str(Dhk).strip('[]')
-
     hk_array = numpy.empty(0, dtype=complex)
     N = _Nics
 
@@ -172,7 +168,6 @@ def evolve_hk(k, _Nics, _Nshss, _step):
         Dhk = Dhk + Dhk_inc
         N += _step
 
-    #print N, _Nshss, str(hk).strip('[]'), str(Dhk).strip('[]'), '\n'
     return hk_array
 
 k0 = 1e-06
@@ -184,7 +179,7 @@ while k0 < 1e-00:
     hk_k0_array = evolve_hk(k0, Nics, Nshss, step)
     tps_k0 = 2.*(k0)**3./(2.*numpy.pi**2.)*(numpy.absolute(hk_k0_array[-1]))**2.
 
-    print k0, Nics, Nshss, str(hk_k0_array[-1]).strip('[]'), str(tps_k0).strip('[]')
+    logging.info("{} {} {} {} {}".format(k0, Nics, Nshss, str(hk_k0_array[-1]).strip('[]'), str(tps_k0).strip('[]')))
     tps_data_ptr.write(str(k0) +" , " +str(Nics) +" , " +str(Nshss) +" , " +str(tps_k0) +"\n")
     k0 = (10**(1.0/2))*k0
 
