@@ -83,23 +83,23 @@ Dphi = lambda _N : Dphi_array[int((_N-Ni)/step)]
 H = lambda _N : (V(phi(_N))/(3. -Dphi(_N)**2/2.))**(1./2)
 DH = lambda _N : -(1.0/2)*H(_N)*Dphi(_N)**2
 
-for i in range(len(N_array)):
-	H_array = numpy.append(H_array, numpy.array([N_array[i], (V(phi_array[i])/(3. -Dphi_array[i]**2/2.))**(1./2), H_theory(N_array[i])]))
-	DH_array = numpy.append(DH_array, numpy.array([N_array[i], -(1./2)*(V(phi_array[i])/(3. -Dphi_array[i]**2/2.))**(1./2)*Dphi_array[i]**2, DH_theory(N_array[i])]))
+for i, N in enumerate(N_array):
+	H_array = numpy.append(H_array, numpy.array([N, (V(phi_array[i])/(3. -Dphi_array[i]**2/2.))**(1./2), H_theory(N)]))
+	DH_array = numpy.append(DH_array, numpy.array([N, -(1./2)*(V(phi_array[i])/(3. -Dphi_array[i]**2/2.))**(1./2)*Dphi_array[i]**2, DH_theory(N)]))
 	eps_array = numpy.append(eps_array, numpy.array([Dphi_array[i]**2/2.0, eps1_theory]))
 
 #print H_array[0], DH_array[0], H_array[-1], DH_array[-1]
 
-numpy.savetxt('phi_vs_N_python.txt', phi_array)
-numpy.savetxt('H_vs_N_python.txt', H_array)
-numpy.savetxt('DH_vs_N_python.txt', DH_array)
-numpy.savetxt('eps1_vs_V_python.txt', eps_array)
+numpy.savetxt('data_files/phi_vs_N_python.txt', phi_array)
+numpy.savetxt('data_files/H_vs_N_python.txt', H_array)
+numpy.savetxt('data_files/DH_vs_N_python.txt', DH_array)
+numpy.savetxt('data_files/eps1_vs_V_python.txt', eps_array)
 '''
-for i in range(len(N_array)):
-	phi_ptr.write(str(N_array[i])+" , "+str(phi_array[i]) +" , "+str(phi_theory(N_array[i]))+"\n")
-	H_ptr.write(str(N_array[i])+" , "+str(H_array[i])+" , "+str(H_theory(N_array[i]))+"\n")
-	DH_ptr.write(str(N_array[i])+" , "+str(DH_array[i])+" , "+str(DH_theory(N_array[i]))+"\n")
-	eps_ptr.write(str(N_array[i])+" , "+str(eps_array[i])+" , "+str(eps_theory)+"\n")
+for i, N in enumerate(N_array):
+	phi_ptr.write("{}, {}, {} \n".format(N, phi_array[i], phi_theory(N)))
+	H_ptr.write("{}, {}, {} \n".format(N, H_array[i], H_theory(N)))
+	DH_ptr.write("{}, {}, {} \n".format(N, DH_array[i], DH_theory(N)))
+	eps_ptr.write("{}, {}, {} \n".format(N, eps_array[i], eps_theory))
 
 phi_ptr.close()
 H_ptr.close()
