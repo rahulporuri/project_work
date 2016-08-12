@@ -99,17 +99,17 @@ Dphi = lambda _N : Dphi_array[int((_N-Ni)/step)]
 H = lambda _N : (V(phi(_N))/(3. -Dphi(_N)**2/2.))**(1./2)
 DH = lambda _N : -(1.0/2)*H(_N)*Dphi(_N)**2
 
-for i in range(len(N_array)):
+for i, N in enumerate(N_array):
 	H_array = numpy.append(H_array, (V(phi_array[i])/(3. -Dphi_array[i]**2/2.))**(1./2))
 	DH_array = numpy.append(DH_array, -(1./2)*(V(phi_array[i])/(3. -Dphi_array[i]**2/2.))**(1./2)*Dphi_array[i]**2)
 	eps_array = numpy.append(eps_array, Dphi_array[i]**2/2.0)
 
 print H_array[0], DH_array[0], H_array[-1], DH_array[-1]
 
-numpy.savetxt('phi_vs_N_python.txt', phi_array)
-numpy.savetxt('H_vs_N_python.txt', H_array)
-numpy.savetxt('DH_vs_N_python.txt', DH_array)
-numpy.savetxt('eps_vs_N_python.txt', eps_array)
+numpy.savetxt('data_files/phi_vs_N_python.txt', phi_array)
+numpy.savetxt('data_files/H_vs_N_python.txt', H_array)
+numpy.savetxt('data_files/DH_vs_N_python.txt', DH_array)
+numpy.savetxt('data_files/eps_vs_N_python.txt', eps_array)
 
 ai = 1e-05
 A = lambda _N : ai*numpy.exp(_N)
@@ -195,7 +195,7 @@ while k0 < 1e-00:
     tps_k0 = 4.*(k0)**3./(2.*numpy.pi**2.)*(numpy.absolute(hk_k0_array[-1]))**2.
 
     print k0, Nics, Nshss, str(hk_k0_array[-1]).strip('[]'), str(tps_k0).strip('[]')
-    tps_data_ptr.write(str(k0) +" , " +str(Nics) +" , " +str(Nshss) +" , " +str(tps_k0) +"\n")
+    tps_data_ptr.write("{}, {}, {}, {}\n".format(k0, Nics, Nshss, tps_k0))
     k0 = (10**(1.0/2))*k0
 
 tps_data_ptr.close()
