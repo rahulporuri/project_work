@@ -104,18 +104,18 @@ Dphi = lambda _N : Dphi_array[int((_N-Ni)/step)]
 H = lambda _N : (V(phi(_N))/(3. -Dphi(_N)**2/2.))**(1./2)
 DH = lambda _N : -(1.0/2)*H(_N)*Dphi(_N)**2
 
-for i in range(len(N_array)):
+for i, N in enumerate(N_array):
 	H_array = numpy.append(H_array, (V(phi_array[i])/(3. -Dphi_array[i]**2/2.))**(1./2))
 	DH_array = numpy.append(DH_array, -(1./2)*(V(phi_array[i])/(3. -Dphi_array[i]**2/2.))**(1./2)*Dphi_array[i]**2)
 	eps_array = numpy.append(eps_array, Dphi_array[i]**2/2.0)
 
 print H_array[0], DH_array[0], H_array[-1], DH_array[-1]
 
-for i in range(len(N_array)):
-	phi_ptr.write(str(N_array[i])+" , "+str(phi_array[i])+"\n")
-	H_ptr.write(str(N_array[i])+" , "+str(H_array[i])+"\n")
-	DH_ptr.write(str(N_array[i])+" , "+str(DH_array[i])+"\n")
-	eps_ptr.write(str(N_array[i])+" , "+str(eps_array[i])+"\n")
+for i, N in enumerate(N_array):
+	phi_ptr.write("{}, {}\n".format(N, phi_array[i]))
+	H_ptr.write("{}, {}\n".format(N, H_array[i]))
+	DH_ptr.write("{}, {}\n".format(N, DH_array[i]))
+	eps_ptr.write("{}, {}\n".format(N, eps_array[i]))
 
 phi_ptr.close()
 H_ptr.close()

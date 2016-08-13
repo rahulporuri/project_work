@@ -221,7 +221,7 @@ pool = mp.Pool(processes = 4)
 temp_results = [pool.apply_async(main, args = (k0, N_array,)) for k0 in k_list]
 results = []
 
-for i in range(len(k_list)):
+for i, k in enumerate(k_list):
     results.append(temp_results[i].get())
 '''The above code is a multiprocessor directive to feed the value of the mode k to 
 the main program and since the evolution of different modes k is independent of each 

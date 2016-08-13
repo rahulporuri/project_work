@@ -2,6 +2,7 @@
 # coding: utf-8
 
 # In[1]:
+from __future__ import print_function
 
 import numpy
 import matplotlib.pyplot as plt
@@ -75,7 +76,7 @@ eps_array = numpy.empty(0)
 
 N = Ni
 
-print N, phi_, Dphi_, dphi0, H0
+print(N, phi_, Dphi_, dphi0, H0)
 while N < Nf+step:
     N_array = numpy.append(N_array, N)
     phi_array = numpy.append(phi_array, phi_)
@@ -88,8 +89,8 @@ while N < Nf+step:
     N += step
 
 
-print N, phi_, Dphi_
-print len(N_array)
+print(N, phi_, Dphi_)
+print(len(N_array))
 
 # In[6]:
 
@@ -99,17 +100,17 @@ Dphi = lambda _N : Dphi_array[int((_N-Ni)/step)]
 H = lambda _N : (V(phi(_N))/(3. -Dphi(_N)**2/2.))**(1./2)
 DH = lambda _N : -(1.0/2)*H(_N)*Dphi(_N)**2
 
-for i in range(len(N_array)):
+for i, N in enumerate(N_array):
 	H_array = numpy.append(H_array, (V(phi_array[i])/(3. -Dphi_array[i]**2/2.))**(1./2))
 	DH_array = numpy.append(DH_array, -(1./2)*(V(phi_array[i])/(3. -Dphi_array[i]**2/2.))**(1./2)*Dphi_array[i]**2)
 	eps_array = numpy.append(eps_array, Dphi_array[i]**2/2.0)
 
-print H_array[0], DH_array[0], H_array[-1], DH_array[-1]
+print(H_array[0], DH_array[0], H_array[-1], DH_array[-1])
 
-numpy.savetxt('phi_vs_N_python.txt', phi_array)
-numpy.savetxt('H_vs_N_python.txt', H_array)
-numpy.savetxt('DH_vs_N_python.txt', DH_array)
-numpy.savetxt('eps_vs_N_python.txt', eps_array)
+numpy.savetxt('data_files/phi_vs_N_python.txt', phi_array)
+numpy.savetxt('data_files/H_vs_N_python.txt', H_array)
+numpy.savetxt('data_files/DH_vs_N_python.txt', DH_array)
+numpy.savetxt('data_files/eps_vs_N_python.txt', eps_array)
 
 ai = 1e-05
 A = lambda _N : ai*numpy.exp(_N)
@@ -168,7 +169,7 @@ def evolve_hk(k, _Nics, _Nshss, _step):
     hk = initialize_hk(k, _Nics)
     Dhk = initialize_Dhk(k, _Nics)
 
-    #print _Nics, str(hk).strip('[]'), str(Dhk).strip('[]')
+    #print(_Nics, str(hk).strip('[]'), str(Dhk).strip('[]'))
 
     hk_array = numpy.empty(0, dtype=complex)
     N = _Nics
@@ -180,7 +181,7 @@ def evolve_hk(k, _Nics, _Nshss, _step):
         Dhk = Dhk + Dhk_inc
         N += _step
 
-    #print N, _Nshss, str(hk).strip('[]'), str(Dhk).strip('[]'), '\n'
+    #print(N, _Nshss, str(hk).strip('[]'), str(Dhk).strip('[]'), '\n')
     return hk_array
 
 # In[8]:
@@ -194,8 +195,8 @@ while k0 < 1e-00:
     hk_k0_array = evolve_hk(k0, Nics, Nshss, step)
     tps_k0 = 4.*(k0)**3./(2.*numpy.pi**2.)*(numpy.absolute(hk_k0_array[-1]))**2.
 
-    print k0, Nics, Nshss, str(hk_k0_array[-1]).strip('[]'), str(tps_k0).strip('[]')
-    tps_data_ptr.write(str(k0) +" , " +str(Nics) +" , " +str(Nshss) +" , " +str(tps_k0) +"\n")
+    print(k0, Nics, Nshss, str(hk_k0_array[-1]).strip('[]'), str(tps_k0).strip('[]'))
+    tps_data_ptr.write("{}, {}, {}, {}\n".format(k0, Nics, Nshss, tps_k0))
     k0 = (10**(1.0/2))*k0
 
 tps_data_ptr.close()

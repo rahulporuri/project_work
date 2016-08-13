@@ -213,13 +213,13 @@ k3 = numpy.arange(0.,1.,.05)*k1
 
 k_array = []
 '''Since k1 is fixed, k_array will contain the set of [k2, k3] values.'''
-for i in range(len(k3)):
-    if k3[i]/k1 < 0.5:
-        k2 = numpy.linspace(1. -k3[i]/k1, 1., 2 +int(k3[i]/k1/0.05))*k1
-        [k_array.append([kx, k3[i]]) for kx in k2]
+for i, k in enumerate(k3):
+    if k/k1 < 0.5:
+        k2 = numpy.linspace(1. -k/k1, 1., 2 +int(k/k1/0.05))*k1
+        [k_array.append([kx, k]) for kx in k2]
     else :
-        k2 = numpy.linspace(k3[i]/k1, 1., 2 +int((1. -k3[i]/k1)/0.05))*k1
-        [k_array.append([kx, k3[i]]) for kx in k2]
+        k2 = numpy.linspace(k/k1, 1., 2 +int((1. -k/k1)/0.05))*k1
+        [k_array.append([kx, k]) for kx in k2]
 
 print len(k_array)
 print k_array
@@ -262,7 +262,7 @@ pool = mp.Pool(processes = 4)
 temp_results = [pool.apply_async(main, args = (k_set, )) for k_set in k_array[2:]]
 results = []
 
-for i in range(len(temp_results)):
+for i, result in enumerate(temp_results):
         results.append(temp_results[i].get())
 
 print results

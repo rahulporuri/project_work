@@ -96,7 +96,7 @@ while k0 < k_max:
     k0 = 10*k0
 
 k_list = numpy.array([10**(-30 + i) for i in range(27)])
-TPS = [8*(k_list[i])**3/(2*numpy.pi**2)*(numpy.absolute(k_vs_hk[i+1]))**2 for i in range(len(k_list))]
+TPS = [8*(k)**3/(2*numpy.pi**2)*(numpy.absolute(k_vs_hk[i+1]))**2 for i, k in enumerate(k_list)]
 print k_list, TPS
 
 tps_file.close()

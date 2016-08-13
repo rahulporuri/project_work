@@ -102,7 +102,7 @@ plt.savefig('phi_vs_N_power_law.png')
 eps0 = (3./2)*((dphi0**2)/(dphi0**2/2. + V(phi0)))
 eps = 1./q 
 
-#H = [((V(phi_array[i]))/(3 -Dphi_array[i]**2/2))**(1./2) for i in range(len(phi_array))]
+#H = [((V(phi))/(3 -Dphi_array[i]**2/2))**(1./2) for i in enumerate(phi_array)]
 
 H = lambda N : (V(phi(N))/(3 -Dphi(N)**2/2))**(1./2)
 DH = lambda N : H(N)*Dphi(N)
@@ -141,7 +141,7 @@ plt.axhline(y=eps0)
 plt.legend([numerical], ['numerical results'])
 plt.savefig('eps1_vs_N_power_law.png')
 '''
-#z = [ai*numpy.exp(N_array[i])*Dphi_array[i] for i in range(len(N_array))]
+#z = [ai*numpy.exp(N)*Dphi_array[i] for i in enumerate(N_array)]
 z = lambda N: ai*numpy.exp(N)*Dphi(N)
 A = lambda N : ai*numpy.exp(N)
 
@@ -252,7 +252,7 @@ pool = mp.Pool(processes = 4)
 temp_results = [pool.apply_async(main, args = (k0, N_array,)) for k0 in k_list]
 results = []
 
-for i in range(len(k_list)):
+for i, k in enumerate(k_list):
     results.append(temp_results[i].get())
 #    k_vs_hk[i] = temp_results[i].get()
 
@@ -273,8 +273,8 @@ for k0 in k_list:
 #    tps_file.write(str(k0)+"\t"+str(hk0.real)+"\t"+str(hk0.imag)+"\t"+str(temp).strip('[]')+"\n")
 
 #print len(k_list), len(k_vs_hkhk)
-#TPS = [8*(k_list[i])**3/(2*numpy.pi**2)*(numpy.absolute(k_vs_hk[i]))**2 for i in range(len(k_list))]
-#TPS = [8*(k_list[i])**3/(2*numpy.pi**2)*(k_vs_hk[i])**2 for i in range(len(k_list))]
+#TPS = [8*(k)**3/(2*numpy.pi**2)*(numpy.absolute(k_vs_hk[i]))**2 for i, k in enumerate(k_list)]
+#TPS = [8*(k)**3/(2*numpy.pi**2)*(k_vs_hk[i])**2 for i, k in enumerate(k_list)]
 #print k_list, TPS
 
 tps_file.close()
