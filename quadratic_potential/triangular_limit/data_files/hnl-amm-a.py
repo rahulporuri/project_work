@@ -2,6 +2,8 @@
 # Python code to produce plots
 ######################################################################
 # Importing libraries
+from __future__ import print_function
+
 import matplotlib
 from numpy import *
 from pylab import *
@@ -60,7 +62,7 @@ z = data[:,10]
 #y = data[:,1]
 #z = data[:,2]
 
-#print z
+#print(z)
 
 xi = np.linspace(0,1,400)
 yi = np.linspace(0.5,1,400)
@@ -86,7 +88,7 @@ cax = divider.append_axes("right",size="3%", pad=0.25)
 m1=round(zi.min(),2)
 m2=round(zi.max(),2)
 md=round(m1+(m2-m1)/2,2)
-print m1,m2,md
+print(m1,m2,md)
 cbar=plt.colorbar(ticks=[m1,md,m2], cax=cax)
 #cbar.set_ticklabels([m1,md,m2])
 cbar.set_ticklabels([md,m2,1]) 

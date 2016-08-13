@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import numpy
 from scipy.integrate import simps
 
@@ -119,7 +121,7 @@ def hk_rk4_step(_k, _N, _hk, _Dhk, _step):
     F4 = _Dhk +f3*_step
     f4 = DDhk(_k, _N +_step, _hk +F3*_step, _Dhk +f3*_step)
 
-#    print f1, f2, f3, f4, F1, F2, F3, F4, _step
+#    print(f1, f2, f3, f4, F1, F2, F3, F4, _step)
 
     return (f1 +2.*f2 +2.*f3 +f4)*_step/6., (F1 +2.*F2 +2.*F3 +F4)*_step/6.
            # [Dhk, hk] update
@@ -221,8 +223,8 @@ for i, k in enumerate(k3):
         k2 = numpy.linspace(k/k1, 1., 2 +int((1. -k/k1)/0.05))*k1
         [k_array.append([kx, k]) for kx in k2]
 
-print len(k_array)
-print k_array
+print(len(k_array))
+print(k_array)
 
 hk_k1_array = numpy.empty(0, dtype=complex)
 hk_k2_array = numpy.empty(0, dtype=complex)
@@ -254,7 +256,7 @@ def main(k_set):
     h_NL = -((4./(2.*numpy.pi**2.))**2.*(k1**3.*k2**3.*k3**3*G)/
              (2.*k1**3.*tps_k2*tps_k3 +2.*k2**3.*tps_k3*tps_k1 +2.*k3**3.*tps_k1*tps_k2))
    
-    print k1, k2, k3, str(tps_k1).strip('[]'), str(tps_k2).strip('[]'), str(tps_k3).strip('[]'), str(CalG.real).strip('[]'), str(CalG.imag).strip('[]'), str(G.real).strip('[]'), str(G.imag).strip('[]'), str(h_NL.real).strip('[]')
+    print(k1, k2, k3, str(tps_k1).strip('[]'), str(tps_k2).strip('[]'), str(tps_k3).strip('[]'), str(CalG.real).strip('[]'), str(CalG.imag).strip('[]'), str(G.real).strip('[]'), str(G.imag).strip('[]'), str(h_NL.real).strip('[]'))
 
     return None
 
@@ -265,7 +267,7 @@ results = []
 for i, result in enumerate(temp_results):
         results.append(temp_results[i].get())
 
-print results
+print(results)
 
 CalG = calG(hk_k1_array, hk_k1_array, hk_k1_array, k1, k1, k1, Nics, Nshss)
 CalG_cc = calG_cc(hk_k1_array, hk_k1_array, hk_k1_array, k1, k1, k1, Nics, Nshss)
@@ -276,4 +278,4 @@ G = ((hk_k1_array[-1]*hk_k1_array[-1]*hk_k1_array[-1])*CalG
 h_NL = -((4./(2.*numpy.pi**2.))**2.*(k1**3.*k1**3.*k1**3*G)/
         (2.*k1**3.*tps_k1*tps_k1 +2.*k1**3.*tps_k1*tps_k1 +2.*k1**3.*tps_k1*tps_k1))
 
-print k1, k1, k1, str(tps_k1).strip('[]'), str(tps_k1).strip('[]'), str(tps_k1).strip('[]'), str(CalG.real).strip('[]'), str(CalG.imag).strip('[]'), str(G.real).strip('[]'), str(G.imag).strip('[]'), str(h_NL.real).strip('[]')
+print(k1, k1, k1, str(tps_k1).strip('[]'), str(tps_k1).strip('[]'), str(tps_k1).strip('[]'), str(CalG.real).strip('[]'), str(CalG.imag).strip('[]'), str(G.real).strip('[]'), str(G.imag).strip('[]'), str(h_NL.real).strip('[]'))

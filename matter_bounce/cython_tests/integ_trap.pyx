@@ -1,6 +1,8 @@
 # python setup.py build_ext --inplace
 # call the functions from the shared library
 
+from __future__ import print_function
+
 cimport numpy
 import numpy
 
@@ -33,4 +35,4 @@ exact = fn(1) - fn(0)
 def main():
 	for i in range(1,10):
 		h = 1e-01**i
-		print integ_trap(0,1,h) - exact, integ_simp(0,1,h) - exact, h
+		print(integ_trap(0,1,h) - exact, integ_simp(0,1,h) - exact, h)

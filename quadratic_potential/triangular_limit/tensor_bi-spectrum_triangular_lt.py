@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import numpy
 import matplotlib.pyplot as plt
 import scipy.optimize as opt
@@ -229,8 +231,8 @@ def main(k_set, N_array):
 	G = (hk_k1_array[-1]*hk_k2_array[-1]*hk_k3_array[-1])*CalG +(numpy.conj(hk_k1_array[-1])*numpy.conj(hk_k2_array[-1])*numpy.conj(hk_k3_array[-1]))*CalG_cc
 	h_NL = -((4./(2.*numpy.pi**2))**2)*(k1**3*k2**3*k3**3)*G/(2*k3**2*tps_k1*tps_k2 +2*k2**2*tps_k3*tps_k1 +2*k1**2*tps_k2*tps_k3)
 
-	print k1, str(tps_k1).strip('[]'), k2, str(tps_k2).strip('[]'), k3, str(tps_k3).strip('[]'),
-	print str(numpy.absolute(CalG)).strip('[]'), str(G.real).strip('[]'), str(h_NL.real).strip('[]')
+	print(k1, str(tps_k1).strip('[]'), k2, str(tps_k2).strip('[]'), k3, str(tps_k3).strip('[]'))
+	print(str(numpy.absolute(CalG)).strip('[]'), str(G.real).strip('[]'), str(h_NL.real).strip('[]'))
 
 	return None
 
@@ -250,12 +252,12 @@ for i, k in enumerate(k3):
 		[k_list.append([kx, k]) for kx in k2]
 
 #k_list = k_list[1]
-print len(k_list)
-#print k_list
+print(len(k_list))
+#print(k_list)
 pool = mp.Pool(processes =4)
 #for i, k in enumerate(k_list):
 #	k2, k3 = k_list[i]
-#	print k2, k3
+#	print(k2, k3)
 
 temp_results = [pool.apply_async(main, args = (k_set, N_array,)) for k_set in k_list[20:]]
 results = []
@@ -265,6 +267,6 @@ for i, result in enumerate(k_list):
 #    k_vs_hk[i] = temp_results[i].get()
 
 #results = numpy.asarray(results, dtype=numpy.float)
-#print k_list, results
-#print k_vs_hk
-#print '\n'
+#print(k_list, results)
+#print(k_vs_hk)
+#print('\n')

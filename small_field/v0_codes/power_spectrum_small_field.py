@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import numpy
 import matplotlib.pyplot as plt
 
@@ -157,7 +159,7 @@ Nshs_arr = numpy.asarray(Nshs_array)
 k_min = 1e-6
 k_max = 10**(1./2)
 
-print 'lift off!'
+print('lift off!')
 
 k_vs_hk = numpy.zeros(1,dtype=complex)
 
@@ -165,7 +167,7 @@ i = 0
 k0 = k_min
 
 while k0 < k_max:
-    print 'k0 = ', k0
+    print('k0 = {}'.format(k0))
 
     Nics = Nics_arr[i]
     Nshss = Nshs_arr[i]
@@ -177,8 +179,8 @@ while k0 < k_max:
     Dhk0.real = -(1/A(Nics))*((2*k0)**(-1./2))
     Dhk0.imag = -((k0/2)**(1./2))/(A(Nics)*A(Nics)*H(Nics))
  
-    print 'got Nics, hk0 and Dhk0'
-    print 'starting from Nics'
+    print('got Nics, hk0 and Dhk0')
+    print('starting from Nics')
 
     N = Nics
     while N < Nshss:
@@ -189,8 +191,8 @@ while k0 < k_max:
         N += step
 
     k_vs_hk = numpy.append(k_vs_hk, hk0) 
-    print N-step, Nshss, str(hk0).strip('[]'),str(Dhk0).strip('[]'), Nics
-    print '\n'
+    print("{}, {}, {}, {}, {}".format(N-step, Nshss, str(hk0).strip('[]'), str(Dhk0).strip('[]'), Nics))
+    print('\n')
     
     temp = 2*(k0)**3/(2*numpy.pi**2)*(numpy.absolute(hk0))**2
     tps_file.write(str(k0)+"\t"+str(temp).strip('[]')+"\n")    
@@ -200,9 +202,9 @@ while k0 < k_max:
     i += 1
 
 k_list = numpy.array([10**((-12 + i)/2.) for i in range(13)])
-#print len(k_list), len(k_vs_hkhk)
+#print(len(k_list), len(k_vs_hkhk))
 TPS = [2*(k)**3/(2*numpy.pi**2)*(numpy.absolute(k_vs_hk[i+1]))**2 for i in enumerate(k_list)]
-print k_list, TPS
+print(k_list, TPS)
 
 tps_file.close()
 

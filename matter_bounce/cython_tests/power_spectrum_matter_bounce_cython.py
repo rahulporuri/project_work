@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import numpy
 import matplotlib.pyplot as plt
 import scipy.optimize as opt
@@ -15,19 +17,19 @@ Nshss = numpy.array([7])
 for i in range(200):
     Nshss = opt.newton_krylov(lambda N : (k_max)**2 - 1e+04*fN(N),Nshss)
 
-print 'Nshss =', Nshss
-print 'lift off!' 
+print('Nshss = {}'.format(Nshss))
+print('lift off!')
 
 k_vs_hk = numpy.empty(0,dtype=complex)
 k_list = numpy.array([10**(-30 + i) for i in range(27)])
 for k0 in k_list:
-    print 'k0 = ', k0
+    print('k0 = {}'.format(k0))
 
     Nics = numpy.array([-5])
     for i in range(200):
         Nics = opt.newton_krylov(lambda N : (k0)**2 - 1e+04*fN(N),Nics)
 
-    print Nics
+    print(Nics)
     
     hk0 = numpy.zeros(1,dtype=complex)
     hk0.real = (((2.*k0)**(1./2))*A(Nics))**(-1.)
@@ -38,11 +40,11 @@ for k0 in k_list:
     
     hkm = numpy.array(hk0, dtype = complex)
 
-    print 'got Nics, hk0 and Dhk0'
+    print('got Nics, hk0 and Dhk0')
 
     npts = 30000
     step = (Nshss-Nics)/(npts)
-    print 'starting from Nics'
+    print('starting from Nics')
 
     N = Nics
     while N < Nshss:
@@ -58,14 +60,14 @@ for k0 in k_list:
     temp = 8*(k0)**3/(2*numpy.pi**2)*(numpy.absolute(hk0))**2
     tps_file.write(str(k0)+"\t"+str(temp).strip('[]')+"\n")  
 
-    print N, temp
-    print '\n'
+    print(N, temp)
+    print('\n')
     
     k0 = 10*k0
 
 
 TPS = [8*(k)**3/(2*numpy.pi**2)*(numpy.absolute(k_vs_hk[i]))**2 for i, k in enumerate(k_list)]
-print k_list, TPS
+print(k_list, TPS)
 
 tps_file.close()
 
